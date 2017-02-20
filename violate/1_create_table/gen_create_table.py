@@ -11,7 +11,7 @@ def build_hive_create_sql(td):
     add_partition = ""
 
     # 生成 导入外部表字段
-    ext_field_stmt_list = ['   %-30s string' % field[0] for field in td.field_array]
+    ext_field_stmt_list = ['  -- %s\n   %-30s string' % (field[1], field[0]) for field in td.field_array]
     ext_field_stmt = ",\n".join(ext_field_stmt_list)
     sql = u'''use sor;
 
@@ -33,7 +33,7 @@ PARTITIONED BY (LOAD_DATE string);
         partition = 'PARTITIONED BY (%s string)' % td.partition_field
 
     # 生成 贴源表字段
-    sor_field_stmt_list = ['   %-30s string' % field[0] for field in td.sor_field_array]
+    sor_field_stmt_list = ['   -- %s\n   %-30s string' % (field[1], field[0]) for field in td.sor_field_array]
     sor_field_stmt = ",\n".join(sor_field_stmt_list)
 
     sql += u'''
@@ -48,7 +48,7 @@ STORED AS ORC;\n
 ''' % {'en':td.table_en, 'cols':sor_field_stmt}
 
     # 生成 拉链表 只保留CTBase字段
-    ctbase_field_stmt_list = ['   %-30s string' % field[0] for field in td.ctbase_field_array if field[0] not in ('P9_END_DATE',)]
+    ctbase_field_stmt_list = ['   -- %s\n   %-30s string' % (field[1], field[0]) for field in td.ctbase_field_array if field[0] not in ('P9_END_DATE',)]
     ctbase_field_stmt = ",\n".join(ctbase_field_stmt_list)
 
     sql += u'''
@@ -56,7 +56,9 @@ STORED AS ORC;\n
 DROP TABLE IF EXISTS CT_%(en)s_MID;
 
 CREATE TABLE IF NOT EXISTS CT_%(en)s_MID (
-%(cols)s
+%(cols)s,
+   -- P9结束日期
+   P9_END_DATE                    string
 )
 PARTITIONED BY (%(partition_field)s string)
 STORED AS ORC;
@@ -73,196 +75,11 @@ CREATE TABLE IF NOT EXISTS CT_%(en)s (
 )
 PARTITIONED BY (P9_END_DATE string)
 STORED AS ORC;
-
 ''' % {'en':td.table_en, 'cols':ctbase_field_stmt, 'partition_field':'DATA_TYPE'}
-
 
     # 生成建表文件
     f = open(r'./hive_create/CREATE_%s.sql' % td.table_en, 'w')
     f.write(sql.encode('utf-8'))
-    f.close()
-
-
-#生成从外部临时表插入贴源表的SQL脚本文件
-def build_hive_entity_insert_sql(table_en, table_cn, field_array):
-
-    # 贴源表字段筛选
-    change_field_array = define_change_field(field_array)
-    sor_field_array, partition_field = define_sor_field(change_field_array)
-
-    # 生成 贴源表字段
-    table_change_columns = "\n"
-    table_columns = "\n"
-    pk_null_array = []
-    pk_join_array = []
-    for field in sor_field_array:
-        (field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split) = field
-
-        if field_type == 'DATE':
-            field_change_line = "   regexp_replace(a.%s, '-', '') as %s" % (field_en, field_en)
-        else:
-            field_change_line = "   a.%s" % (field_en)
-        
-        field_line = "   a.%s" % (field_en)
-
-        if field_is_pk == 'Y':
-            pk_null_array.append('b.%s IS NULL' % field_en)
-            pk_join_array.append('a.%(en)s = b.%(en)s' % {'en':field_en})
-
-        # 最后一列不加,
-        if field != sor_field_array[-1]:
-            field_line += ",\n"
-            field_change_line += ",\n"
-
-        table_change_columns += field_change_line
-        table_columns += field_line
-
-    join_condition = '\n   AND '.join(pk_join_array)
-    null_condition = '\n   AND '.join(pk_null_array)
-    '''
--- 修改临时外部表位置到上传日期目录
-
--- 为防止重跑时误删除，先注释该语句，让第二次重跑报错退出
---ALTER TABLE CT_%(en)s DROP IF EXISTS PARTITION(%(partition)s='TMP_${log_date}');
-    '''
-    sql = u'''use ts150;
-
-ALTER TABLE CT_TMP_%(en)s SET LOCATION 'hdfs://hacluster/bigdata/input/TS150/case_trace/%(en)s/${log_date}/';
-
-ALTER TABLE CT_%(en)s PARTITION(%(partition)s='29991231') 
-   RENAME TO PARTITION(%(partition)s='TMP_${log_date}');
-
-INSERT OVERWRITE TABLE CT_%(en)s PARTITION(%(partition)s='29991231')
-SELECT %(change_cols)s
- FROM CT_TMP_%(en)s a;
-
-INSERT OVERWRITE TABLE CT_%(en)s PARTITION(%(partition)s='${log_date}')
-SELECT %(cols)s
-  FROM (SELECT * FROM CT_%(en)s WHERE %(partition)s = 'TMP_${log_date}') a
- INNER JOIN (SELECT * FROM CT_%(en)s WHERE %(partition)s = '29991231') b
-    ON %(join)s;
-
-INSERT OVERWRITE TABLE CT_%(en)s PARTITION(%(partition)s='TMP')
-SELECT %(cols)s
-  FROM (SELECT * FROM CT_%(en)s WHERE %(partition)s = 'TMP_${log_date}') a
-  LEFT JOIN (SELECT * FROM CT_%(en)s WHERE %(partition)s = '29991231') b
-    ON %(join)s
- WHERE %(null)s;
-
-INSERT INTO TABLE CT_%(en)s PARTITION(%(partition)s='29991231')
-SELECT %(cols)s
-  FROM CT_%(en)s a
- WHERE %(partition)s = 'TMP';
-''' % {'en':table_en, 'cn':table_cn, 'cols':table_columns, 'change_cols':table_change_columns,
-       'partition':partition_field, 'join':join_condition, 'null':null_condition}
-
-    if not os.path.exists('./hive_insert'):  #目录不存在，则新建
-        os.mkdir('./hive_insert')
-
-    f = open(r'./hive_insert/INSERT_%s.sql' % table_en, 'w')
-    f.write(sql.encode('utf-8'))
-    f.close()
-
-    shell=u'''#!/bin/sh
-
-######################################################
-#   将Hive上的CT_TMP_%(en)s临时表导入到贴源表中
-#                   wuzhaohui@tienon.com
-######################################################
-
-#引用基础Shell函数库
-source /home/ap/dip/appjob/shelljob/TS150/case_trace/case_trace_base.sh
-
-#解释命令行参数
-logdate_arg $*
-
-log "开始执行脚本，参数：用户名:$hadoop_user,log_date:${log_date}"
-
-# 案件溯源Hive导数处理脚本
-# %(cn)s: %(en)s
-
-$hdsrun hdsHive USERNAME:$hadoop_user,INSTANCEID:IMPORT-%(en)s-${log_date}-0000 <<!
-
-%(sql)s
-!
-
-log "完成执行脚本"
-''' % {'en':table_en, 'cn':table_cn, 'sql':sql}
-
-    f = open(r'./hive_insert/INSERT_%s.sh' % table_en, 'w')
-    f.write(shell.encode('utf-8'))
-    f.close()
-
-
-#生成从外部临时表插入贴源表的SQL脚本文件
-def build_hive_detail_insert_sql(table_en, table_cn, field_array):
-
-    # 贴源表字段筛选
-    change_field_array = define_change_field(field_array)
-    sor_field_array, partition_field = define_sor_field(change_field_array)
-
-    # 生成 贴源表字段
-    table_change_columns = "\n"
-    for field in sor_field_array:
-        (field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split) = field
-
-        if field_type == 'DATE':
-            field_change_line = "   regexp_replace(a.%s, '-', '') as %s" % (field_en, field_en)
-        else:
-            field_change_line = "   a.%s" % (field_en)
-        
-        # 最后一列不加,
-        if field != sor_field_array[-1]:
-            field_change_line += ",\n"
-
-        table_change_columns += field_change_line
-
-    sql = u'''use ts150;
-
-ALTER TABLE CT_TMP_%(en)s SET LOCATION 'hdfs://hacluster/bigdata/input/TS150/case_trace/%(en)s/${log_date}/';
-
-ALTER TABLE CT_%(en)s ADD IF NOT EXISTS PARTITION(%(partition)s='${log_date}');
-
-INSERT OVERWRITE TABLE CT_%(en)s PARTITION(%(partition)s='${log_date}')
-SELECT %(change_cols)s
- FROM CT_TMP_%(en)s a;
-''' % {'en':table_en, 'cn':table_cn, 'change_cols':table_change_columns, 'partition':partition_field}
-
-    if not os.path.exists('./hive_insert'):  #目录不存在，则新建
-        os.mkdir('./hive_insert')
-
-    f = open(r'./hive_insert/INSERT_%s.sql' % table_en, 'w')
-    f.write(sql.encode('utf-8'))
-    f.close()
-
-    shell=u'''#!/bin/sh
-
-######################################################
-#   将Hive上的CT_TMP_%(en)s临时表导入到贴源表中
-#                   wuzhaohui@tienon.com
-######################################################
-
-#引用基础Shell函数库
-source /home/ap/dip/appjob/shelljob/TS150/case_trace/case_trace_base.sh
-
-#解释命令行参数
-logdate_arg $*
-
-log "开始执行脚本，参数：用户名:$hadoop_user,log_date:${log_date}"
-
-# 案件溯源Hive导数处理脚本
-# %(cn)s: %(en)s
-
-$hdsrun hdsHive USERNAME:$hadoop_user,INSTANCEID:IMPORT-%(en)s-${log_date}-0000 <<!
-
-%(sql)s
-!
-
-log "完成执行脚本"
-''' % {'en':table_en, 'cn':table_cn, 'sql':sql}
-
-    f = open(r'./hive_insert/INSERT_%s.sh' % table_en, 'w')
-    f.write(shell.encode('utf-8'))
     f.close()
 
 
@@ -491,7 +308,6 @@ def build_makefile(table_list):
 
 #生成 建表脚本 Hive到CTBase的拉链表
 def build_hive_entity_history_create_sql(table_en, table_cn, field_array):
-
     partition = ""
     add_partition = ""
 
@@ -559,179 +375,17 @@ STORED AS ORC;\n
     f.close()
 
 
-#重建实体表拉链
-def build_hive_entity_history_insert_sql(table_en, table_cn, field_array):
-
-
-    partition = ""
-    add_partition = ""
-
-    # 贴源表字段筛选
-    change_field_array = define_change_field(field_array)
-    ctbase_field_array, partition_field = define_ctbase_field(change_field_array)
-    partition_field = 'DATA_TYPE'
-
-    #建Hive表排除 P9_START_DATE P9_END_DATE
-    # 生成 实体拉链表字段
-    main_fields = []
-    all_fields = []
-    pk_fields = []
-    for field in ctbase_field_array:
-        (field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split) = field
-        all_fields.append(field_en)
-        if field_en not in ('P9_START_DATE', 'P9_END_DATE'):
-            # print i, field_en
-            main_fields.append(field_en)
-        if field_is_pk == 'Y':
-            pk_fields.append(field_en)
-
-    table_columns = ",\n".join(["       a.%s" % x for x in all_fields])
-    table_flat_columns = ', '.join(main_fields)
-    pk_flat_columns = ", ".join(pk_fields)
-
-    sql = u'''use ts150;
--- %(cn)s 拉链处理
-
--- 增量更新外部数据
-ALTER TABLE CT_TMP_%(en)s SET LOCATION 'hdfs://hacluster/bigdata/input/TS150/case_trace/%(en)s/${log_date}/';
-
--- 复制贴源数据
-INSERT OVERWRITE TABLE CT_%(en)s_MID PARTITION(%(partition)s='SRC')
-SELECT 
-%(cols)s
- FROM CT_TMP_%(en)s a;
-
--- 去重
-INSERT OVERWRITE TABLE CT_%(en)s_MID PARTITION(%(partition)s='CUR_NO_DUP')
-SELECT 
-%(cols)s
-  FROM (SELECT %(flat_cols)s, P9_START_DATE, P9_END_DATE,
-               row_number() over (
-                    partition by %(flat_cols)s
-                    order by P9_START_DATE
-                   ) rownum
-         FROM CT_%(en)s_MID 
-        WHERE %(partition)s = 'SRC' or %(partition)s = 'PRE_NO_DUP') a
- WHERE a.rownum = 1;
-
--- 重建拉链
-INSERT OVERWRITE TABLE CT_%(en)s_SHORT
-SELECT %(flat_cols)s, P9_START_DATE, 
-       lead(P9_START_DATE, 1, '29991231') over (partition by %(pk)s order by P9_START_DATE) as P9_END_DATE
-  FROM CT_%(en)s_MID
- WHERE %(partition)s='CUR_NO_DUP';
-
--- 备份当前非重复数据 到 PRE_NO_DUP 分区
-ALTER TABLE CT_%(en)s_MID DROP IF EXISTS PARTITION(%(partition)s='PRE_NO_DUP');
-
-ALTER TABLE CT_%(en)s_MID PARTITION(%(partition)s='CUR_NO_DUP') 
-   RENAME TO PARTITION(%(partition)s='PRE_NO_DUP');
-
-ALTER TABLE CT_%(en)s_MID ADD IF NOT EXISTS PARTITION(%(partition)s='CUR_NO_DUP');
-''' % {'en':table_en, 'cn':table_cn, 'cols':table_columns, 'flat_cols':table_flat_columns,
-       'partition':partition_field, 'pk':pk_flat_columns}
-
-    if not os.path.exists('./hive_insert'):  #目录不存在，则新建
-        os.mkdir('./hive_insert')
-
-    f = open(r'./hive_insert/INSERT_%s_SHORT.sql' % table_en, 'w')
-    f.write(sql.encode('utf-8'))
-    f.close()
-
-    shell=u'''#!/bin/sh
-
-######################################################
-#   将Hive上的CT_TMP_%(en)s临时表导入到贴源表中
-#                   wuzhaohui@tienon.com
-######################################################
-
-#引用基础Shell函数库
-source /home/ap/dip/appjob/shelljob/TS150/case_trace/case_trace_base.sh
-
-#解释命令行参数
-logdate_arg $*
-
-log "开始执行脚本，参数：用户名:$hadoop_user,log_date:${log_date}"
-
-# 案件溯源Hive导数处理脚本
-# %(cn)s: %(en)s
-
-$hdsrun hdsHive USERNAME:$hadoop_user,INSTANCEID:IMPORT-%(en)s-${log_date}-0000 <<!
-
-%(sql)s
-!
-
-log "完成执行脚本"
-''' % {'en':table_en, 'cn':table_cn, 'sql':sql}
-
-    f = open(r'./hive_insert/INSERT_%s_SHORT.sh' % table_en, 'w')
-    f.write(shell.encode('utf-8'))
-    f.close()
-
-
 def main():
     #目录不存在，则新建
     if not os.path.exists('./hive_create'):  
         os.mkdir('./hive_create')
 
     sts = SlideTableStruct()
-    build_hive_create_sql(sts.TODDC_CRCRDCRD_H)
-    # table_sheet, field_sheet = read_excel()
-    # table_map = read_table_name(table_sheet)
-    # table_field_map = read_field_name(field_sheet)
-
-    # table_list = [
-    #     #对私客户信息
-    #     'T0042_TBPC1010_H', 'T0042_TBPC9030_H', 'T0042_TBPC1510_H', 
-    #     #ECTIP
-    #     'TODEC_TRAD_FLOW_A', 'TODEC_QUERY_TRAD_FLOW_A', 'TODEC_LOGIN_TRAD_FLOW_A',
-    #     #CCBS ATM
-    #     'TODDC_CRATMATM_SH', 'TODDC_CRATMDET_A',
-    #     #CCBS POS
-    #     'TODDC_CRPOSPOS_H', 'TODDC_CRDETDET_A',
-    #     #CCBS 主档
-    #     'TODDC_CRCRDCRD_H', 'TODDC_SAACNACN_H',
-    #     #CCBS 明细流水
-    #     'TODDC_SAACNTXN_A', 'TODDC_SAETXETX_A',
-    #     #CCBS 柜员  
-    #     'TODDC_FCMTLR0_H', 
-    #     #机构表、机构关系、员工
-    #     'T0651_CCBINS_INF_H', 'T0651_CCBINS_REL_H', 'T0861_EMPE_H',
-    #     #信用卡
-    #     'T0281_TBB1PLT0_H', 'T0281_S11T1_BILL_DTL_H', 'T0281_S11T1_BIL_DSP_D0_H'
-    #     ]
-
-
-    # for table_en in table_list:
-    #     table_en = table_en.upper()
-    #     table_cn = table_map[table_en]
-    #     field_array = table_field_map[table_en]
-
-    #     # print '%s:%s' % (table_en, table_cn)
-
-    #     #生成CTBase脚本
-    #     build_ctbase_create_xml(table_en, table_cn, field_array)
-    #     build_ctbase_load_script(table_en, table_cn, field_array)
-    #     #生成建Hive表的SQL脚本文件
-    #     build_hive_create_sql(table_en, table_cn, field_array)
-
-    #     if table_en[-2:] == '_A' or table_en in ('T0281_S11T1_BILL_DTL_H', 'T0281_S11T1_BIL_DSP_D0_H'):
-    #         build_hive_detail_insert_sql(table_en, table_cn, field_array)
-    #         pass
-    #     else:
-    #         # print '%s:%s' % (table_en, table_cn)
-    #         build_hive_entity_insert_sql(table_en, table_cn, field_array)
-
-    #         # 新拉链处理
-    #         build_hive_entity_history_create_sql(table_en, table_cn, field_array)
-    #         build_hive_entity_history_insert_sql(table_en, table_cn, field_array)
-
-    # # build_makefile(table_list)
+    # build_hive_create_sql(sts.TODDC_CRCRDCRD_H)
+    for table_en, td in sts.exist_table_map.items():
+        build_hive_create_sql(td)
+        print 'table: %s finish' % table_en
 
 
 if __name__ == '__main__':
     main()
-    # a = ['1', '2', '3']
-    # b = ['  %s' % x for x in a]
-
-    # print ','.join(b)

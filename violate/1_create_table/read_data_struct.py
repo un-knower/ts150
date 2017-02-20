@@ -117,10 +117,10 @@ def define_sor_field(change_field_array):
         (field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split) = field
 
         # 分区字段不放入字段列表中
-        if field_is_dk == "Y":
-            partition_field = field_en
-        else:
-            sor_field_array.append(field)
+        # if field_is_dk == "Y":
+        #     partition_field = field_en
+        # else:
+        sor_field_array.append(field)
 
     return (sor_field_array, partition_field)
 
@@ -154,7 +154,7 @@ class TableDefine():
         self.partition_field = partition_field
 
 
-class SlideTableStruct(object):
+class SlideTableStruct():
     """_H 静态信息表 拉链表"""
     def __init__(self):
  
@@ -188,7 +188,6 @@ class SlideTableStruct(object):
             raise "表名未定义"
 
 
-
 def main():
     # table_sheet, field_sheet = read_excel()
     # table_map = read_table_name(table_sheet)
@@ -216,11 +215,19 @@ def main():
         ]
 
 
-    ts = SlideTableStruct()
-    print ts.TODDC_SAACNACN_H.table_cn
-    print ts.TODDC_SAACNACN_H.table_en
-    print ts.TODDC_SAACNACN_H.sor_field_array
-    # print ts.TODDC_SAACNACN_H.ctbase_field_array
+    # sts = SlideTableStruct()
+    # print sts.TODDC_SAACNACN_H.table_cn
+    # print sts.TODDC_SAACNACN_H.table_en
+    # print sts.TODDC_SAACNACN_H.sor_field_array
+    # print sts.TODDC_SAACNACN_H.ctbase_field_array
+
+    mts = MiddleTableStruct()
+    for table_en, td in mts.exist_table_map.items():
+        print '-------%s-----' % table_en
+        for field in td.ctbase_field_array:
+            print field[0], field[1]
+
+    # print mds.MID_CUSTOMER_CUR.ctbase_field_array
 
     # for table_en in table_list:
     #     table_en = table_en.upper()
