@@ -1,9 +1,13 @@
 #!/bin/sh
+# 简易Hive脚本调度程序
+#
 
 source /home/ap/dip_ts150/ts150_script/monitor/base.sh
 
-base_path=/home/ap/dip_ts150/ts150_script/ccb_risk_scoring/train
-db=mid
+# 默认运行脚本目录
+base_path=/home/ap/dip_ts150/ts150_script/violate/7_scheduler
+# 默认Hive数据库名
+db=sor
 
 init()
 {
@@ -23,7 +27,7 @@ log_l()
    echo "$logTime $execute $msg" >> ${base_path}/log/run_status.$$
 }
 
-
+# 等待Hive分区数据
 wait_data()
 {
    local data_date=$1
@@ -48,17 +52,16 @@ wait_data()
    return 0
 }
 
+# 运行从start_date到end_date所有日期的处理脚本
 run_all_date()
 {
    for ((data_date=$start_date; data_date<=$end_date;data_date=`date -d "$data_date 1 days" +"%Y%m%d"`)) do
-
       echo $data_date
       run_one_date
-
    done
-
 }
 
+# Shell命令行参数解释
 arg()
 {
    local OPTIND
@@ -83,6 +86,7 @@ arg()
       #run $OPTION
    done
 
+   # 命令行参数有效性判断
    if [ "${script:-NULL}" = "NULL" ]; then
       echo "-c script.sh must input"
       exit 1
@@ -124,6 +128,7 @@ arg()
 }
 
 
+# 一天数据跑批脚本
 run_one_date()
 {
    echo "calling..."
@@ -134,12 +139,14 @@ run_one_date()
    log_l "================================================"
    log_l "start [$fun][$data_date]..."
 
+   # 判断本脚本是否已运行完成，通过判断结果表分区
    local no_finished_num=0
    for table in $OUT_CUR_HIVE; do
       hive_partition_over $table ${data_date} $db
       if [ $? -eq 0 ]; then
          log_l "[$fun][$db.$table][$data_date] already finished."
       else
+         # 多个输出表累加判断
          no_finished_num=`expr $no_finished_num + 1`
       fi
    done
@@ -148,7 +155,9 @@ run_one_date()
       return 0
    fi
 
+   # 等待当天Hive分区表数据
    for tb in $IN_CUR_HIVE; do
+      # 表名的表示方式，以"库名.表名"或默认"表名"
       word_num=`echo $tb | awk -F "." '{print $1,$2}' | wc -w`
       if [ $word_num -eq 1 ]; then
          in_db=$db
@@ -162,6 +171,7 @@ run_one_date()
       wait_data $data_date $in_tb $in_db
    done
 
+   # 等待前一天Hive分区表数据
    for tb in $IN_PRE_HIVE; do
       word_num=`echo $tb | awk -F "." '{print $1,$2}' | wc -w`
       if [ $word_num -eq 1 ]; then
@@ -176,7 +186,7 @@ run_one_date()
       wait_data $less_1_date $in_tb $in_db
    done
 
-   
+   # 运行结果判断
    for second in 10 30 60 300; do
       run
       log_l "run over [$fun][$data_date][$OUT_CUR_HIVE]"
@@ -203,6 +213,7 @@ run_one_date()
 #init
 arg $*
 
+# 有-d参数时，只跑一天数据，否则跑start_date到end_date间每一天数据
 if [ "${data_date:-NULL}" != "NULL" ]; then
    run_one_date
 else
