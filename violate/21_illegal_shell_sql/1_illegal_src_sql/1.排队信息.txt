@@ -1,0 +1,58 @@
+                                                                                       prvcode                                                                                        
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ****************************取7-9月的排队数据*************************************
+ \r
+ %let startdate='2016-07-29';\r
+ %let enddate='2016-9-30';\r
+ \r
+ *1.1 取卡号*
+ \r
+ %_eg_conditional_dropds(sasdb_gp.T05_Card_PASS_NUMtmpLZ);\r
+ proc sql;\r
+ connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+ execute(\r
+                 create table &gpSchemaAQRTmp1..T05_Card_PASS_NUMtmpLZ as (\r
+                 select distinct a.cst_ofrnum_dt as TX_DT, b.pass_num,'cardno' as remark\r
+                         from &gpSchemaAQR0..T0162_CUST_QUEUE_INFO_A a\r
+                         inner join &gpSchemaAQR0..SIAM_CARD_INFO_H b\r
+                         on a.srcsys_ar_id = b.card_no\r
+                         and a.cst_ofrnum_dt >= &startdate. and a.cst_ofrnum_dt <= &enddate.);\r
+                 )by gp_aqrdb;\r
+ disconnect from gp_aqrdb;\r
+ quit;\r
+ *1.2 取身份证号*
+ \r
+ proc sql;\r
+ connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+ execute(\r
+                 insert into &gpSchemaAQRTmp1..T05_Card_PASS_NUMtmpLZ  (\r
+                         select distinct a.cst_ofrnum_dt as TX_DT, substring(a.srcsys_ar_id from 3 for length(a.srcsys_ar_id) - 2) as pass_num,\r
+                         'idcard' as remark\r
+                         from &gpSchemaAQR0..T0162_CUST_QUEUE_INFO_A a\r
+                         where substring(a.srcsys_ar_id from 1 for 2) = 'id'\r
+                         and a.cst_ofrnum_dt >= &startdate. and a.cst_ofrnum_dt <= &enddate.)\r
+         )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ *2.新老系统数据结合*
+ \r
+ %_eg_conditional_dropds(sasdb_gp.T05_Card_PASS_NUM1609LZ);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..T05_Card_PASS_NUM1609LZ as (                     \r
+ select distinct * from &gpSchemaAQRTmp1..T05_Card_PASS_NUMtmpLZ\r
+             union \r
+                    select distinct * from &gpSchemaAQRTmp1..T05_Card_PASS_NUM   \r
+                         )\r
+         )by gp_aqrdb;   \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ \r
+(51 rows)
+
+********* QUERY **********
+select prvcode from get_rule_refine_detail order by i;
+**************************

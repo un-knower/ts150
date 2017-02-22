@@ -1,0 +1,201 @@
+                                                                                       prvcode                                                                                        
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ %let startdate='2016-07-01';\r
+ %let enddate='2016-9-30';\r
+ \r
+ %let FCMARLDtmp=Tmp_FCMARLD;
+ *提取重要非账务性流水表的时间、柜员号、交易描述*
+ \r
+ %let FCMARLDBrantmp=Tmp_FCMARLD_Bran;
+ *提取重要非账务性流水表的网点号*
+ \r
+ %let FCMARLDDetail=Tmp_FCMARLD_BranID;
+ *提取重要非账务性流水表的身份证、卡号*
+ \r
+ %let ATMDetail=Tmp_AtmDetail;
+ *提取ATM的时间，卡号、身份证号、网点号*
+ \r
+ %let MainFlowDetail=Tmp_MainFlow;
+ *提取签约主流水表客户号、身份证号、机构号、时间*
+ \r
+ %let TXEVENTtmp=Tmp3_TXEVENT;
+ *提取活期存款明细档柜面交易的时间,卡号,网点号*
+ \r
+ %let TXEVENTDetail=Tmp3_TXEVENT_Abcd;
+ *提取活期存款明细档柜面交易数据的身份证号*
+ \r
+ %let Refine1Detail=Tmp_Rule_refine;
+ *结果细化数据准备表,汇总办理业务的时间、网点、身份证*
+ \r
+ \r
+ *****************提取重要非账务性流水表的时间、柜员号、卡号、身份证号、交易描述、网点号*************
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&FCMARLDtmp.);\r
+ %_eg_conditional_dropds(sasdb_gp.&FCMARLDBrantmp.);\r
+ %_eg_conditional_dropds(sasdb_gp.&FCMARLDDetail.);\r
+ *提取时间、柜员号、交易描述*
+ \r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&FCMARLDtmp. as (\r
+                         select distinct a.cm_tx_dt as tx_dt,a.cm_teller_id as oper_code,a.cm_acct_no,a.cm_aply_data_dscrp_arl as aply_dscrp\r
+ from &gpSchemaAQR0..TODDC_FCMARLD_A a\r
+ where (a.cm_acct_no IS not NULL and a.cm_acct_no <> '')\r
+                         and (a.cm_tx_dt >= &startdate. and a.cm_tx_dt <= &enddate.)\r
+                         )\r
+         )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ *提取网点号*
+ \r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&FCMARLDBrantmp. as (\r
+                         select a.*,b.CM_OPUN_CODE as Branch_Id\r
+                         from  &gpSchemaAQRTmp1..&FCMARLDtmp. a\r
+                         inner join &gpSchemaAQR0..TODDC_FCMTLR0_H  b\r
+                                 on a.oper_code = b.CM_OPR_NO\r
+                                and b.P9_END_DATE  = '2999-12-31')          \r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ *提取身份证、卡号*
+ \r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&FCMARLDDetail. as (\r
+                         select distinct a.tx_dt,a.oper_code,a.Branch_Id,a.cm_acct_no as card_no,b.pass_num,a.aply_dscrp,'card_no' as remark\r
+                         from &gpSchemaAQRTmp1..&FCMARLDBrantmp. a\r
+                         inner join &gpSchemaAQR0..SIAM_CARD_INFO_H b\r
+                                 on a.cm_acct_no = b.card_no)\r
+                 )by gp_aqrdb; \r
+          execute(\r
+                 insert into &gpSchemaAQRTmp1..&FCMARLDDetail. (\r
+                         select distinct a.tx_dt,a.oper_code,a.Branch_Id,b.card_no,a.cm_acct_no as pass_num,a.aply_dscrp,'pass_num' as remark\r
+                         from &gpSchemaAQRTmp1..&FCMARLDBrantmp. a\r
+                         inner join &gpSchemaAQR0..SIAM_CARD_INFO_H b\r
+                                 on a.cm_acct_no = b.pass_num)\r
+                 )by gp_aqrdb; \r
+          execute(\r
+                 insert into &gpSchemaAQRTmp1..&FCMARLDDetail. (\r
+                         select distinct a.tx_dt,a.oper_code,a.Branch_Id,b.card_no,a.cm_acct_no as pass_num,a.aply_dscrp,'cust_no' as remark\r
+                         from &gpSchemaAQRTmp1..&FCMARLDBrantmp. a\r
+                         inner join &gpSchemaAQR0..SIAM_CARD_INFO_H b\r
+                                 on a.cm_acct_no = b.CUSTNO)\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ \r
+ ***************提取ATM的时间，卡号、身份证号、网点号*********************
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&ATMDetail.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&ATMDetail. as (\r
+                         select distinct a.*,b.pass_num\r
+ from (select distinct k.CR_ENTR_DT as tx_dt,k.CR_CRD_NO as card_no,k.CR_TX_NETP_NO as Branch_ID,k.CR_CPU_DT \r
+ from &gpSchemaAQR0..TODDC_CRATMDET_A k\r
+                                   where (k.CR_ENTR_DT >= &startdate. and k.CR_ENTR_DT <= &enddate.)) a\r
+                     inner join &gpSchemaAQR0..SIAM_CARD_INFO_H b\r
+                                     on a.card_no =b.CARD_NO     \r
+                         )\r
+         )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ ***************提取签约主流水表客户号、身份证号、机构号、时间*********************
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&MainFlowDetail.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&MainFlowDetail. as (\r
+                         select distinct a.CUST_NO,a.CHANL_CUST_NO,a.CERT_ID,a.sign_bran as Branch_ID,a.p9_data_date,to_date(a.SIGN_DATE,'YYYYMMDD') as tx_dt,\r
+                                (case when (a.CERT_ID IS not NULL and a.CERT_ID <> '') then a.CERT_ID else a.CHANL_CUST_NO end) as pass_num\r
+ from &gpSchemaAQR0..TODEC_SIGN_MAIN_FLOW_A a\r
+                         where (to_date(a.SIGN_DATE,'YYYYMMDD')>= &startdate. and to_date(a.SIGN_DATE,'YYYYMMDD')<= &enddate.)\r
+                         and sign_bran <> '999999999'\r
+                         and (a.sign_bran IS not NULL and a.sign_bran <> '')\r
+ and ((a.CHANL_CUST_NO IS not NULL and a.CHANL_CUST_NO <> '')    \r
+                          or (a.CERT_ID IS not NULL and a.CERT_ID <> '') )\r
+                         )\r
+         )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 insert into &gpSchemaAQRTmp1..&MainFlowDetail.(\r
+                         select distinct a.CUST_NO,a.CHANL_CUST_NO,a.CERT_ID,a.sign_bran as Branch_ID,a.p9_data_date,to_date(a.SIGN_DATE,'YYYYMMDD') as tx_dt,\r
+                                (case when (a.CERT_ID IS not NULL and a.CERT_ID <> '') then a.CERT_ID else a.CHANL_CUST_NO end) as pass_num\r
+ from &gpSchemaAQR0..T1000_SIGN_MAIN_FLOW_A a\r
+                         where (to_date(a.SIGN_DATE,'YYYYMMDD')>= &startdate. and to_date(a.SIGN_DATE,'YYYYMMDD')<= &enddate.)\r
+                         and sign_bran <> '999999999'\r
+                         and (a.sign_bran IS not NULL and a.sign_bran <> '')\r
+ and ((a.CHANL_CUST_NO IS not NULL and a.CHANL_CUST_NO <> '')    \r
+                          or (a.CERT_ID IS not NULL and a.CERT_ID <> '') )\r
+                         )\r
+         )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ ************************提取交易明细表柜面交易的时间,卡号,网点号,身份证号********************
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&TXEVENTtmp.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&TXEVENTtmp. as (\r
+                         select distinct * \r
+                         from &gpSchemaAQR0..TODDC_SAACNTXN_A \r
+                                 where sa_tx_dt>=&startdate. and sa_tx_dt<=&enddate.\r
+                                   and SA_DSCRP_COD in ('0045','0046','0047','6617','6620','6621','1104','1105','1106','1107','0127','0128','1537')\r
+ )\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ %_eg_conditional_dropds(sasdb_gp.&TXEVENTDetail.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&TXEVENTDetail. as (\r
+                         select distinct a.SA_TX_CRD_NO as trade_card,a.SA_TX_DT as tx_dt\r
+ ,a.SA_OPUN_COD as branch_id,a.sa_dscrp_cod as abstract_cd,b.pass_num\r
+                         from &gpSchemaAQRTmp1..&TXEVENTtmp. a\r
+                         inner join  &gpSchemaAQR0..SIAM_CARD_INFO_H b\r
+                            on a.SA_TX_CRD_NO = b.card_no\r
+ )\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ \r
+ ****************结果细化数据准备表,汇总办理业务的时间、网点、身份证***************
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&Refine1Detail.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&Refine1Detail. as (                     \r
+ select distinct tx_dt,Branch_Id,pass_num from &gpSchemaAQRTmp1..&FCMARLDDetail.\r
+             union \r
+                    select distinct tx_dt,Branch_Id,pass_num from &gpSchemaAQRTmp1..&ATMDetail.  \r
+ union \r
+                    select distinct tx_dt,Branch_Id,pass_num from &gpSchemaAQRTmp1..&MainFlowDetail.\r
+ union \r
+                    select distinct tx_dt,Branch_Id,pass_num from &gpSchemaAQRTmp1..&TXEVENTDetail.\r
+                         )\r
+         )by gp_aqrdb;   \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+(194 rows)
+
+********* QUERY **********
+select prvcode from get_pbcs_rule1 order by i;
+**************************

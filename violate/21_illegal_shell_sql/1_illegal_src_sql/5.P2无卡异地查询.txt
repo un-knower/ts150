@@ -1,0 +1,302 @@
+                                                                                     prvcode                                                                                        
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ *新规则描述：\r
+ 1.查询交易限制：tx_code=A00421502|A00421517|A00421538|A00421547\r
+ 2.无卡查询规则：\r
+ 1）customer_identity_no为空 且 customer_acctount_no为空 则为无卡查询 \r
+ 3) 填充客户身份证id_crdt_no字段、客户号CST_ID、卡号fs_acct_no字段，完善客户信息\r
+ 2）根据卡号添加开户行，筛选无卡异地查询\r
+ 4）添加其他信息并统计\r
+ *
+ \r
+ \r
+ %let startdate = '2016-11-01';\r
+ %let enddate = '2016-11-30';\r
+ %let p2nocard = T2000_p2log_nocard1125;
+ * 找出无卡查询数据*
+ \r
+ %let IDtablename = p2log_identity1125;
+ * 补全身份证信息与卡号等信息*
+ \r
+ %let IDtablenameOPUN=p2log_identity_bran1125;
+ * 补全开卡机构信息*
+ \r
+ %let IDtablenameTmp=p2log_bran1125_sametmp;
+ * 增加标记，判断卡与柜员的地域关系 *
+ \r
+ %let IDtablenameNOsame=p2log_bran1125_nosame;
+ * 获取异地查询信息 *
+ \r
+ %let RuleIDbrannm=p2log_ruleIDbrannm1125;
+ **********对重合结果添加客户卡的开户网点名**************
+ \r
+ %let RuleIDopernm=p2log_ruleIDopernm1125;
+ **********对重合结果添加员工名称与员工所在网点名********
+ \r
+ %let RuleIDPbranNM=p2log_ruleIDPbranNM1125;
+ **********对重合结果添加员工所在网点父机构信息*********
+ \r
+ %let tablenocardnosame=p2log_ruleIDCoin1125;
+ **********异地无卡查询明细****************
+ \r
+ %let tablenocardnosameRtj=p2log_ruleIDtjR1125;
+ *对细化后数据统计查询量*
+ \r
+ %let tablenocardnosameRtjd=p2log_ruleIDtjdR1125;
+ *按日期统计细化数据*
+ \r
+ \r
+ ***********************************新规则**************************************
+ \r
+ *1.找出身份识别数据客户卡号和身份证号全部为空的数据,判断为无卡查询*
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&p2nocard.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&p2nocard. as (\r
+                 select distinct a.*\r
+                         from &gpSchemaAQR0..p2log_cst_query a\r
+                         where \r
+ substring(a.tx_code from 1 for 9) in ('A00421502','A00421517','A00421538','A00421547')\r
+ *(a.tx_code like 'A00421502%' or a.tx_code like 'A00421517%'\r
+ or a.tx_code like 'A00421538%' or a.tx_code like 'A00421547%') *
+ \r
+                         and (a.tx_date >= &startdate. and a.tx_date <= &enddate.)\r
+ and (a.customer_identity_no IS  NULL or a.customer_identity_no = '')\r
+                         and (a.customer_acctount_no IS  NULL or a.customer_acctount_no = '')\r
+                         )\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ * 2.1通过卡号补全身份证信息 *
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&IDtablename.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&IDtablename. as (\r
+                 select distinct a.tx_date,a.tx_time,a.tx_code,a.OPER_CODE,a.OPER_NAME,a.TERMINAL_MAC,a.TERMINAL_IP,\r
+ a.org_short_cname,a.inst_level1_branch_id,a.BRANCH_ID,a.CST_ID,b.pass_num,a.FS_ACCT_NO,b.card_no,\r
+ 'cardno' as remark\r
+                         from (select distinct * from &gpSchemaAQRTmp1..&p2nocard. k \r
+                                    where (k.FS_ACCT_NO IS NOT NULL and k.FS_ACCT_NO <> '')) a\r
+                         inner join &gpSchemaAQR0..SIAM_CARD_INFO_H b\r
+                            on a.FS_ACCT_NO = b.card_no)\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ * 2.2根据身份证获取所有卡号,补全信息*
+ \r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 insert into &gpSchemaAQRTmp1..&IDtablename. (\r
+ select distinct a.tx_date,a.tx_time,a.tx_code,a.OPER_CODE,a.OPER_NAME,a.TERMINAL_MAC,a.TERMINAL_IP,\r
+ a.org_short_cname,a.inst_level1_branch_id,a.BRANCH_ID,a.CST_ID,b.pass_num,a.FS_ACCT_NO,b.card_no,\r
+ 'idcard' as remark\r
+                         from (select distinct * from &gpSchemaAQRTmp1..&p2nocard. k \r
+                                    where (k.FS_ACCT_NO IS  NULL or k.FS_ACCT_NO = '')\r
+                                         and (k.Id_Crdt_No IS NOT NULL and k.Id_Crdt_No <> '')) a\r
+                         inner join &gpSchemaAQR0..SIAM_CARD_INFO_H b\r
+                         on a.Id_Crdt_No = b.pass_num);\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ * 2.3根据客户号获取卡号、身份证号,补全信息 *
+ \r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 insert into &gpSchemaAQRTmp1..&IDtablename. (\r
+                 select distinct a.tx_date,a.tx_time,a.tx_code,a.OPER_CODE,a.OPER_NAME,a.TERMINAL_MAC,a.TERMINAL_IP,\r
+ a.org_short_cname,a.inst_level1_branch_id,a.BRANCH_ID,a.CST_ID,c.pass_num,a.FS_ACCT_NO,c.card_no,\r
+ 'custnum' as remark\r
+                         from (select distinct * from &gpSchemaAQRTmp1..&p2nocard. k \r
+                           where (k.FS_ACCT_NO IS  NULL or k.FS_ACCT_NO = '')\r
+                                 and (k.Id_Crdt_No IS  NULL or k.Id_Crdt_No = '')\r
+                                 and k.Cst_ID IS NOT NULL and k.Cst_ID <> '') a\r
+                         inner join &gpSchemaAQR0..T0042_TBPC1010_H b\r
+                        on a.CST_ID = b.CST_ID\r
+                         inner join &gpSchemaAQR0..SIAM_CARD_INFO_H c\r
+                            on b.CRDT_NO = c.pass_num);\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ * 3.根据银行卡主档获取营业单位代码CR_OPUN_COD --->注:这个比SIAM_CARD_INFO_H的开户行准确*
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&IDtablenameOPUN.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&IDtablenameOPUN. as (\r
+                         select a.*, b.CR_OPUN_COD \r
+                         from &gpSchemaAQRTmp1..&IDtablename. a\r
+                         inner join &gpSchemaAQR0..TODDC_CRCRDCRD_H b\r
+                         on card_no = b.CR_CRD_NO);\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ * 3.1 匹配同地查询的信息 *
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&IDtablenameTmp.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&IDtablenameTmp. as (\r
+                         select a.*,\r
+                         (case when \r
+                                 (substring(INST_LEVEL1_BRANCH_ID from 1 for 3) = substring(CR_OPUN_COD from 1 for 3)\r
+                                  or substring(BRANCH_ID from 1 for 3) = substring(CR_OPUN_COD from 1 for 3)) then 1 \r
+                                  else 0 end) as same\r
+                              from (select distinct * from &gpSchemaAQRTmp1..&IDtablenameOPUN.) a\r
+                         where (a.INST_LEVEL1_BRANCH_ID IS Not null and a.INST_LEVEL1_BRANCH_ID <> '')\r
+                        or (a.BRANCH_ID IS Not null and a.BRANCH_ID <> '')) \r
+                 )by gp_aqrdb;\r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ * 3.2 卡号异地查询的明细 *
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&IDtablenameNOsame.1);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&IDtablenameNOsame.1 as (\r
+                         select distinct a.tx_date,a.tx_time,a.OPER_CODE,a.pass_num,remark,sum(same) as is_same \r
+ from &gpSchemaAQRTmp1..&IDtablenameTmp. a\r
+                         group by a.tx_date,a.tx_time,a.OPER_CODE,a.pass_num,remark\r
+                         having sum(same) = 0 \r
+ and (a.oper_code IS Not null and a.oper_code <> ''));\r
+         )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ %_eg_conditional_dropds(sasdb_gp.&IDtablenameNOsame.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&IDtablenameNOsame. as (\r
+                         select distinct a.tx_date,a.tx_time,a.tx_code,a.OPER_CODE,a.OPER_NAME,a.TERMINAL_MAC,\r
+ a.TERMINAL_IP,a.org_short_cname,a.BRANCH_ID,a.CST_ID,a.pass_num,a.FS_ACCT_NO,a.card_no,a.CR_OPUN_COD\r
+ from &gpSchemaAQRTmp1..&IDtablenameTmp. a\r
+                         inner join &gpSchemaAQRTmp1..&IDtablenameNOsame.1 b\r
+ on a.tx_date=b.tx_date and a.tx_time=b.tx_time \r
+ and a.OPER_CODE=b.OPER_CODE and a.pass_num=b.pass_num)\r
+         )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ * 4.1获取客户卡开户行机构名称*
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&RuleIDbrannm.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&RuleIDbrannm. as (\r
+                         select distinct a.*,b.ccbins_chn_shrtnm as CR_OPUN_NM\r
+                         from &gpSchemaAQRTmp1..&IDtablenameNOsame. a\r
+                         inner join  &gpSchemaAQR0..T0651_CCBINS_INF_H b\r
+                       on a.CR_OPUN_COD = b.ccbins_id and b.P9_END_DATE  = '2999-12-31')\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ * 4.2 获取员工名称与员工所在机构号及网点名 *
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&RuleIDopernm.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&RuleIDopernm. as (\r
+                         select distinct a.*,b.USR_NM as CM_OPR_NAME,b.BLNG_INSID as CM_OPUN_CODE,c.ccbins_chn_shrtnm\r
+                         from &gpSchemaAQRTmp1..&RuleIDbrannm. a\r
+                       inner join &gpSchemaAQR0..T0861_EMPE_H b\r
+                              on OPER_CODE = b.CCB_EMPID and b.P9_END_DATE  = '2999-12-31'\r
+                       inner join  &gpSchemaAQR0..T0651_CCBINS_INF_H c\r
+                             on b.BLNG_INSID = c.ccbins_id and c.P9_END_DATE  = '2999-12-31')\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ * 4.3 获取父机构号 *
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&RuleIDPbranNM.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&RuleIDPbranNM. as (\r
+                 select distinct a.tx_date,a.tx_time,a.tx_code,a.OPER_CODE,a.CM_OPR_NAME,a.TERMINAL_MAC,\r
+ a.TERMINAL_IP,a.org_short_cname,a.BRANCH_ID,a.CM_OPUN_CODE,a.ccbins_chn_shrtnm,b.parent_id,\r
+ b.ccbins_chn_shrtnm as parent_chn_shrtnm,a.CST_ID,a.pass_num,a.FS_ACCT_NO,a.card_no,\r
+ a.CR_OPUN_COD,a.CR_OPUN_NM\r
+                         from &gpSchemaAQRTmp1..&RuleIDopernm. a\r
+                         inner join &gpSchemaAQR0..ccbins_provice b\r
+                         on a.CM_OPUN_CODE = b.scdy_ccbins_id)\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ ***********************************统计**************************************
+ \r
+ *异地无卡查询明细*
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&tablenocardnosame.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&tablenocardnosame. as (\r
+                         select distinct a.tx_date,a.tx_time,a.tx_code,a.OPER_CODE,a.CM_OPR_NAME,a.TERMINAL_MAC,\r
+ a.TERMINAL_IP,a.org_short_cname,a.BRANCH_ID,a.CM_OPUN_CODE,a.ccbins_chn_shrtnm,a.parent_id,\r
+ a.parent_chn_shrtnm,a.CST_ID,a.pass_num,a.FS_ACCT_NO,a.CR_OPUN_COD,a.CR_OPUN_NM\r
+                         from &gpSchemaAQRTmp1..&RuleIDPbranNM.  a\r
+                         )\r
+         )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ proc sql;\r
+         select count(*) as tablenocardnosame from sasdb_gp.&tablenocardnosame.;\r
+         select min(tx_date),max(tx_date) from sasdb_gp.&tablenocardnosame.;\r
+         select * from sasdb_gp.&tablenocardnosame.(obs=100);\r
+ quit;\r
+ \r
+ *统计查询量*
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&tablenocardnosameRtj.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&tablenocardnosameRtj. as (\r
+                    select a.OPER_CODE,a.CM_OPR_NAME,a.CM_OPUN_CODE,a.ccbins_chn_shrtnm,\r
+ a.parent_id,a.parent_chn_shrtnm,count(distinct a.pass_num) as num\r
+                         from  &gpSchemaAQRTMP1..&tablenocardnosame. a\r
+                         group by a.OPER_CODE,a.CM_OPR_NAME,a.CM_OPUN_CODE,a.ccbins_chn_shrtnm,\r
+ a.parent_id,a.parent_chn_shrtnm\r
+                         order by num desc)\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+ *按日期统计*
+ \r
+ %_eg_conditional_dropds(sasdb_gp.&tablenocardnosameRtjd.);\r
+ proc sql;\r
+         connect to greenplm as gp_aqrdb(server=&gpServerAQR. database=&gpDatabaseAQR. port=&gpPortAQR. schema=&gpSchemaAQRTmp1. user=&gpUserAQRTmp1. password=&gpPasswordAQRTmp1.);\r
+         execute(\r
+                 create table &gpSchemaAQRTmp1..&tablenocardnosameRtjd. as (\r
+                         select a.tx_date,a.OPER_CODE,a.CM_OPR_NAME,a.CM_OPUN_CODE,a.ccbins_chn_shrtnm,\r
+ a.parent_id,a.parent_chn_shrtnm,count(distinct a.pass_num) as num\r
+                         from  &gpSchemaAQRTMP1..&tablenocardnosame. a\r
+                         group by a.tx_date,a.OPER_CODE,a.CM_OPR_NAME,a.CM_OPUN_CODE,a.ccbins_chn_shrtnm,\r
+ a.parent_id,a.parent_chn_shrtnm\r
+                    order by num desc)\r
+                 )by gp_aqrdb; \r
+         disconnect from gp_aqrdb;\r
+ quit;\r
+ \r
+(299 rows)
