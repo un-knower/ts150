@@ -1,0 +1,2443 @@
+Timing is on.
+SET
+Time: 550.586 ms
+              Append-Only Table "app_siam.p2log_ccbs_res"
+  Column   |         Type          | Modifiers | Storage  | Description 
+-----------+-----------------------+-----------+----------+-------------
+ que_date  | date                  |           | plain    | 
+ que_time  | character varying(10) |           | extended | 
+ tlr_id    | character varying(15) |           | extended | 
+ app_no    | character varying(9)  |           | extended | 
+ query_org | character varying(9)  |           | extended | 
+ cust_no   | character varying(30) |           | extended | 
+ card_no   | character varying(30) |           | extended | 
+ crdt_no   | character varying(30) |           | extended | 
+ log_date  | date                  |           | plain    | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Child tables: app_siam.p2log_ccbs_res_1_prt_1,
+              app_siam.p2log_ccbs_res_1_prt_day20160715,
+              app_siam.p2log_ccbs_res_1_prt_day20161101,
+              app_siam.p2log_ccbs_res_1_prt_day20161220,
+              app_siam.p2log_ccbs_res_1_prt_day20170215
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (card_no)
+Tablespace: "ldsdb_siam_data_01"
+
+                     Append-Only Table "app_siam.t0651_ccbins_inf_h"
+        Column         |            Type             | Modifiers | Storage  | Description 
+-----------------------+-----------------------------+-----------+----------+-------------
+ ccbins_id             | character varying(9)        |           | extended | 
+ ccbins_chn_fullnm     | character varying(1500)     |           | extended | 
+ ccbins_chn_shrtnm     | character varying(900)      |           | extended | 
+ ccbins_eng_fullnm     | character varying(600)      |           | extended | 
+ ccbins_eng_shrtnm     | character varying(600)      |           | extended | 
+ ccbins_nm_lng_cd      | character varying(2)        |           | extended | 
+ ccbinsothrlngfull_nm  | character varying(1500)     |           | extended | 
+ ccbins_tpcd           | character varying(9)        |           | extended | 
+ fix_telno             | character varying(240)      |           | extended | 
+ fax_telno             | character varying(240)      |           | extended | 
+ move_telno            | character varying(240)      |           | extended | 
+ adiv_cd               | character varying(6)        |           | extended | 
+ org_inst_rgon_id_cd   | character varying(5)        |           | extended | 
+ email_adr_cntnt       | character varying(1500)     |           | extended | 
+ web_adr               | character varying(1500)     |           | extended | 
+ qq_no                 | character varying(90)       |           | extended | 
+ msn_no                | character varying(600)      |           | extended | 
+ mcrblg_adr            | character varying(1500)     |           | extended | 
+ othr_ntw_adr          | character varying(1500)     |           | extended | 
+ pbc_fnc_inst_ecd      | character varying(14)       |           | extended | 
+ instudoafblgccbins_id | character varying(9)        |           | extended | 
+ inst_stcd             | character varying(1)        |           | extended | 
+ inst_ldgr_hier_cd     | character varying(1)        |           | extended | 
+ wkcld_id              | character varying(20)       |           | extended | 
+ opsbj_attrcd          | character varying(1)        |           | extended | 
+ ccbins_oprt_scop_dsc  | character varying(3000)     |           | extended | 
+ fnc_lcns_no           | character varying(15)       |           | extended | 
+ bsnlcns_no            | character varying(18)       |           | extended | 
+ tax_rgsctf_no         | character varying(120)      |           | extended | 
+ orcd_crdt_no          | character varying(10)       |           | extended | 
+ fnc_inst_id_cd        | character varying(12)       |           | extended | 
+ psbc                  | character varying(14)       |           | extended | 
+ swift_no              | character varying(11)       |           | extended | 
+ unnpy_crd_rgon_cd     | character varying(4)        |           | extended | 
+ pbc_exg_no            | character varying(120)      |           | extended | 
+ ctrywd_drftbill_insno | character varying(12)       |           | extended | 
+ ctrywd_bnkcd          | character varying(120)      |           | extended | 
+ dvpprmsnotetsky_ind   | character varying(1)        |           | extended | 
+ dmst_lc_ngtbnk_ind    | character varying(1)        |           | extended | 
+ dmst_lc_advsbnk_ind   | character varying(1)        |           | extended | 
+ dmst_lc_isubnk_ind    | character varying(1)        |           | extended | 
+ corpprvtscrtbns_indcd | character varying(2)        |           | extended | 
+ txbsbkntwrkgbsn_ind   | character varying(1)        |           | extended | 
+ bigamt_py_bsn_ind     | character varying(1)        |           | extended | 
+ micr_py_bsn_ind       | character varying(1)        |           | extended | 
+ chk_img_bsn_ind       | character varying(1)        |           | extended | 
+ intrbnk_ebnkg_bsn_ind | character varying(1)        |           | extended | 
+ idvhscgyloanbsn_ind   | character varying(1)        |           | extended | 
+ idvcnsmcgylnbsn_ind   | character varying(1)        |           | extended | 
+ idvoprtcgyloanbsn_ind | character varying(1)        |           | extended | 
+ idv_prfdln_bsn_ind    | character varying(1)        |           | extended | 
+ hs_cptlbsn_ind        | character varying(1)        |           | extended | 
+ idviemtbsnslvst_ind   | character varying(1)        |           | extended | 
+ idviemtbsnwstun_ind   | character varying(1)        |           | extended | 
+ wstun_rmt_inst_ecd    | character varying(120)      |           | extended | 
+ exetr_svc_cntr_ind    | character varying(1)        |           | extended | 
+ idv_loan_cntr_ind     | character varying(1)        |           | extended | 
+ wlthmgtcntr_ind       | character varying(1)        |           | extended | 
+ slfsvc_bsn_ind        | character varying(1)        |           | extended | 
+ wlth_cntr_ind         | character varying(1)        |           | extended | 
+ drgdspt_ind           | character varying(1)        |           | extended | 
+ pm_trsr_ind           | character varying(1)        |           | extended | 
+ insfcsvcdpstgtpcd_dsc | character varying(30)       |           | extended | 
+ bnkcgy_char_cd        | character varying(4)        |           | extended | 
+ inst_ecn_rgon_cd      | character varying(2)        |           | extended | 
+ sppln_telno           | character varying(240)      |           | extended | 
+ chrtc_cnter_telno     | character varying(240)      |           | extended | 
+ ccbins_admnhier_cd    | character varying(2)        |           | extended | 
+ rspcnt_tpcd           | character varying(4)        |           | extended | 
+ emplnum               | numeric(9,0)                |           | main     | 
+ inst_pnp_id           | character varying(8)        |           | extended | 
+ doc_unit_ind          | character varying(1)        |           | extended | 
+ fnds_id               | character varying(6)        |           | extended | 
+ ccbinsothrlngshrt_nm  | character varying(600)      |           | extended | 
+ opics_no              | character varying(240)      |           | extended | 
+ poms_no               | character varying(240)      |           | extended | 
+ ccbins_dsc            | character varying(1500)     |           | extended | 
+ rgon_mainfcn_attr_dsc | character varying(1500)     |           | extended | 
+ rgon_minrfcn_attr_dsc | character varying(1500)     |           | extended | 
+ bsn_mgt_moddsc        | character varying(600)      |           | extended | 
+ towlmgcntrbsngd_ind   | character varying(1)        |           | extended | 
+ offinbnk_ind          | character varying(1)        |           | extended | 
+ nclp_ind              | character varying(1)        |           | extended | 
+ taxpyr_sz_cd          | character varying(1)        |           | extended | 
+ entp_sz_cd            | character varying(2)        |           | extended | 
+ lstd_entp_ind         | character varying(1)        |           | extended | 
+ seacorp_ind           | character varying(1)        |           | extended | 
+ impexprgt_ind         | character varying(1)        |           | extended | 
+ entp_envprt_cmpln_ind | character varying(1)        |           | extended | 
+ ccbins_tot_pnum       | numeric(9,0)                |           | main     | 
+ pbc_opnacc_ind        | character varying(1)        |           | extended | 
+ ccbinsrgstcptlfnd_amt | numeric(19,3)               |           | main     | 
+ ccbinsrgstcptlccy_cd  | character varying(3)        |           | extended | 
+ ccbins_mainbsn_dsc    | character varying(600)      |           | extended | 
+ ccbins_mix_bsn_dsc    | character varying(600)      |           | extended | 
+ last_udt_dt_tm        | timestamp without time zone |           | plain    | 
+ p9_start_date         | date                        |           | plain    | 
+ p9_start_batch        | character varying(12)       |           | extended | 
+ p9_end_date           | date                        |           | plain    | 
+ p9_end_batch          | character varying(12)       |           | extended | 
+ p9_del_flag           | character varying(1)        |           | extended | 
+ p9_job_name           | character varying(100)      |           | extended | 
+ ccbins_estb_dt        | date                        |           | plain    | 
+ inst_mdf_dt           | date                        |           | plain    | 
+ inst_udo_dt           | date                        |           | plain    | 
+ inst_strt_oprg_tm     | time(6) without time zone   |           | plain    | 
+ oprt_trm_stdt         | date                        |           | plain    | 
+ oprt_trm_eddt         | date                        |           | plain    | 
+ bopr_dt               | date                        |           | plain    | 
+ chrgto_cosind         | character varying(1)        |           | extended | 
+ dept_prim_rspl_tpcd   | character varying(1)        |           | extended | 
+ ebill_oprt_ahr_ind    | character varying(1)        |           | extended | 
+ bookentr_ind          | character varying(1)        |           | extended | 
+ hdqrt_inst_ind        | character varying(1)        |           | extended | 
+ dept_attrcd           | character varying(2)        |           | extended | 
+ inst_subacc_ldgr_tpds | character varying(300)      |           | extended | 
+ hkicl_br_id           | character varying(30)       |           | extended | 
+ hkicl_bnk_id          | character varying(30)       |           | extended | 
+ hsprvdfndgthr_bsn_ind | character varying(1)        |           | extended | 
+ hsmntfndsgthr_bsn_ind | character varying(1)        |           | extended | 
+ hsprvdfndprjlnbsn_ind | character varying(1)        |           | extended | 
+ ptyqlygntgdgthrbsnind | character varying(1)        |           | extended | 
+ sfdpbx_bo_ind         | character varying(1)        |           | extended | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (ccbins_id)
+Tablespace: "ldsdb_siam_data_01"
+
+                      Append-Only Table "app_siam.toddc_fcmtlr0_h"
+         Column          |          Type           | Modifiers | Storage  | Description 
+-------------------------+-------------------------+-----------+----------+-------------
+ cm_opr_no               | character varying(12)   |           | extended | 
+ cmtlr_db_timestamp      | character varying(23)   |           | extended | 
+ cm_opr_name             | character varying(20)   |           | extended | 
+ cm_id_no                | character varying(18)   |           | extended | 
+ cm_tlr_rmrk             | character varying(42)   |           | extended | 
+ cm_opn_rang             | character varying(1)    |           | extended | 
+ cm_opr_pswd             | character varying(6)    |           | extended | 
+ cm_pswd_final_updt_dt   | date                    |           | plain    | 
+ cm_cors_fauth_amt       | numeric(20,2)           |           | main     | 
+ cm_ltst_opn_dt          | date                    |           | plain    | 
+ cm_sgni_rmrk            | character varying(1)    |           | extended | 
+ cm_crnt_day_sgni_tm     | character varying(6)    |           | extended | 
+ cm_crnt_day_sgno_tm     | character varying(6)    |           | extended | 
+ cm_data_lst_updt_dt     | date                    |           | plain    | 
+ cm_tlr_sts              | character varying(1)    |           | extended | 
+ cm_opr_crd_no           | character varying(3)    |           | extended | 
+ cm_excs_tx_secn         | character varying(1024) |           | extended | 
+ filler1                 | character varying(64)   |           | extended | 
+ cm_tlr_flst_dt          | date                    |           | plain    | 
+ cm_tlr_sg1_err_tm       | numeric(12,0)           |           | main     | 
+ cm_tstky_cod            | character varying(16)   |           | extended | 
+ cm_test_key             | character varying(8)    |           | extended | 
+ cm_cur_tx_srl           | character varying(6)    |           | extended | 
+ cm_next_tx_srl          | character varying(6)    |           | extended | 
+ cm_cur_non_tx_srl       | character varying(6)    |           | extended | 
+ cm_next_non_tx_srl      | character varying(6)    |           | extended | 
+ cm_rev_tx_number        | numeric(12,0)           |           | main     | 
+ cm_opr_crd_no2          | character varying(10)   |           | extended | 
+ cm_front_tlr_sg1_err_tm | numeric(12,0)           |           | main     | 
+ cm_tlr_cash_flag        | character varying(1)    |           | extended | 
+ cm_tlr_rng_cshr_flg     | character varying(2)    |           | extended | 
+ cm_opn_rang_init        | character varying(1)    |           | extended | 
+ cm_out_tlr_opr          | character varying(12)   |           | extended | 
+ cm_out_auth_flg         | character varying(1)    |           | extended | 
+ cm_out_avl_date         | date                    |           | plain    | 
+ cm_out_inavl_date       | date                    |           | plain    | 
+ cm_in_tlr_opr           | character varying(12)   |           | extended | 
+ cm_in_auth_flg          | character varying(1)    |           | extended | 
+ cm_in_avl_date          | date                    |           | plain    | 
+ cm_in_unavl_date        | date                    |           | plain    | 
+ cm_opun_code            | character varying(9)    |           | extended | 
+ cm_seq_no               | numeric(12,0)           |           | main     | 
+ cm_cshbx_no             | character varying(12)   |           | extended | 
+ cm_ccbss_teller_grad    | character varying(1)    |           | extended | 
+ cm_user_type            | character varying(2)    |           | extended | 
+ filler                  | character varying(5)    |           | extended | 
+ p9_split_branch_cd      | character varying(100)  |           | extended | 
+ p9_start_date           | date                    |           | plain    | 
+ p9_start_batch          | character varying(12)   |           | extended | 
+ p9_end_date             | date                    |           | plain    | 
+ p9_end_batch            | character varying(12)   |           | extended | 
+ p9_del_flag             | character varying(1)    |           | extended | 
+ p9_job_name             | character varying(100)  |           | extended | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (cm_opr_no)
+Tablespace: "ldsdb_siam_data_01"
+
+                  Append-Only Table "app_siam.t0162_cust_queue_info_a"
+        Column         |           Type            | Modifiers | Storage  | Description 
+-----------------------+---------------------------+-----------+----------+-------------
+ ccbins_id             | character varying(9)      |           | extended | 
+ cst_ofrnum_dt         | date                      |           | plain    | 
+ cst_ofrnum_tm         | time(0) without time zone |           | plain    | 
+ tlr_clnum_tm          | time(0) without time zone |           | plain    | 
+ tlr_svc_edtm          | time(0) without time zone |           | plain    | 
+ cst_ass_tm            | time(0) without time zone |           | plain    | 
+ bo_qu_billno          | character varying(6)      |           | extended | 
+ srcsys_ar_id          | character varying(100)    |           | extended | 
+ bo_qu_ofrnum_bsn_ctcd | character varying(4)      |           | extended | 
+ lvl2_bsn_ctcd         | character varying(4)      |           | extended | 
+ cst_qu_stcd           | character varying(1)      |           | extended | 
+ cst_tpcd              | character varying(1)      |           | extended | 
+ msg_email_prty        | character varying(1)      |           | extended | 
+ cst_ssf_cd            | character varying(1)      |           | extended | 
+ bo_cnter_id           | character varying(2)      |           | extended | 
+ orig_stm_usr_id       | character varying(32)     |           | extended | 
+ req_ccb_pdrcmm_ind    | character varying(1)      |           | extended | 
+ cmpn_chnl_cd          | character varying(4)      |           | extended | 
+ rcmcst_mgr_id         | character varying(8)      |           | extended | 
+ rsrv_fld1_inf         | character varying(60)     |           | extended | 
+ p9_data_date          | date                      |           | plain    | 
+ p9_batch_number       | character varying(12)     |           | extended | 
+ p9_del_flag           | character(1)              |           | extended | 
+ p9_del_date           | date                      |           | plain    | 
+ p9_del_batch          | character varying(12)     |           | extended | 
+ p9_job_name           | character varying(100)    |           | extended | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (ccbins_id, cst_ofrnum_dt, bo_qu_billno)
+Tablespace: "ldsdb_siam_data_01"
+
+                Table "app_siam_lds.t05_card_pass_num"
+  Column  |         Type          | Modifiers | Storage  | Description 
+----------+-----------------------+-----------+----------+-------------
+ tx_dt    | date                  |           | plain    | 
+ pass_num | character varying(30) |           | extended | 
+ remark   | text                  |           | extended | 
+Has OIDs: no
+Distributed by: (pass_num)
+Tablespace: "ldsdb_siam_data_01"
+
+                     Append-Only Table "app_siam.p2log_cst_query"
+         Column         |          Type          | Modifiers | Storage  | Description 
+------------------------+------------------------+-----------+----------+-------------
+ tx_date                | date                   |           | plain    | 
+ tx_time                | character varying(10)  |           | extended | 
+ class                  | character varying(100) |           | extended | 
+ evttraceid             | character varying(32)  |           | extended | 
+ tx_code                | character varying(20)  |           | extended | 
+ oper_code              | character varying(32)  |           | extended | 
+ oper_name              | character varying(32)  |           | extended | 
+ terminal_mac           | character varying(32)  |           | extended | 
+ terminal_ip            | character varying(32)  |           | extended | 
+ org_short_cname        | character varying(32)  |           | extended | 
+ inst_level1_branch_id  | character varying(32)  |           | extended | 
+ branch_id              | character varying(32)  |           | extended | 
+ cst_id_mtdcd           | character varying(32)  |           | extended | 
+ cst_id                 | character varying(32)  |           | extended | 
+ id_crdt_tpcd           | character varying(32)  |           | extended | 
+ id_crdt_no             | character varying(32)  |           | extended | 
+ id_idv_lgl_nm          | character varying(32)  |           | extended | 
+ srcsys_cst_id          | character varying(32)  |           | extended | 
+ src_inf_stm_cd         | character varying(32)  |           | extended | 
+ srcsys_ar_id           | character varying(32)  |           | extended | 
+ fs_acct_no             | character varying(32)  |           | extended | 
+ log_date               | date                   |           | plain    | 
+ customer_identity_no   | character varying(32)  |           | extended | 
+ customer_identity_name | character varying(100) |           | extended | 
+ customer_acctount_no   | character varying(32)  |           | extended | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Child tables: app_siam.p2log_cst_query_1_prt_1,
+              app_siam.p2log_cst_query_1_prt_day20161001,
+              app_siam.p2log_cst_query_1_prt_day20161002,
+              app_siam.p2log_cst_query_1_prt_day20161003,
+              app_siam.p2log_cst_query_1_prt_day20161004,
+              app_siam.p2log_cst_query_1_prt_day20161005,
+              app_siam.p2log_cst_query_1_prt_day20161006,
+              app_siam.p2log_cst_query_1_prt_day20161007,
+              app_siam.p2log_cst_query_1_prt_day20161008,
+              app_siam.p2log_cst_query_1_prt_day20161009,
+              app_siam.p2log_cst_query_1_prt_day20161010,
+              app_siam.p2log_cst_query_1_prt_day20161011,
+              app_siam.p2log_cst_query_1_prt_day20161012,
+              app_siam.p2log_cst_query_1_prt_day20161013,
+              app_siam.p2log_cst_query_1_prt_day20161014,
+              app_siam.p2log_cst_query_1_prt_day20161015,
+              app_siam.p2log_cst_query_1_prt_day20161016,
+              app_siam.p2log_cst_query_1_prt_day20161017,
+              app_siam.p2log_cst_query_1_prt_day20161018,
+              app_siam.p2log_cst_query_1_prt_day20161019,
+              app_siam.p2log_cst_query_1_prt_day20161020,
+              app_siam.p2log_cst_query_1_prt_day20161024,
+              app_siam.p2log_cst_query_1_prt_day20161027,
+              app_siam.p2log_cst_query_1_prt_day20161029,
+              app_siam.p2log_cst_query_1_prt_day20161030,
+              app_siam.p2log_cst_query_1_prt_day20161031,
+              app_siam.p2log_cst_query_1_prt_day20161101,
+              app_siam.p2log_cst_query_1_prt_day20161102,
+              app_siam.p2log_cst_query_1_prt_day20161103,
+              app_siam.p2log_cst_query_1_prt_day20161104,
+              app_siam.p2log_cst_query_1_prt_day20161105,
+              app_siam.p2log_cst_query_1_prt_day20161106,
+              app_siam.p2log_cst_query_1_prt_day20161107,
+              app_siam.p2log_cst_query_1_prt_day20161108,
+              app_siam.p2log_cst_query_1_prt_day20161109,
+              app_siam.p2log_cst_query_1_prt_day20161110,
+              app_siam.p2log_cst_query_1_prt_day20161111,
+              app_siam.p2log_cst_query_1_prt_day20161112,
+              app_siam.p2log_cst_query_1_prt_day20161113,
+              app_siam.p2log_cst_query_1_prt_day20161114,
+              app_siam.p2log_cst_query_1_prt_day20161115,
+              app_siam.p2log_cst_query_1_prt_day20161116,
+              app_siam.p2log_cst_query_1_prt_day20161117,
+              app_siam.p2log_cst_query_1_prt_day20161118,
+              app_siam.p2log_cst_query_1_prt_day20161119,
+              app_siam.p2log_cst_query_1_prt_day20161120,
+              app_siam.p2log_cst_query_1_prt_day20161121,
+              app_siam.p2log_cst_query_1_prt_day20161122,
+              app_siam.p2log_cst_query_1_prt_day20161123,
+              app_siam.p2log_cst_query_1_prt_day20161124,
+              app_siam.p2log_cst_query_1_prt_day20161125,
+              app_siam.p2log_cst_query_1_prt_day20161126,
+              app_siam.p2log_cst_query_1_prt_day20161127,
+              app_siam.p2log_cst_query_1_prt_day20161128,
+              app_siam.p2log_cst_query_1_prt_day20161129,
+              app_siam.p2log_cst_query_1_prt_day20161130,
+              app_siam.p2log_cst_query_1_prt_day20161201,
+              app_siam.p2log_cst_query_1_prt_day20161202,
+              app_siam.p2log_cst_query_1_prt_day20161203,
+              app_siam.p2log_cst_query_1_prt_day20161204,
+              app_siam.p2log_cst_query_1_prt_day20161205,
+              app_siam.p2log_cst_query_1_prt_day20161206,
+              app_siam.p2log_cst_query_1_prt_day20161207,
+              app_siam.p2log_cst_query_1_prt_day20161208,
+              app_siam.p2log_cst_query_1_prt_day20161209,
+              app_siam.p2log_cst_query_1_prt_day20161210,
+              app_siam.p2log_cst_query_1_prt_day20161211,
+              app_siam.p2log_cst_query_1_prt_day20161212,
+              app_siam.p2log_cst_query_1_prt_day20161213,
+              app_siam.p2log_cst_query_1_prt_day20161214,
+              app_siam.p2log_cst_query_1_prt_day20161215,
+              app_siam.p2log_cst_query_1_prt_day20161216,
+              app_siam.p2log_cst_query_1_prt_day20161217,
+              app_siam.p2log_cst_query_1_prt_day20161218,
+              app_siam.p2log_cst_query_1_prt_day20161219,
+              app_siam.p2log_cst_query_1_prt_day20161220,
+              app_siam.p2log_cst_query_1_prt_day20161221,
+              app_siam.p2log_cst_query_1_prt_day20161222,
+              app_siam.p2log_cst_query_1_prt_day20161223,
+              app_siam.p2log_cst_query_1_prt_day20161224,
+              app_siam.p2log_cst_query_1_prt_day20161225,
+              app_siam.p2log_cst_query_1_prt_day20161226,
+              app_siam.p2log_cst_query_1_prt_day20161227,
+              app_siam.p2log_cst_query_1_prt_day20161228,
+              app_siam.p2log_cst_query_1_prt_day20161229,
+              app_siam.p2log_cst_query_1_prt_day20161230,
+              app_siam.p2log_cst_query_1_prt_day20161231,
+              app_siam.p2log_cst_query_1_prt_day20170103,
+              app_siam.p2log_cst_query_1_prt_day20170104,
+              app_siam.p2log_cst_query_1_prt_day20170105,
+              app_siam.p2log_cst_query_1_prt_day20170106,
+              app_siam.p2log_cst_query_1_prt_day20170107,
+              app_siam.p2log_cst_query_1_prt_day20170108,
+              app_siam.p2log_cst_query_1_prt_day20170109,
+              app_siam.p2log_cst_query_1_prt_day20170110,
+              app_siam.p2log_cst_query_1_prt_day20170111,
+              app_siam.p2log_cst_query_1_prt_day20170112,
+              app_siam.p2log_cst_query_1_prt_day20170113,
+              app_siam.p2log_cst_query_1_prt_day20170114,
+              app_siam.p2log_cst_query_1_prt_day20170115,
+              app_siam.p2log_cst_query_1_prt_day20170116,
+              app_siam.p2log_cst_query_1_prt_day20170117,
+              app_siam.p2log_cst_query_1_prt_day20170118,
+              app_siam.p2log_cst_query_1_prt_day20170119,
+              app_siam.p2log_cst_query_1_prt_day20170120,
+              app_siam.p2log_cst_query_1_prt_day20170121,
+              app_siam.p2log_cst_query_1_prt_day20170122,
+              app_siam.p2log_cst_query_1_prt_day20170123,
+              app_siam.p2log_cst_query_1_prt_day20170124,
+              app_siam.p2log_cst_query_1_prt_day20170125,
+              app_siam.p2log_cst_query_1_prt_day20170126,
+              app_siam.p2log_cst_query_1_prt_day20170127,
+              app_siam.p2log_cst_query_1_prt_day20170128,
+              app_siam.p2log_cst_query_1_prt_day20170129,
+              app_siam.p2log_cst_query_1_prt_day20170130,
+              app_siam.p2log_cst_query_1_prt_day20170131,
+              app_siam.p2log_cst_query_1_prt_day20170201,
+              app_siam.p2log_cst_query_1_prt_day20170202,
+              app_siam.p2log_cst_query_1_prt_day20170203,
+              app_siam.p2log_cst_query_1_prt_day20170204,
+              app_siam.p2log_cst_query_1_prt_day20170205,
+              app_siam.p2log_cst_query_1_prt_day20170206,
+              app_siam.p2log_cst_query_1_prt_day20170207,
+              app_siam.p2log_cst_query_1_prt_day20170208,
+              app_siam.p2log_cst_query_1_prt_day20170209,
+              app_siam.p2log_cst_query_1_prt_day20170210,
+              app_siam.p2log_cst_query_1_prt_day20170211,
+              app_siam.p2log_cst_query_1_prt_day20170212,
+              app_siam.p2log_cst_query_1_prt_day20170213,
+              app_siam.p2log_cst_query_1_prt_day20170214,
+              app_siam.p2log_cst_query_1_prt_day20170215,
+              app_siam.p2log_cst_query_1_prt_day20170216,
+              app_siam.p2log_cst_query_1_prt_day20170217,
+              app_siam.p2log_cst_query_1_prt_day20170218,
+              app_siam.p2log_cst_query_1_prt_day20170219,
+              app_siam.p2log_cst_query_1_prt_day20170220,
+              app_siam.p2log_cst_query_1_prt_day20170221,
+              app_siam.p2log_cst_query_1_prt_day20170222,
+              app_siam.p2log_cst_query_1_prt_day20170223,
+              app_siam.p2log_cst_query_1_prt_day20170224,
+              app_siam.p2log_cst_query_1_prt_day20170225
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (oper_code)
+Tablespace: "ldsdb_siam_data_01"
+
+                  Append-Only Table "app_siam.siam_card_info_h"
+       Column       |         Type          | Modifiers | Storage  | Description 
+--------------------+-----------------------+-----------+----------+-------------
+ card_no            | character varying(20) |           | extended | 
+ account_num        | character varying(28) |           | extended | 
+ custno             | character varying(28) |           | extended | 
+ pass_type_cd       | character varying(10) |           | extended | 
+ pass_num           | character varying(30) |           | extended | 
+ card_type_cd       | character varying(2)  |           | extended | 
+ card_status_cd     | character varying(6)  |           | extended | 
+ card_start_dt      | date                  |           | plain    | 
+ card_begin_dt      | date                  |           | plain    | 
+ corporate_card_ind | character varying(1)  |           | extended | 
+ agent_pay_flg      | character varying(1)  |           | extended | 
+ card_branch        | character varying(9)  |           | extended | 
+ cr_app_no          | character varying(9)  |           | extended | 
+ open_acct_operator | character varying(30) |           | extended | 
+ etl_job            | character varying(60) |           | extended | 
+ etl_src            | character varying(64) |           | extended | 
+ etl_start_date     | date                  |           | plain    | 
+ etl_end_date       | date                  |           | plain    | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (pass_num)
+Tablespace: "ldsdb_siam_data_01"
+
+                    Append-Only Table "app_siam.t0042_tbpc1010_h"
+        Column         |          Type          | Modifiers | Storage  | Description 
+-----------------------+------------------------+-----------+----------+-------------
+ cst_id                | character varying(18)  |           | extended | 
+ rcrd_expy_tms         | numeric(17,0)          |           | main     | 
+ multi_tenancy_id      | character varying(5)   |           | extended | 
+ idv_lgl_nm            | character varying(180) |           | extended | 
+ idv_nm_cpa_fullnm     | character varying(60)  |           | extended | 
+ crdt_tpcd             | character varying(4)   |           | extended | 
+ crdt_no               | character varying(120) |           | extended | 
+ brth_dt               | character varying(8)   |           | extended | 
+ gnd_cd                | character varying(2)   |           | extended | 
+ nat_cd                | character varying(3)   |           | extended | 
+ rsdnc_nat_cd          | character varying(3)   |           | extended | 
+ pref_lng_cd           | character varying(2)   |           | extended | 
+ hshldrgst_adiv_cd     | character varying(6)   |           | extended | 
+ mar_sttn_cd           | character varying(2)   |           | extended | 
+ chl_sttn_cd           | character varying(2)   |           | extended | 
+ ethnct_cd             | character varying(2)   |           | extended | 
+ rlg_cd                | character varying(4)   |           | extended | 
+ pltclparty_cd         | character varying(2)   |           | extended | 
+ lcs_cd                | character varying(6)   |           | extended | 
+ blng_insid            | character varying(9)   |           | extended | 
+ ccb_empe_ind          | character varying(1)   |           | extended | 
+ pln_fnc_efct_ind      | character varying(1)   |           | extended | 
+ impt_psng_ind         | character varying(1)   |           | extended | 
+ ptnl_vip_ind          | character varying(1)   |           | extended | 
+ spclvip_ind           | character varying(1)   |           | extended | 
+ stm_evl_cst_grd_cd    | character varying(4)   |           | extended | 
+ mnul_evl_cst_grd_cd   | character varying(4)   |           | extended | 
+ prvt_bnk_cst_grd_cd   | character varying(4)   |           | extended | 
+ prvt_bnk_sign_cst_ind | character varying(1)   |           | extended | 
+ mo_incmam             | numeric(15,2)          |           | main     | 
+ cstmgr_id             | character varying(12)  |           | extended | 
+ best_ctc_tm_cd        | character varying(2)   |           | extended | 
+ best_ctc_mtdcd        | character varying(2)   |           | extended | 
+ spnmlt_ind            | character varying(1)   |           | extended | 
+ relparty_ind          | character varying(1)   |           | extended | 
+ reg_afm_relparty_ind  | character varying(1)   |           | extended | 
+ tel_tpcd              | character varying(2)   |           | extended | 
+ best_ctc_tel          | character varying(50)  |           | extended | 
+ lv1_br_no             | character varying(9)   |           | extended | 
+ pref_msnd_mtdcd       | character varying(2)   |           | extended | 
+ rcv_mail_adr_tpcd     | character varying(2)   |           | extended | 
+ entp_adv_mgtppl_ind   | character varying(1)   |           | extended | 
+ entp_act_ctrl_psn_ind | character varying(1)   |           | extended | 
+ enlgps_ind            | character varying(1)   |           | extended | 
+ cst_chnl_bsop_ind     | character varying(1)   |           | extended | 
+ empchnl_bsop_ind      | character varying(1)   |           | extended | 
+ idcst_aum_bal         | numeric(15,2)          |           | main     | 
+ mt_ent_ind            | character varying(1)   |           | extended | 
+ non_rsdnt_ind         | character varying(1)   |           | extended | 
+ wrk_unit_char_cd      | character varying(4)   |           | extended | 
+ wrk_unit_nm           | character varying(600) |           | extended | 
+ rsrv_fld1_inf         | character varying(60)  |           | extended | 
+ rsrv_fld2_inf         | character varying(60)  |           | extended | 
+ rsrv_fld3_inf         | character varying(60)  |           | extended | 
+ crt_insid             | character varying(9)   |           | extended | 
+ crt_empid             | character varying(8)   |           | extended | 
+ last_udt_insid        | character varying(9)   |           | extended | 
+ last_udt_empid        | character varying(8)   |           | extended | 
+ cur_stm_crt_tms       | numeric(17,0)          |           | main     | 
+ cur_stm_udt_tms       | numeric(17,0)          |           | main     | 
+ lcl_yrmo_day          | character varying(8)   |           | extended | 
+ lcl_hr_grd_scnd       | character varying(9)   |           | extended | 
+ crt_stm_no            | character varying(6)   |           | extended | 
+ udt_stm_no            | character varying(6)   |           | extended | 
+ srcsys_crt_tms        | numeric(17,0)          |           | main     | 
+ srcsys_udt_tms        | numeric(17,0)          |           | main     | 
+ p9_start_date         | date                   |           | plain    | 
+ p9_start_batch        | character varying(12)  |           | extended | 
+ p9_end_date           | date                   |           | plain    | 
+ p9_end_batch          | character varying(12)  |           | extended | 
+ p9_del_flag           | character(1)           |           | extended | 
+ p9_job_name           | character varying(100) |           | extended | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Indexes:
+    "idx_t0042_tbpc1010_h_code" btree (crdt_no)
+    "idx_t0042_tbpc1010_h_cst_id" btree (cst_id)
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (cst_id, rcrd_expy_tms, multi_tenancy_id)
+Tablespace: "ldsdb_siam_data_01"
+
+                  Append-Only Table "app_siam.toddc_crcrdcrd_h"
+       Column       |          Type          | Modifiers | Storage  | Description 
+--------------------+------------------------+-----------+----------+-------------
+ crcrd_ll           | numeric(12,0)          |           | main     | 
+ cr_crd_no          | character varying(19)  |           | extended | 
+ crcrd_db_timestamp | character varying(23)  |           | extended | 
+ cr_rsv_flg_1       | character varying(1)   |           | extended | 
+ cr_rsv_flg_2       | character varying(1)   |           | extended | 
+ cr_rsv_flg_3       | character varying(1)   |           | extended | 
+ cr_rsv_flg_4       | character varying(1)   |           | extended | 
+ cr_rsv_flg_5       | character varying(1)   |           | extended | 
+ cr_rsv_flg_6       | character varying(1)   |           | extended | 
+ cr_rsv_flg_7       | character varying(1)   |           | extended | 
+ cr_rsv_flg_8       | character varying(1)   |           | extended | 
+ r_color_photo_flag | character varying(1)   |           | extended | 
+ cr_unit_crd_flg    | character varying(1)   |           | extended | 
+ cr_unit_cust_no    | character varying(20)  |           | extended | 
+ crnt_dt_atm_drw_tm | numeric(12,0)          |           | main     | 
+ rnt_dt_atm_drw_amt | numeric(20,2)          |           | main     | 
+ cr_dl_dt           | date                   |           | plain    | 
+ cr_dl_sts          | character varying(1)   |           | extended | 
+ cr_dr_cr_cod       | character varying(1)   |           | extended | 
+ cr_crd_typ_cod     | character varying(4)   |           | extended | 
+ cr_crd_sts         | character varying(1)   |           | extended | 
+ cr_cust_no         | character varying(20)  |           | extended | 
+ cr_jont_cod        | character varying(4)   |           | extended | 
+ cr_cncl_sts1       | character varying(1)   |           | extended | 
+ cr_cncl_sts2       | character varying(1)   |           | extended | 
+ cr_cncl_sts3       | character varying(1)   |           | extended | 
+ cr_cncl_sts4       | character varying(1)   |           | extended | 
+ cr_cncl_sts5       | character varying(1)   |           | extended | 
+ cr_cncl_sts6       | character varying(1)   |           | extended | 
+ cr_agre_cod        | character varying(4)   |           | extended | 
+ cr_accd_sq_no      | numeric(12,0)          |           | main     | 
+ cr_colc_flg1       | character varying(1)   |           | extended | 
+ cr_colc_flg2       | character varying(1)   |           | extended | 
+ cr_colc_flg3       | character varying(1)   |           | extended | 
+ cr_colc_flg4       | character varying(1)   |           | extended | 
+ cr_colc_flg5       | character varying(1)   |           | extended | 
+ cr_colc_flg6       | character varying(1)   |           | extended | 
+ cr_colc_flg7       | character varying(1)   |           | extended | 
+ cr_colc_flg8       | character varying(1)   |           | extended | 
+ cr_crdg            | character varying(2)   |           | extended | 
+ cr_delay_sts       | character varying(1)   |           | extended | 
+ cr_anfe_chg_pct    | numeric(8,6)           |           | main     | 
+ cr_anfe_rev_amt    | numeric(20,2)          |           | main     | 
+ cr_anfe_year       | character varying(4)   |           | extended | 
+ anfe_unpay_months  | numeric(12,0)          |           | main     | 
+ cr_cvv2            | character varying(3)   |           | extended | 
+ cr_filler_crd      | character varying(6)   |           | extended | 
+ cr_opun_cod        | character varying(9)   |           | extended | 
+ cr_expd_dt         | character varying(6)   |           | extended | 
+ cr_crdmd_sts       | character varying(1)   |           | extended | 
+ cr_mnsub_drp       | character varying(1)   |           | extended | 
+ cr_pcrd_no         | character varying(19)  |           | extended | 
+ cr_cnclc_dt        | date                   |           | plain    | 
+ cr_cncl_sts        | character varying(1)   |           | extended | 
+ cr_spus_cod        | character varying(4)   |           | extended | 
+ cr_vrsn_no         | numeric(12,0)          |           | main     | 
+ r_crd_cost_rev_rto | numeric(20,2)          |           | main     | 
+ cr_agent_pay_flg   | character varying(1)   |           | extended | 
+ cr_atm_ltm_tx_dt   | date                   |           | plain    | 
+ cr_cust_aply_no    | character varying(13)  |           | extended | 
+ cr_chg_grntr_dt    | date                   |           | plain    | 
+ cr_opcr_date       | date                   |           | plain    | 
+ crnt_dt_atm_trn_tm | numeric(12,0)          |           | main     | 
+ rnt_dt_atm_trn_amt | numeric(20,2)          |           | main     | 
+ crnt_dt_tb_trn_tm  | numeric(12,0)          |           | main     | 
+ crnt_dt_tb_trn_amt | numeric(20,2)          |           | main     | 
+ cr_stpmt_date      | date                   |           | plain    | 
+ cr_app_no          | character varying(9)   |           | extended | 
+ crnt_fx_atm_drw_tm | numeric(12,0)          |           | main     | 
+ rnt_fx_amt_drw_amt | numeric(20,2)          |           | main     | 
+ cr_pswd            | character varying(6)   |           | extended | 
+ cr_pswd_cnt        | numeric(12,0)          |           | main     | 
+ cr_sec_mt_con      | character varying(40)  |           | extended | 
+ cr_sec_mt_con_cnt  | numeric(12,0)          |           | main     | 
+ cr_pos_chk_flg     | character varying(1)   |           | extended | 
+ cr_ic_pcrd_no      | character varying(28)  |           | extended | 
+ cr_crd_chg_dt      | date                   |           | plain    | 
+ cr_ic_cnt          | numeric(12,0)          |           | main     | 
+ cr_chg_opun_cod    | character varying(9)   |           | extended | 
+ hk_invali_dt_times | numeric(12,0)          |           | main     | 
+ filler             | character varying(20)  |           | extended | 
+ p9_split_branch_cd | character varying(100) |           | extended | 
+ p9_start_date      | date                   |           | plain    | 
+ p9_start_batch     | character varying(12)  |           | extended | 
+ p9_end_date        | date                   |           | plain    | 
+ p9_end_batch       | character varying(12)  |           | extended | 
+ p9_del_flag        | character varying(1)   |           | extended | 
+ p9_job_name        | character varying(100) |           | extended | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (cr_crd_no)
+Tablespace: "ldsdb_siam_data_01"
+
+                              Table "app_siam.t0861_empe_h"
+        Column         |            Type             | Modifiers | Storage  | Description 
+-----------------------+-----------------------------+-----------+----------+-------------
+ ccb_empid             | character varying(8)        |           | extended | 
+ gnd_cd                | character varying(2)        |           | extended | 
+ usr_nm                | character varying(180)      |           | extended | 
+ hmnrsc_empid          | character varying(15)       |           | extended | 
+ empe_id_land_nm       | character varying(600)      |           | extended | 
+ crdt_tpcd             | character varying(4)        |           | extended | 
+ crdt_no               | character varying(120)      |           | extended | 
+ usr_tpcd              | character varying(2)        |           | extended | 
+ usr_stcd              | character varying(2)        |           | extended | 
+ telctcmod_wrk_no      | character varying(50)       |           | extended | 
+ telctcmod_mblph_no    | character varying(50)       |           | extended | 
+ telctcmod_fax_no      | character varying(50)       |           | extended | 
+ telctcmod_rsrv_no     | character varying(50)       |           | extended | 
+ email_adr_cntnt       | character varying(1500)     |           | extended | 
+ idv_nm_surnm          | character varying(180)      |           | extended | 
+ idv_nm_nm             | character varying(180)      |           | extended | 
+ zipecd                | character varying(30)       |           | extended | 
+ dtl_adr               | character varying(1500)     |           | extended | 
+ blng_insid            | character varying(9)        |           | extended | 
+ wrk_unit_nm           | character varying(600)      |           | extended | 
+ ext_usr_post          | character varying(600)      |           | extended | 
+ eddgr_cd              | character varying(3)        |           | extended | 
+ dgr_cd                | character varying(3)        |           | extended | 
+ grdt_sch_cd           | character varying(600)      |           | extended | 
+ sch_char_cd           | character varying(2)        |           | extended | 
+ mjr_cd                | character varying(6)        |           | extended | 
+ stdy_form_cd          | character varying(1)        |           | extended | 
+ usr_nm_cpa_fullnm     | character varying(180)      |           | extended | 
+ empe_pst_lock_stcd    | character varying(2)        |           | extended | 
+ efdt_tm               | timestamp without time zone |           | plain    | 
+ crt_stm_mgt_opr_id    | character varying(8)        |           | extended | 
+ last_udt_dt_tm        | timestamp without time zone |           | plain    | 
+ othr_prof_nm          | character varying(600)      |           | extended | 
+ p9_start_date         | date                        |           | plain    | 
+ p9_start_batch        | character varying(12)       |           | extended | 
+ p9_end_date           | date                        |           | plain    | 
+ p9_end_batch          | character varying(12)       |           | extended | 
+ p9_del_flag           | character(1)                |           | extended | 
+ p9_job_name           | character varying(100)      |           | extended | 
+ empe_pic_file_indx_no | character varying(300)      |           | extended | 
+ brth_dt               | date                        |           | plain    | 
+ emgr_ctc_mod_cntnt    | date                        |           | plain    | 
+ grdt_dt               | date                        |           | plain    | 
+Has OIDs: no
+Distributed by: (ccb_empid)
+Tablespace: "ldsdb_siam_data_01"
+
+                           Table "app_siam.toddc_fcmarld_a"
+         Column         |          Type          | Modifiers | Storage  | Description 
+------------------------+------------------------+-----------+----------+-------------
+ cm_arl_log_no          | character varying(19)  |           | extended | 
+ cmarl_db_timestamp     | character varying(23)  |           | extended | 
+ cm_tx_id               | character varying(9)   |           | extended | 
+ terminal_id            | character varying(15)  |           | extended | 
+ cm_lcl_or_rsn          | character varying(20)  |           | extended | 
+ cm_hst_or_rsn          | character varying(20)  |           | extended | 
+ cm_spv_a               | character varying(12)  |           | extended | 
+ cm_spv_b               | character varying(12)  |           | extended | 
+ cm_teller_id           | character varying(12)  |           | extended | 
+ cm_verify_teller       | character varying(12)  |           | extended | 
+ cm_anact_sq_im_no_flag | character varying(1)   |           | extended | 
+ cm_tx_dt               | date                   |           | plain    | 
+ cm_tx_tm_r             | character varying(6)   |           | extended | 
+ cm_frt_opr_no          | character varying(4)   |           | extended | 
+ cm_acct_no             | character varying(28)  |           | extended | 
+ cm_aply_data_dscrp_arl | character varying(16)  |           | extended | 
+ filler                 | character varying(1)   |           | extended | 
+ p9_split_branch_cd     | character varying(100) |           | extended | 
+ p9_data_date           | date                   |           | plain    | 
+ p9_batch_number        | character varying(12)  |           | extended | 
+ p9_del_flag            | character varying(1)   |           | extended | 
+ p9_del_date            | date                   |           | plain    | 
+ p9_del_batch           | character varying(12)  |           | extended | 
+ p9_job_name            | character varying(100) |           | extended | 
+Has OIDs: no
+Distributed by: (cm_arl_log_no)
+Tablespace: "ldsdb_siam_data_01"
+
+                   Append-Only Table "app_siam.toddc_cratmdet_a"
+       Column        |          Type          | Modifiers | Storage  | Description 
+---------------------+------------------------+-----------+----------+-------------
+ cr_atm_no           | character varying(12)  |           | extended | 
+ crdet_ll            | numeric(12,0)          |           | main     | 
+ cr_tx_dt            | date                   |           | plain    | 
+ cr_atm_tx_sq_no     | character varying(9)   |           | extended | 
+ crdet_db_timestamp  | character varying(23)  |           | extended | 
+ cr_rsv_flg          | character varying(1)   |           | extended | 
+ cr_curr_cod         | character varying(3)   |           | extended | 
+ cr_ec_flg           | character varying(1)   |           | extended | 
+ cr_opr_ec           | character varying(12)  |           | extended | 
+ cr_entr_dt          | date                   |           | plain    | 
+ cr_tx_no            | character varying(9)   |           | extended | 
+ cr_tx_amt           | numeric(20,2)          |           | main     | 
+ cr_tx_log_no        | character varying(19)  |           | extended | 
+ cr_tx_tm            | character varying(9)   |           | extended | 
+ cr_tx_netp_no       | character varying(9)   |           | extended | 
+ cr_crd_no           | character varying(19)  |           | extended | 
+ cr_cpu_dt           | date                   |           | plain    | 
+ cr_gcrd_tx_sq_no    | character varying(8)   |           | extended | 
+ cr_drgn_crd_tx_sq_n | character varying(8)   |           | extended | 
+ cr_conf_flg         | character varying(1)   |           | extended | 
+ cr_dscrp_cod        | character varying(4)   |           | extended | 
+ cr_trni_sav_no      | character varying(28)  |           | extended | 
+ cr_trno_sav_no      | character varying(28)  |           | extended | 
+ cr_psbk_sq_no       | numeric(12,0)          |           | main     | 
+ filler              | character varying(4)   |           | extended | 
+ p9_split_branch_cd  | character varying(100) |           | extended | 
+ p9_data_date        | date                   |           | plain    | 
+ p9_batch_number     | character varying(12)  |           | extended | 
+ p9_del_flag         | character varying(1)   |           | extended | 
+ p9_del_date         | date                   |           | plain    | 
+ p9_del_batch        | character varying(12)  |           | extended | 
+ p9_job_name         | character varying(100) |           | extended | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Child tables: app_siam.toddc_cratmdet_a_1_prt_1,
+              app_siam.toddc_cratmdet_a_1_prt_day20150928,
+              app_siam.toddc_cratmdet_a_1_prt_day20150929,
+              app_siam.toddc_cratmdet_a_1_prt_day20150930,
+              app_siam.toddc_cratmdet_a_1_prt_day20151001,
+              app_siam.toddc_cratmdet_a_1_prt_day20151002,
+              app_siam.toddc_cratmdet_a_1_prt_day20151003,
+              app_siam.toddc_cratmdet_a_1_prt_day20151004,
+              app_siam.toddc_cratmdet_a_1_prt_day20151005,
+              app_siam.toddc_cratmdet_a_1_prt_day20151006,
+              app_siam.toddc_cratmdet_a_1_prt_day20151007,
+              app_siam.toddc_cratmdet_a_1_prt_day20151008,
+              app_siam.toddc_cratmdet_a_1_prt_day20151009,
+              app_siam.toddc_cratmdet_a_1_prt_day20151010,
+              app_siam.toddc_cratmdet_a_1_prt_day20151011,
+              app_siam.toddc_cratmdet_a_1_prt_day20151012,
+              app_siam.toddc_cratmdet_a_1_prt_day20151013,
+              app_siam.toddc_cratmdet_a_1_prt_day20151014,
+              app_siam.toddc_cratmdet_a_1_prt_day20151015,
+              app_siam.toddc_cratmdet_a_1_prt_day20151016,
+              app_siam.toddc_cratmdet_a_1_prt_day20151017,
+              app_siam.toddc_cratmdet_a_1_prt_day20151018,
+              app_siam.toddc_cratmdet_a_1_prt_day20151019,
+              app_siam.toddc_cratmdet_a_1_prt_day20151020,
+              app_siam.toddc_cratmdet_a_1_prt_day20151021,
+              app_siam.toddc_cratmdet_a_1_prt_day20151022,
+              app_siam.toddc_cratmdet_a_1_prt_day20151023,
+              app_siam.toddc_cratmdet_a_1_prt_day20151024,
+              app_siam.toddc_cratmdet_a_1_prt_day20151025,
+              app_siam.toddc_cratmdet_a_1_prt_day20151026,
+              app_siam.toddc_cratmdet_a_1_prt_day20151027,
+              app_siam.toddc_cratmdet_a_1_prt_day20151028,
+              app_siam.toddc_cratmdet_a_1_prt_day20151029,
+              app_siam.toddc_cratmdet_a_1_prt_day20151030,
+              app_siam.toddc_cratmdet_a_1_prt_day20151031,
+              app_siam.toddc_cratmdet_a_1_prt_day20151101,
+              app_siam.toddc_cratmdet_a_1_prt_day20151102,
+              app_siam.toddc_cratmdet_a_1_prt_day20151103,
+              app_siam.toddc_cratmdet_a_1_prt_day20151104,
+              app_siam.toddc_cratmdet_a_1_prt_day20151105,
+              app_siam.toddc_cratmdet_a_1_prt_day20151106,
+              app_siam.toddc_cratmdet_a_1_prt_day20151107,
+              app_siam.toddc_cratmdet_a_1_prt_day20151108,
+              app_siam.toddc_cratmdet_a_1_prt_day20151109,
+              app_siam.toddc_cratmdet_a_1_prt_day20151110,
+              app_siam.toddc_cratmdet_a_1_prt_day20151111,
+              app_siam.toddc_cratmdet_a_1_prt_day20151112,
+              app_siam.toddc_cratmdet_a_1_prt_day20151113,
+              app_siam.toddc_cratmdet_a_1_prt_day20151114,
+              app_siam.toddc_cratmdet_a_1_prt_day20151115,
+              app_siam.toddc_cratmdet_a_1_prt_day20151116,
+              app_siam.toddc_cratmdet_a_1_prt_day20151117,
+              app_siam.toddc_cratmdet_a_1_prt_day20151118,
+              app_siam.toddc_cratmdet_a_1_prt_day20151119,
+              app_siam.toddc_cratmdet_a_1_prt_day20151120,
+              app_siam.toddc_cratmdet_a_1_prt_day20151121,
+              app_siam.toddc_cratmdet_a_1_prt_day20151122,
+              app_siam.toddc_cratmdet_a_1_prt_day20151123,
+              app_siam.toddc_cratmdet_a_1_prt_day20151124,
+              app_siam.toddc_cratmdet_a_1_prt_day20151125,
+              app_siam.toddc_cratmdet_a_1_prt_day20151126,
+              app_siam.toddc_cratmdet_a_1_prt_day20151127,
+              app_siam.toddc_cratmdet_a_1_prt_day20151128,
+              app_siam.toddc_cratmdet_a_1_prt_day20151129,
+              app_siam.toddc_cratmdet_a_1_prt_day20151130,
+              app_siam.toddc_cratmdet_a_1_prt_day20151201,
+              app_siam.toddc_cratmdet_a_1_prt_day20151202,
+              app_siam.toddc_cratmdet_a_1_prt_day20151203,
+              app_siam.toddc_cratmdet_a_1_prt_day20151204,
+              app_siam.toddc_cratmdet_a_1_prt_day20151205,
+              app_siam.toddc_cratmdet_a_1_prt_day20151206,
+              app_siam.toddc_cratmdet_a_1_prt_day20151207,
+              app_siam.toddc_cratmdet_a_1_prt_day20151208,
+              app_siam.toddc_cratmdet_a_1_prt_day20151209,
+              app_siam.toddc_cratmdet_a_1_prt_day20151210,
+              app_siam.toddc_cratmdet_a_1_prt_day20151211,
+              app_siam.toddc_cratmdet_a_1_prt_day20151212,
+              app_siam.toddc_cratmdet_a_1_prt_day20151213,
+              app_siam.toddc_cratmdet_a_1_prt_day20151214,
+              app_siam.toddc_cratmdet_a_1_prt_day20151215,
+              app_siam.toddc_cratmdet_a_1_prt_day20151216,
+              app_siam.toddc_cratmdet_a_1_prt_day20151217,
+              app_siam.toddc_cratmdet_a_1_prt_day20151218,
+              app_siam.toddc_cratmdet_a_1_prt_day20151219,
+              app_siam.toddc_cratmdet_a_1_prt_day20151220,
+              app_siam.toddc_cratmdet_a_1_prt_day20151221,
+              app_siam.toddc_cratmdet_a_1_prt_day20151222,
+              app_siam.toddc_cratmdet_a_1_prt_day20151223,
+              app_siam.toddc_cratmdet_a_1_prt_day20151224,
+              app_siam.toddc_cratmdet_a_1_prt_day20151225,
+              app_siam.toddc_cratmdet_a_1_prt_day20151226,
+              app_siam.toddc_cratmdet_a_1_prt_day20151227,
+              app_siam.toddc_cratmdet_a_1_prt_day20151228,
+              app_siam.toddc_cratmdet_a_1_prt_day20151229,
+              app_siam.toddc_cratmdet_a_1_prt_day20151230,
+              app_siam.toddc_cratmdet_a_1_prt_day20151231,
+              app_siam.toddc_cratmdet_a_1_prt_day20160101,
+              app_siam.toddc_cratmdet_a_1_prt_day20160102,
+              app_siam.toddc_cratmdet_a_1_prt_day20160103,
+              app_siam.toddc_cratmdet_a_1_prt_day20160104,
+              app_siam.toddc_cratmdet_a_1_prt_day20160105,
+              app_siam.toddc_cratmdet_a_1_prt_day20160106,
+              app_siam.toddc_cratmdet_a_1_prt_day20160107,
+              app_siam.toddc_cratmdet_a_1_prt_day20160108,
+              app_siam.toddc_cratmdet_a_1_prt_day20160109,
+              app_siam.toddc_cratmdet_a_1_prt_day20160110,
+              app_siam.toddc_cratmdet_a_1_prt_day20160111,
+              app_siam.toddc_cratmdet_a_1_prt_day20160112,
+              app_siam.toddc_cratmdet_a_1_prt_day20160113,
+              app_siam.toddc_cratmdet_a_1_prt_day20160114,
+              app_siam.toddc_cratmdet_a_1_prt_day20160115,
+              app_siam.toddc_cratmdet_a_1_prt_day20160116,
+              app_siam.toddc_cratmdet_a_1_prt_day20160117,
+              app_siam.toddc_cratmdet_a_1_prt_day20160118,
+              app_siam.toddc_cratmdet_a_1_prt_day20160119,
+              app_siam.toddc_cratmdet_a_1_prt_day20160120,
+              app_siam.toddc_cratmdet_a_1_prt_day20160121,
+              app_siam.toddc_cratmdet_a_1_prt_day20160122,
+              app_siam.toddc_cratmdet_a_1_prt_day20160123,
+              app_siam.toddc_cratmdet_a_1_prt_day20160124,
+              app_siam.toddc_cratmdet_a_1_prt_day20160125,
+              app_siam.toddc_cratmdet_a_1_prt_day20160126,
+              app_siam.toddc_cratmdet_a_1_prt_day20160127,
+              app_siam.toddc_cratmdet_a_1_prt_day20160128,
+              app_siam.toddc_cratmdet_a_1_prt_day20160129,
+              app_siam.toddc_cratmdet_a_1_prt_day20160130,
+              app_siam.toddc_cratmdet_a_1_prt_day20160131,
+              app_siam.toddc_cratmdet_a_1_prt_day20160201,
+              app_siam.toddc_cratmdet_a_1_prt_day20160202,
+              app_siam.toddc_cratmdet_a_1_prt_day20160203,
+              app_siam.toddc_cratmdet_a_1_prt_day20160204,
+              app_siam.toddc_cratmdet_a_1_prt_day20160205,
+              app_siam.toddc_cratmdet_a_1_prt_day20160206,
+              app_siam.toddc_cratmdet_a_1_prt_day20160207,
+              app_siam.toddc_cratmdet_a_1_prt_day20160208,
+              app_siam.toddc_cratmdet_a_1_prt_day20160209,
+              app_siam.toddc_cratmdet_a_1_prt_day20160210,
+              app_siam.toddc_cratmdet_a_1_prt_day20160211,
+              app_siam.toddc_cratmdet_a_1_prt_day20160212,
+              app_siam.toddc_cratmdet_a_1_prt_day20160213,
+              app_siam.toddc_cratmdet_a_1_prt_day20160214,
+              app_siam.toddc_cratmdet_a_1_prt_day20160215,
+              app_siam.toddc_cratmdet_a_1_prt_day20160216,
+              app_siam.toddc_cratmdet_a_1_prt_day20160217,
+              app_siam.toddc_cratmdet_a_1_prt_day20160218,
+              app_siam.toddc_cratmdet_a_1_prt_day20160219,
+              app_siam.toddc_cratmdet_a_1_prt_day20160220,
+              app_siam.toddc_cratmdet_a_1_prt_day20160221,
+              app_siam.toddc_cratmdet_a_1_prt_day20160222,
+              app_siam.toddc_cratmdet_a_1_prt_day20160223,
+              app_siam.toddc_cratmdet_a_1_prt_day20160224,
+              app_siam.toddc_cratmdet_a_1_prt_day20160225,
+              app_siam.toddc_cratmdet_a_1_prt_day20160226,
+              app_siam.toddc_cratmdet_a_1_prt_day20160227,
+              app_siam.toddc_cratmdet_a_1_prt_day20160228,
+              app_siam.toddc_cratmdet_a_1_prt_day20160229,
+              app_siam.toddc_cratmdet_a_1_prt_day20160301,
+              app_siam.toddc_cratmdet_a_1_prt_day20160302,
+              app_siam.toddc_cratmdet_a_1_prt_day20160303,
+              app_siam.toddc_cratmdet_a_1_prt_day20160304,
+              app_siam.toddc_cratmdet_a_1_prt_day20160305,
+              app_siam.toddc_cratmdet_a_1_prt_day20160306,
+              app_siam.toddc_cratmdet_a_1_prt_day20160307,
+              app_siam.toddc_cratmdet_a_1_prt_day20160308,
+              app_siam.toddc_cratmdet_a_1_prt_day20160309,
+              app_siam.toddc_cratmdet_a_1_prt_day20160310,
+              app_siam.toddc_cratmdet_a_1_prt_day20160311,
+              app_siam.toddc_cratmdet_a_1_prt_day20160312,
+              app_siam.toddc_cratmdet_a_1_prt_day20160313,
+              app_siam.toddc_cratmdet_a_1_prt_day20160314,
+              app_siam.toddc_cratmdet_a_1_prt_day20160315,
+              app_siam.toddc_cratmdet_a_1_prt_day20160316,
+              app_siam.toddc_cratmdet_a_1_prt_day20160317,
+              app_siam.toddc_cratmdet_a_1_prt_day20160318,
+              app_siam.toddc_cratmdet_a_1_prt_day20160319,
+              app_siam.toddc_cratmdet_a_1_prt_day20160320,
+              app_siam.toddc_cratmdet_a_1_prt_day20160321,
+              app_siam.toddc_cratmdet_a_1_prt_day20160322,
+              app_siam.toddc_cratmdet_a_1_prt_day20160323,
+              app_siam.toddc_cratmdet_a_1_prt_day20160324,
+              app_siam.toddc_cratmdet_a_1_prt_day20160325,
+              app_siam.toddc_cratmdet_a_1_prt_day20160326,
+              app_siam.toddc_cratmdet_a_1_prt_day20160327,
+              app_siam.toddc_cratmdet_a_1_prt_day20160328,
+              app_siam.toddc_cratmdet_a_1_prt_day20160329,
+              app_siam.toddc_cratmdet_a_1_prt_day20160330,
+              app_siam.toddc_cratmdet_a_1_prt_day20160331,
+              app_siam.toddc_cratmdet_a_1_prt_day20160401,
+              app_siam.toddc_cratmdet_a_1_prt_day20160402,
+              app_siam.toddc_cratmdet_a_1_prt_day20160403,
+              app_siam.toddc_cratmdet_a_1_prt_day20160404,
+              app_siam.toddc_cratmdet_a_1_prt_day20160405,
+              app_siam.toddc_cratmdet_a_1_prt_day20160406,
+              app_siam.toddc_cratmdet_a_1_prt_day20160407,
+              app_siam.toddc_cratmdet_a_1_prt_day20160408,
+              app_siam.toddc_cratmdet_a_1_prt_day20160409,
+              app_siam.toddc_cratmdet_a_1_prt_day20160410,
+              app_siam.toddc_cratmdet_a_1_prt_day20160411,
+              app_siam.toddc_cratmdet_a_1_prt_day20160412,
+              app_siam.toddc_cratmdet_a_1_prt_day20160413,
+              app_siam.toddc_cratmdet_a_1_prt_day20160414,
+              app_siam.toddc_cratmdet_a_1_prt_day20160415,
+              app_siam.toddc_cratmdet_a_1_prt_day20160416,
+              app_siam.toddc_cratmdet_a_1_prt_day20160417,
+              app_siam.toddc_cratmdet_a_1_prt_day20160418,
+              app_siam.toddc_cratmdet_a_1_prt_day20160419,
+              app_siam.toddc_cratmdet_a_1_prt_day20160420,
+              app_siam.toddc_cratmdet_a_1_prt_day20160421,
+              app_siam.toddc_cratmdet_a_1_prt_day20160422,
+              app_siam.toddc_cratmdet_a_1_prt_day20160423,
+              app_siam.toddc_cratmdet_a_1_prt_day20160424,
+              app_siam.toddc_cratmdet_a_1_prt_day20160425,
+              app_siam.toddc_cratmdet_a_1_prt_day20160426,
+              app_siam.toddc_cratmdet_a_1_prt_day20160427,
+              app_siam.toddc_cratmdet_a_1_prt_day20160428,
+              app_siam.toddc_cratmdet_a_1_prt_day20160429,
+              app_siam.toddc_cratmdet_a_1_prt_day20160430,
+              app_siam.toddc_cratmdet_a_1_prt_day20160501,
+              app_siam.toddc_cratmdet_a_1_prt_day20160502,
+              app_siam.toddc_cratmdet_a_1_prt_day20160503,
+              app_siam.toddc_cratmdet_a_1_prt_day20160504,
+              app_siam.toddc_cratmdet_a_1_prt_day20160505,
+              app_siam.toddc_cratmdet_a_1_prt_day20160506,
+              app_siam.toddc_cratmdet_a_1_prt_day20160507,
+              app_siam.toddc_cratmdet_a_1_prt_day20160508,
+              app_siam.toddc_cratmdet_a_1_prt_day20160509,
+              app_siam.toddc_cratmdet_a_1_prt_day20160510,
+              app_siam.toddc_cratmdet_a_1_prt_day20160511,
+              app_siam.toddc_cratmdet_a_1_prt_day20160512,
+              app_siam.toddc_cratmdet_a_1_prt_day20160513,
+              app_siam.toddc_cratmdet_a_1_prt_day20160514,
+              app_siam.toddc_cratmdet_a_1_prt_day20160515,
+              app_siam.toddc_cratmdet_a_1_prt_day20160516,
+              app_siam.toddc_cratmdet_a_1_prt_day20160517,
+              app_siam.toddc_cratmdet_a_1_prt_day20160518,
+              app_siam.toddc_cratmdet_a_1_prt_day20160519,
+              app_siam.toddc_cratmdet_a_1_prt_day20160520,
+              app_siam.toddc_cratmdet_a_1_prt_day20160521,
+              app_siam.toddc_cratmdet_a_1_prt_day20160522,
+              app_siam.toddc_cratmdet_a_1_prt_day20160523,
+              app_siam.toddc_cratmdet_a_1_prt_day20160524,
+              app_siam.toddc_cratmdet_a_1_prt_day20160525,
+              app_siam.toddc_cratmdet_a_1_prt_day20160526,
+              app_siam.toddc_cratmdet_a_1_prt_day20160527,
+              app_siam.toddc_cratmdet_a_1_prt_day20160528,
+              app_siam.toddc_cratmdet_a_1_prt_day20160529,
+              app_siam.toddc_cratmdet_a_1_prt_day20160530,
+              app_siam.toddc_cratmdet_a_1_prt_day20160531,
+              app_siam.toddc_cratmdet_a_1_prt_day20160601,
+              app_siam.toddc_cratmdet_a_1_prt_day20160602,
+              app_siam.toddc_cratmdet_a_1_prt_day20160603,
+              app_siam.toddc_cratmdet_a_1_prt_day20160604,
+              app_siam.toddc_cratmdet_a_1_prt_day20160605,
+              app_siam.toddc_cratmdet_a_1_prt_day20160606,
+              app_siam.toddc_cratmdet_a_1_prt_day20160607,
+              app_siam.toddc_cratmdet_a_1_prt_day20160608,
+              app_siam.toddc_cratmdet_a_1_prt_day20160609,
+              app_siam.toddc_cratmdet_a_1_prt_day20160610,
+              app_siam.toddc_cratmdet_a_1_prt_day20160611,
+              app_siam.toddc_cratmdet_a_1_prt_day20160612,
+              app_siam.toddc_cratmdet_a_1_prt_day20160613,
+              app_siam.toddc_cratmdet_a_1_prt_day20160614,
+              app_siam.toddc_cratmdet_a_1_prt_day20160615,
+              app_siam.toddc_cratmdet_a_1_prt_day20160616,
+              app_siam.toddc_cratmdet_a_1_prt_day20160617,
+              app_siam.toddc_cratmdet_a_1_prt_day20160618,
+              app_siam.toddc_cratmdet_a_1_prt_day20160619,
+              app_siam.toddc_cratmdet_a_1_prt_day20160620,
+              app_siam.toddc_cratmdet_a_1_prt_day20160621,
+              app_siam.toddc_cratmdet_a_1_prt_day20160622,
+              app_siam.toddc_cratmdet_a_1_prt_day20160623,
+              app_siam.toddc_cratmdet_a_1_prt_day20160624,
+              app_siam.toddc_cratmdet_a_1_prt_day20160625,
+              app_siam.toddc_cratmdet_a_1_prt_day20160626,
+              app_siam.toddc_cratmdet_a_1_prt_day20160627,
+              app_siam.toddc_cratmdet_a_1_prt_day20160628,
+              app_siam.toddc_cratmdet_a_1_prt_day20160629,
+              app_siam.toddc_cratmdet_a_1_prt_day20160630,
+              app_siam.toddc_cratmdet_a_1_prt_day20160701,
+              app_siam.toddc_cratmdet_a_1_prt_day20160702,
+              app_siam.toddc_cratmdet_a_1_prt_day20160703,
+              app_siam.toddc_cratmdet_a_1_prt_day20160704,
+              app_siam.toddc_cratmdet_a_1_prt_day20160705,
+              app_siam.toddc_cratmdet_a_1_prt_day20160706,
+              app_siam.toddc_cratmdet_a_1_prt_day20160707,
+              app_siam.toddc_cratmdet_a_1_prt_day20160708,
+              app_siam.toddc_cratmdet_a_1_prt_day20160709,
+              app_siam.toddc_cratmdet_a_1_prt_day20160710,
+              app_siam.toddc_cratmdet_a_1_prt_day20160711,
+              app_siam.toddc_cratmdet_a_1_prt_day20160712,
+              app_siam.toddc_cratmdet_a_1_prt_day20160713,
+              app_siam.toddc_cratmdet_a_1_prt_day20160714,
+              app_siam.toddc_cratmdet_a_1_prt_day20160715,
+              app_siam.toddc_cratmdet_a_1_prt_day20160716,
+              app_siam.toddc_cratmdet_a_1_prt_day20160717,
+              app_siam.toddc_cratmdet_a_1_prt_day20160718,
+              app_siam.toddc_cratmdet_a_1_prt_day20160719,
+              app_siam.toddc_cratmdet_a_1_prt_day20160720,
+              app_siam.toddc_cratmdet_a_1_prt_day20160721,
+              app_siam.toddc_cratmdet_a_1_prt_day20160722,
+              app_siam.toddc_cratmdet_a_1_prt_day20160723,
+              app_siam.toddc_cratmdet_a_1_prt_day20160724,
+              app_siam.toddc_cratmdet_a_1_prt_day20160725,
+              app_siam.toddc_cratmdet_a_1_prt_day20160726,
+              app_siam.toddc_cratmdet_a_1_prt_day20160727,
+              app_siam.toddc_cratmdet_a_1_prt_day20160728,
+              app_siam.toddc_cratmdet_a_1_prt_day20160729,
+              app_siam.toddc_cratmdet_a_1_prt_day20160730,
+              app_siam.toddc_cratmdet_a_1_prt_day20160731,
+              app_siam.toddc_cratmdet_a_1_prt_day20160801,
+              app_siam.toddc_cratmdet_a_1_prt_day20160802,
+              app_siam.toddc_cratmdet_a_1_prt_day20160803,
+              app_siam.toddc_cratmdet_a_1_prt_day20160804,
+              app_siam.toddc_cratmdet_a_1_prt_day20160805,
+              app_siam.toddc_cratmdet_a_1_prt_day20160806,
+              app_siam.toddc_cratmdet_a_1_prt_day20160807,
+              app_siam.toddc_cratmdet_a_1_prt_day20160808,
+              app_siam.toddc_cratmdet_a_1_prt_day20160809,
+              app_siam.toddc_cratmdet_a_1_prt_day20160810,
+              app_siam.toddc_cratmdet_a_1_prt_day20160811,
+              app_siam.toddc_cratmdet_a_1_prt_day20160812,
+              app_siam.toddc_cratmdet_a_1_prt_day20160813,
+              app_siam.toddc_cratmdet_a_1_prt_day20160814,
+              app_siam.toddc_cratmdet_a_1_prt_day20160815,
+              app_siam.toddc_cratmdet_a_1_prt_day20160816,
+              app_siam.toddc_cratmdet_a_1_prt_day20160817,
+              app_siam.toddc_cratmdet_a_1_prt_day20160818,
+              app_siam.toddc_cratmdet_a_1_prt_day20160819,
+              app_siam.toddc_cratmdet_a_1_prt_day20160820,
+              app_siam.toddc_cratmdet_a_1_prt_day20160821,
+              app_siam.toddc_cratmdet_a_1_prt_day20160822,
+              app_siam.toddc_cratmdet_a_1_prt_day20160823,
+              app_siam.toddc_cratmdet_a_1_prt_day20160824,
+              app_siam.toddc_cratmdet_a_1_prt_day20160825,
+              app_siam.toddc_cratmdet_a_1_prt_day20160826,
+              app_siam.toddc_cratmdet_a_1_prt_day20160827,
+              app_siam.toddc_cratmdet_a_1_prt_day20160828,
+              app_siam.toddc_cratmdet_a_1_prt_day20160829,
+              app_siam.toddc_cratmdet_a_1_prt_day20160830,
+              app_siam.toddc_cratmdet_a_1_prt_day20160831,
+              app_siam.toddc_cratmdet_a_1_prt_day20160901,
+              app_siam.toddc_cratmdet_a_1_prt_day20160902,
+              app_siam.toddc_cratmdet_a_1_prt_day20160903,
+              app_siam.toddc_cratmdet_a_1_prt_day20160904,
+              app_siam.toddc_cratmdet_a_1_prt_day20160905,
+              app_siam.toddc_cratmdet_a_1_prt_day20160906,
+              app_siam.toddc_cratmdet_a_1_prt_day20160907,
+              app_siam.toddc_cratmdet_a_1_prt_day20160908,
+              app_siam.toddc_cratmdet_a_1_prt_day20160909,
+              app_siam.toddc_cratmdet_a_1_prt_day20160910,
+              app_siam.toddc_cratmdet_a_1_prt_day20160911,
+              app_siam.toddc_cratmdet_a_1_prt_day20160912,
+              app_siam.toddc_cratmdet_a_1_prt_day20160913,
+              app_siam.toddc_cratmdet_a_1_prt_day20160914,
+              app_siam.toddc_cratmdet_a_1_prt_day20160915,
+              app_siam.toddc_cratmdet_a_1_prt_day20160916,
+              app_siam.toddc_cratmdet_a_1_prt_day20160917,
+              app_siam.toddc_cratmdet_a_1_prt_day20160918,
+              app_siam.toddc_cratmdet_a_1_prt_day20160919,
+              app_siam.toddc_cratmdet_a_1_prt_day20160920,
+              app_siam.toddc_cratmdet_a_1_prt_day20160921,
+              app_siam.toddc_cratmdet_a_1_prt_day20160922,
+              app_siam.toddc_cratmdet_a_1_prt_day20160923,
+              app_siam.toddc_cratmdet_a_1_prt_day20160924,
+              app_siam.toddc_cratmdet_a_1_prt_day20160925,
+              app_siam.toddc_cratmdet_a_1_prt_day20160926,
+              app_siam.toddc_cratmdet_a_1_prt_day20160927,
+              app_siam.toddc_cratmdet_a_1_prt_day20160928,
+              app_siam.toddc_cratmdet_a_1_prt_day20160929,
+              app_siam.toddc_cratmdet_a_1_prt_day20160930,
+              app_siam.toddc_cratmdet_a_1_prt_day20161001,
+              app_siam.toddc_cratmdet_a_1_prt_day20161002,
+              app_siam.toddc_cratmdet_a_1_prt_day20161003,
+              app_siam.toddc_cratmdet_a_1_prt_day20161004,
+              app_siam.toddc_cratmdet_a_1_prt_day20161005,
+              app_siam.toddc_cratmdet_a_1_prt_day20161006,
+              app_siam.toddc_cratmdet_a_1_prt_day20161007,
+              app_siam.toddc_cratmdet_a_1_prt_day20161008,
+              app_siam.toddc_cratmdet_a_1_prt_day20161009,
+              app_siam.toddc_cratmdet_a_1_prt_day20161010,
+              app_siam.toddc_cratmdet_a_1_prt_day20161011,
+              app_siam.toddc_cratmdet_a_1_prt_day20161012,
+              app_siam.toddc_cratmdet_a_1_prt_day20161013,
+              app_siam.toddc_cratmdet_a_1_prt_day20161014,
+              app_siam.toddc_cratmdet_a_1_prt_day20161015,
+              app_siam.toddc_cratmdet_a_1_prt_day20161016,
+              app_siam.toddc_cratmdet_a_1_prt_day20161017,
+              app_siam.toddc_cratmdet_a_1_prt_day20161018,
+              app_siam.toddc_cratmdet_a_1_prt_day20161019,
+              app_siam.toddc_cratmdet_a_1_prt_day20161020,
+              app_siam.toddc_cratmdet_a_1_prt_day20161021,
+              app_siam.toddc_cratmdet_a_1_prt_day20161022,
+              app_siam.toddc_cratmdet_a_1_prt_day20161023,
+              app_siam.toddc_cratmdet_a_1_prt_day20161024,
+              app_siam.toddc_cratmdet_a_1_prt_day20161025,
+              app_siam.toddc_cratmdet_a_1_prt_day20161026,
+              app_siam.toddc_cratmdet_a_1_prt_day20161027,
+              app_siam.toddc_cratmdet_a_1_prt_day20161028,
+              app_siam.toddc_cratmdet_a_1_prt_day20161029,
+              app_siam.toddc_cratmdet_a_1_prt_day20161030,
+              app_siam.toddc_cratmdet_a_1_prt_day20161031,
+              app_siam.toddc_cratmdet_a_1_prt_day20161101,
+              app_siam.toddc_cratmdet_a_1_prt_day20161102,
+              app_siam.toddc_cratmdet_a_1_prt_day20161103,
+              app_siam.toddc_cratmdet_a_1_prt_day20161104,
+              app_siam.toddc_cratmdet_a_1_prt_day20161105,
+              app_siam.toddc_cratmdet_a_1_prt_day20161106,
+              app_siam.toddc_cratmdet_a_1_prt_day20161107,
+              app_siam.toddc_cratmdet_a_1_prt_day20161108,
+              app_siam.toddc_cratmdet_a_1_prt_day20161109,
+              app_siam.toddc_cratmdet_a_1_prt_day20161110,
+              app_siam.toddc_cratmdet_a_1_prt_day20161111,
+              app_siam.toddc_cratmdet_a_1_prt_day20161112,
+              app_siam.toddc_cratmdet_a_1_prt_day20161113,
+              app_siam.toddc_cratmdet_a_1_prt_day20161114,
+              app_siam.toddc_cratmdet_a_1_prt_day20161115,
+              app_siam.toddc_cratmdet_a_1_prt_day20161116,
+              app_siam.toddc_cratmdet_a_1_prt_day20161117,
+              app_siam.toddc_cratmdet_a_1_prt_day20161118,
+              app_siam.toddc_cratmdet_a_1_prt_day20161119,
+              app_siam.toddc_cratmdet_a_1_prt_day20161120,
+              app_siam.toddc_cratmdet_a_1_prt_day20161121,
+              app_siam.toddc_cratmdet_a_1_prt_day20161122,
+              app_siam.toddc_cratmdet_a_1_prt_day20161123,
+              app_siam.toddc_cratmdet_a_1_prt_day20161124,
+              app_siam.toddc_cratmdet_a_1_prt_day20161125,
+              app_siam.toddc_cratmdet_a_1_prt_day20161126,
+              app_siam.toddc_cratmdet_a_1_prt_day20161127,
+              app_siam.toddc_cratmdet_a_1_prt_day20161128,
+              app_siam.toddc_cratmdet_a_1_prt_day20161129,
+              app_siam.toddc_cratmdet_a_1_prt_day20161130,
+              app_siam.toddc_cratmdet_a_1_prt_day20161201,
+              app_siam.toddc_cratmdet_a_1_prt_day20161202,
+              app_siam.toddc_cratmdet_a_1_prt_day20161203,
+              app_siam.toddc_cratmdet_a_1_prt_day20161204,
+              app_siam.toddc_cratmdet_a_1_prt_day20161205,
+              app_siam.toddc_cratmdet_a_1_prt_day20161206,
+              app_siam.toddc_cratmdet_a_1_prt_day20161207,
+              app_siam.toddc_cratmdet_a_1_prt_day20161208,
+              app_siam.toddc_cratmdet_a_1_prt_day20161209,
+              app_siam.toddc_cratmdet_a_1_prt_day20161210,
+              app_siam.toddc_cratmdet_a_1_prt_day20161211,
+              app_siam.toddc_cratmdet_a_1_prt_day20161212,
+              app_siam.toddc_cratmdet_a_1_prt_day20161213,
+              app_siam.toddc_cratmdet_a_1_prt_day20161214,
+              app_siam.toddc_cratmdet_a_1_prt_day20161215,
+              app_siam.toddc_cratmdet_a_1_prt_day20161216,
+              app_siam.toddc_cratmdet_a_1_prt_day20161217,
+              app_siam.toddc_cratmdet_a_1_prt_day20161218,
+              app_siam.toddc_cratmdet_a_1_prt_day20161219,
+              app_siam.toddc_cratmdet_a_1_prt_day20161220,
+              app_siam.toddc_cratmdet_a_1_prt_day20161221,
+              app_siam.toddc_cratmdet_a_1_prt_day20161222,
+              app_siam.toddc_cratmdet_a_1_prt_day20161223,
+              app_siam.toddc_cratmdet_a_1_prt_day20161224,
+              app_siam.toddc_cratmdet_a_1_prt_day20161225,
+              app_siam.toddc_cratmdet_a_1_prt_day20161226,
+              app_siam.toddc_cratmdet_a_1_prt_day20161227,
+              app_siam.toddc_cratmdet_a_1_prt_day20161228,
+              app_siam.toddc_cratmdet_a_1_prt_day20161229,
+              app_siam.toddc_cratmdet_a_1_prt_day20161230,
+              app_siam.toddc_cratmdet_a_1_prt_day20161231,
+              app_siam.toddc_cratmdet_a_1_prt_day20170101,
+              app_siam.toddc_cratmdet_a_1_prt_day20170102,
+              app_siam.toddc_cratmdet_a_1_prt_day20170103,
+              app_siam.toddc_cratmdet_a_1_prt_day20170104,
+              app_siam.toddc_cratmdet_a_1_prt_day20170105,
+              app_siam.toddc_cratmdet_a_1_prt_day20170106,
+              app_siam.toddc_cratmdet_a_1_prt_day20170107,
+              app_siam.toddc_cratmdet_a_1_prt_day20170108,
+              app_siam.toddc_cratmdet_a_1_prt_day20170109,
+              app_siam.toddc_cratmdet_a_1_prt_day20170110,
+              app_siam.toddc_cratmdet_a_1_prt_day20170111,
+              app_siam.toddc_cratmdet_a_1_prt_day20170112,
+              app_siam.toddc_cratmdet_a_1_prt_day20170113,
+              app_siam.toddc_cratmdet_a_1_prt_day20170114,
+              app_siam.toddc_cratmdet_a_1_prt_day20170115,
+              app_siam.toddc_cratmdet_a_1_prt_day20170116,
+              app_siam.toddc_cratmdet_a_1_prt_day20170117,
+              app_siam.toddc_cratmdet_a_1_prt_day20170118,
+              app_siam.toddc_cratmdet_a_1_prt_day20170119,
+              app_siam.toddc_cratmdet_a_1_prt_day20170120,
+              app_siam.toddc_cratmdet_a_1_prt_day20170121,
+              app_siam.toddc_cratmdet_a_1_prt_day20170122,
+              app_siam.toddc_cratmdet_a_1_prt_day20170123,
+              app_siam.toddc_cratmdet_a_1_prt_day20170124,
+              app_siam.toddc_cratmdet_a_1_prt_day20170125,
+              app_siam.toddc_cratmdet_a_1_prt_day20170126,
+              app_siam.toddc_cratmdet_a_1_prt_day20170127,
+              app_siam.toddc_cratmdet_a_1_prt_day20170128,
+              app_siam.toddc_cratmdet_a_1_prt_day20170129,
+              app_siam.toddc_cratmdet_a_1_prt_day20170130,
+              app_siam.toddc_cratmdet_a_1_prt_day20170131,
+              app_siam.toddc_cratmdet_a_1_prt_day20170201,
+              app_siam.toddc_cratmdet_a_1_prt_day20170202,
+              app_siam.toddc_cratmdet_a_1_prt_day20170203,
+              app_siam.toddc_cratmdet_a_1_prt_day20170204,
+              app_siam.toddc_cratmdet_a_1_prt_day20170205,
+              app_siam.toddc_cratmdet_a_1_prt_day20170206,
+              app_siam.toddc_cratmdet_a_1_prt_day20170207,
+              app_siam.toddc_cratmdet_a_1_prt_day20170208,
+              app_siam.toddc_cratmdet_a_1_prt_day20170209,
+              app_siam.toddc_cratmdet_a_1_prt_day20170210,
+              app_siam.toddc_cratmdet_a_1_prt_day20170211,
+              app_siam.toddc_cratmdet_a_1_prt_day20170212,
+              app_siam.toddc_cratmdet_a_1_prt_day20170213,
+              app_siam.toddc_cratmdet_a_1_prt_day20170214,
+              app_siam.toddc_cratmdet_a_1_prt_day20170215,
+              app_siam.toddc_cratmdet_a_1_prt_day20170216,
+              app_siam.toddc_cratmdet_a_1_prt_day20170217,
+              app_siam.toddc_cratmdet_a_1_prt_day20170218,
+              app_siam.toddc_cratmdet_a_1_prt_day20170219,
+              app_siam.toddc_cratmdet_a_1_prt_day20170220,
+              app_siam.toddc_cratmdet_a_1_prt_day20170221,
+              app_siam.toddc_cratmdet_a_1_prt_day20170222,
+              app_siam.toddc_cratmdet_a_1_prt_day20170223,
+              app_siam.toddc_cratmdet_a_1_prt_day20170224,
+              app_siam.toddc_cratmdet_a_1_prt_day20170225,
+              app_siam.toddc_cratmdet_a_1_prt_day20170226
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (cr_atm_no, cr_tx_dt, cr_atm_tx_sq_no)
+Tablespace: "ldsdb_siam_data_01"
+
+                     Table "app_siam.todec_sign_main_flow_a"
+       Column       |          Type          | Modifiers | Storage  | Description 
+--------------------+------------------------+-----------+----------+-------------
+ flow_no            | character varying(19)  |           | extended | 
+ chanl_flow_no      | character varying(19)  |           | extended | 
+ ecif_flow_no       | character varying(19)  |           | extended | 
+ ecif_cust_no       | character varying(32)  |           | extended | 
+ cust_no            | character varying(20)  |           | extended | 
+ chanl_cust_no      | character varying(30)  |           | extended | 
+ cert_typ           | character varying(10)  |           | extended | 
+ cert_id            | character varying(20)  |           | extended | 
+ cust_nm            | character varying(50)  |           | extended | 
+ chanl_trad_no      | character varying(7)   |           | extended | 
+ chanl_no           | character varying(2)   |           | extended | 
+ sign_appr          | character varying(2)   |           | extended | 
+ sign_bran          | character varying(9)   |           | extended | 
+ sign_tlr           | character varying(12)  |           | extended | 
+ sign_date          | character varying(8)   |           | extended | 
+ sign_time          | character varying(6)   |           | extended | 
+ term_inf           | character varying(20)  |           | extended | 
+ trad_sts           | character varying(2)   |           | extended | 
+ return_cod         | character varying(20)  |           | extended | 
+ return_msg         | character varying(80)  |           | extended | 
+ remark1            | character varying(60)  |           | extended | 
+ remark2            | character varying(60)  |           | extended | 
+ remark3            | character varying(60)  |           | extended | 
+ p9_split_branch_cd | character varying(100) |           | extended | 
+ p9_data_date       | date                   |           | plain    | 
+ p9_batch_number    | character varying(12)  |           | extended | 
+ p9_del_flag        | character varying(1)   |           | extended | 
+ p9_del_date        | date                   |           | plain    | 
+ p9_del_batch       | character varying(12)  |           | extended | 
+ p9_job_name        | character varying(100) |           | extended | 
+Has OIDs: no
+Distributed by: (flow_no)
+Tablespace: "ldsdb_siam_data_01"
+
+                   Append-Only Table "app_siam.toddc_saacntxn_a"
+        Column        |          Type          | Modifiers | Storage  | Description 
+----------------------+------------------------+-----------+----------+-------------
+ sa_acct_no           | character varying(28)  |           | extended | 
+ satxn_ll             | numeric(12,0)          |           | main     | 
+ sa_ddp_acct_no_det_n | numeric(12,0)          |           | main     | 
+ satxn_db_timestamp   | character varying(23)  |           | extended | 
+ sa_curr_cod          | character varying(3)   |           | extended | 
+ sa_opr_no            | character varying(12)  |           | extended | 
+ sa_curr_iden         | character varying(1)   |           | extended | 
+ sa_ec_flg            | character varying(1)   |           | extended | 
+ sa_ec_det_no         | numeric(12,0)          |           | main     | 
+ sa_cr_amt            | numeric(20,2)          |           | main     | 
+ sa_ddp_acct_bal      | numeric(20,2)          |           | main     | 
+ sa_tx_amt            | numeric(20,2)          |           | main     | 
+ sa_tx_crd_no         | character varying(19)  |           | extended | 
+ sa_tx_typ            | character varying(1)   |           | extended | 
+ sa_tx_log_no         | character varying(19)  |           | extended | 
+ sa_dr_amt            | numeric(20,2)          |           | main     | 
+ sa_doc_no            | character varying(16)  |           | extended | 
+ sa_doc_typ           | character varying(4)   |           | extended | 
+ sa_val_dt            | date                   |           | plain    | 
+ sa_svc               | numeric(20,2)          |           | main     | 
+ sa_auth_no           | character varying(6)   |           | extended | 
+ sa_cust_docag_stno   | character varying(15)  |           | extended | 
+ sa_opun_cod          | character varying(9)   |           | extended | 
+ sa_dscrp_cod         | character varying(4)   |           | extended | 
+ sa_rmrk              | character varying(40)  |           | extended | 
+ sa_tx_tm             | character varying(9)   |           | extended | 
+ sa_tx_dt             | date                   |           | plain    | 
+ sa_sys_dt            | date                   |           | plain    | 
+ sa_ddp_pdt           | numeric(16,2)          |           | main     | 
+ sa_app_tx_code       | character varying(4)   |           | extended | 
+ sa_ext_flg           | character varying(1)   |           | extended | 
+ sa_otx_flg           | character varying(1)   |           | extended | 
+ filler               | character varying(4)   |           | extended | 
+ sa_rmrk_1            | character varying(40)  |           | extended | 
+ sa_op_cust_name      | character varying(40)  |           | extended | 
+ p9_split_branch_cd   | character varying(100) |           | extended | 
+ p9_data_date         | date                   |           | plain    | 
+ p9_batch_number      | character varying(12)  |           | extended | 
+ p9_del_flag          | character varying(1)   |           | extended | 
+ p9_del_date          | date                   |           | plain    | 
+ p9_del_batch         | character varying(12)  |           | extended | 
+ p9_job_name          | character varying(100) |           | extended | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Child tables: app_siam.toddc_saacntxn_a_1_prt_1,
+              app_siam.toddc_saacntxn_a_1_prt_day20150501,
+              app_siam.toddc_saacntxn_a_1_prt_day20150502,
+              app_siam.toddc_saacntxn_a_1_prt_day20150503,
+              app_siam.toddc_saacntxn_a_1_prt_day20150504,
+              app_siam.toddc_saacntxn_a_1_prt_day20150505,
+              app_siam.toddc_saacntxn_a_1_prt_day20150506,
+              app_siam.toddc_saacntxn_a_1_prt_day20150507,
+              app_siam.toddc_saacntxn_a_1_prt_day20150508,
+              app_siam.toddc_saacntxn_a_1_prt_day20150509,
+              app_siam.toddc_saacntxn_a_1_prt_day20150510,
+              app_siam.toddc_saacntxn_a_1_prt_day20150511,
+              app_siam.toddc_saacntxn_a_1_prt_day20150512,
+              app_siam.toddc_saacntxn_a_1_prt_day20150513,
+              app_siam.toddc_saacntxn_a_1_prt_day20150514,
+              app_siam.toddc_saacntxn_a_1_prt_day20150515,
+              app_siam.toddc_saacntxn_a_1_prt_day20150516,
+              app_siam.toddc_saacntxn_a_1_prt_day20150517,
+              app_siam.toddc_saacntxn_a_1_prt_day20150518,
+              app_siam.toddc_saacntxn_a_1_prt_day20150519,
+              app_siam.toddc_saacntxn_a_1_prt_day20150520,
+              app_siam.toddc_saacntxn_a_1_prt_day20150521,
+              app_siam.toddc_saacntxn_a_1_prt_day20150522,
+              app_siam.toddc_saacntxn_a_1_prt_day20150523,
+              app_siam.toddc_saacntxn_a_1_prt_day20150524,
+              app_siam.toddc_saacntxn_a_1_prt_day20150525,
+              app_siam.toddc_saacntxn_a_1_prt_day20150526,
+              app_siam.toddc_saacntxn_a_1_prt_day20150527,
+              app_siam.toddc_saacntxn_a_1_prt_day20150528,
+              app_siam.toddc_saacntxn_a_1_prt_day20150529,
+              app_siam.toddc_saacntxn_a_1_prt_day20150530,
+              app_siam.toddc_saacntxn_a_1_prt_day20150531,
+              app_siam.toddc_saacntxn_a_1_prt_day20150601,
+              app_siam.toddc_saacntxn_a_1_prt_day20150602,
+              app_siam.toddc_saacntxn_a_1_prt_day20150603,
+              app_siam.toddc_saacntxn_a_1_prt_day20150604,
+              app_siam.toddc_saacntxn_a_1_prt_day20150605,
+              app_siam.toddc_saacntxn_a_1_prt_day20150606,
+              app_siam.toddc_saacntxn_a_1_prt_day20150607,
+              app_siam.toddc_saacntxn_a_1_prt_day20150608,
+              app_siam.toddc_saacntxn_a_1_prt_day20150609,
+              app_siam.toddc_saacntxn_a_1_prt_day20150610,
+              app_siam.toddc_saacntxn_a_1_prt_day20150611,
+              app_siam.toddc_saacntxn_a_1_prt_day20150612,
+              app_siam.toddc_saacntxn_a_1_prt_day20150613,
+              app_siam.toddc_saacntxn_a_1_prt_day20150614,
+              app_siam.toddc_saacntxn_a_1_prt_day20150615,
+              app_siam.toddc_saacntxn_a_1_prt_day20150616,
+              app_siam.toddc_saacntxn_a_1_prt_day20150617,
+              app_siam.toddc_saacntxn_a_1_prt_day20150618,
+              app_siam.toddc_saacntxn_a_1_prt_day20150619,
+              app_siam.toddc_saacntxn_a_1_prt_day20150620,
+              app_siam.toddc_saacntxn_a_1_prt_day20150621,
+              app_siam.toddc_saacntxn_a_1_prt_day20150622,
+              app_siam.toddc_saacntxn_a_1_prt_day20150623,
+              app_siam.toddc_saacntxn_a_1_prt_day20150624,
+              app_siam.toddc_saacntxn_a_1_prt_day20150625,
+              app_siam.toddc_saacntxn_a_1_prt_day20150626,
+              app_siam.toddc_saacntxn_a_1_prt_day20150627,
+              app_siam.toddc_saacntxn_a_1_prt_day20150628,
+              app_siam.toddc_saacntxn_a_1_prt_day20150629,
+              app_siam.toddc_saacntxn_a_1_prt_day20150630,
+              app_siam.toddc_saacntxn_a_1_prt_day20150701,
+              app_siam.toddc_saacntxn_a_1_prt_day20150702,
+              app_siam.toddc_saacntxn_a_1_prt_day20150703,
+              app_siam.toddc_saacntxn_a_1_prt_day20150704,
+              app_siam.toddc_saacntxn_a_1_prt_day20150705,
+              app_siam.toddc_saacntxn_a_1_prt_day20150706,
+              app_siam.toddc_saacntxn_a_1_prt_day20150707,
+              app_siam.toddc_saacntxn_a_1_prt_day20150708,
+              app_siam.toddc_saacntxn_a_1_prt_day20150709,
+              app_siam.toddc_saacntxn_a_1_prt_day20150710,
+              app_siam.toddc_saacntxn_a_1_prt_day20150711,
+              app_siam.toddc_saacntxn_a_1_prt_day20150712,
+              app_siam.toddc_saacntxn_a_1_prt_day20150713,
+              app_siam.toddc_saacntxn_a_1_prt_day20150714,
+              app_siam.toddc_saacntxn_a_1_prt_day20150715,
+              app_siam.toddc_saacntxn_a_1_prt_day20150716,
+              app_siam.toddc_saacntxn_a_1_prt_day20150717,
+              app_siam.toddc_saacntxn_a_1_prt_day20150718,
+              app_siam.toddc_saacntxn_a_1_prt_day20150719,
+              app_siam.toddc_saacntxn_a_1_prt_day20150720,
+              app_siam.toddc_saacntxn_a_1_prt_day20150721,
+              app_siam.toddc_saacntxn_a_1_prt_day20150722,
+              app_siam.toddc_saacntxn_a_1_prt_day20150723,
+              app_siam.toddc_saacntxn_a_1_prt_day20150724,
+              app_siam.toddc_saacntxn_a_1_prt_day20150725,
+              app_siam.toddc_saacntxn_a_1_prt_day20150726,
+              app_siam.toddc_saacntxn_a_1_prt_day20150727,
+              app_siam.toddc_saacntxn_a_1_prt_day20150728,
+              app_siam.toddc_saacntxn_a_1_prt_day20150729,
+              app_siam.toddc_saacntxn_a_1_prt_day20150730,
+              app_siam.toddc_saacntxn_a_1_prt_day20150731,
+              app_siam.toddc_saacntxn_a_1_prt_day20150801,
+              app_siam.toddc_saacntxn_a_1_prt_day20150802,
+              app_siam.toddc_saacntxn_a_1_prt_day20150803,
+              app_siam.toddc_saacntxn_a_1_prt_day20150804,
+              app_siam.toddc_saacntxn_a_1_prt_day20150805,
+              app_siam.toddc_saacntxn_a_1_prt_day20150806,
+              app_siam.toddc_saacntxn_a_1_prt_day20150807,
+              app_siam.toddc_saacntxn_a_1_prt_day20150808,
+              app_siam.toddc_saacntxn_a_1_prt_day20150809,
+              app_siam.toddc_saacntxn_a_1_prt_day20150810,
+              app_siam.toddc_saacntxn_a_1_prt_day20150811,
+              app_siam.toddc_saacntxn_a_1_prt_day20150812,
+              app_siam.toddc_saacntxn_a_1_prt_day20150813,
+              app_siam.toddc_saacntxn_a_1_prt_day20150814,
+              app_siam.toddc_saacntxn_a_1_prt_day20150815,
+              app_siam.toddc_saacntxn_a_1_prt_day20150816,
+              app_siam.toddc_saacntxn_a_1_prt_day20150817,
+              app_siam.toddc_saacntxn_a_1_prt_day20150818,
+              app_siam.toddc_saacntxn_a_1_prt_day20150819,
+              app_siam.toddc_saacntxn_a_1_prt_day20150820,
+              app_siam.toddc_saacntxn_a_1_prt_day20150821,
+              app_siam.toddc_saacntxn_a_1_prt_day20150822,
+              app_siam.toddc_saacntxn_a_1_prt_day20150823,
+              app_siam.toddc_saacntxn_a_1_prt_day20150824,
+              app_siam.toddc_saacntxn_a_1_prt_day20150825,
+              app_siam.toddc_saacntxn_a_1_prt_day20150826,
+              app_siam.toddc_saacntxn_a_1_prt_day20150827,
+              app_siam.toddc_saacntxn_a_1_prt_day20150828,
+              app_siam.toddc_saacntxn_a_1_prt_day20150829,
+              app_siam.toddc_saacntxn_a_1_prt_day20150830,
+              app_siam.toddc_saacntxn_a_1_prt_day20150831,
+              app_siam.toddc_saacntxn_a_1_prt_day20150901,
+              app_siam.toddc_saacntxn_a_1_prt_day20150902,
+              app_siam.toddc_saacntxn_a_1_prt_day20150903,
+              app_siam.toddc_saacntxn_a_1_prt_day20150904,
+              app_siam.toddc_saacntxn_a_1_prt_day20150905,
+              app_siam.toddc_saacntxn_a_1_prt_day20150906,
+              app_siam.toddc_saacntxn_a_1_prt_day20150907,
+              app_siam.toddc_saacntxn_a_1_prt_day20150908,
+              app_siam.toddc_saacntxn_a_1_prt_day20150909,
+              app_siam.toddc_saacntxn_a_1_prt_day20150910,
+              app_siam.toddc_saacntxn_a_1_prt_day20150911,
+              app_siam.toddc_saacntxn_a_1_prt_day20150912,
+              app_siam.toddc_saacntxn_a_1_prt_day20150913,
+              app_siam.toddc_saacntxn_a_1_prt_day20150914,
+              app_siam.toddc_saacntxn_a_1_prt_day20150915,
+              app_siam.toddc_saacntxn_a_1_prt_day20150916,
+              app_siam.toddc_saacntxn_a_1_prt_day20150917,
+              app_siam.toddc_saacntxn_a_1_prt_day20150918,
+              app_siam.toddc_saacntxn_a_1_prt_day20150919,
+              app_siam.toddc_saacntxn_a_1_prt_day20150920,
+              app_siam.toddc_saacntxn_a_1_prt_day20150921,
+              app_siam.toddc_saacntxn_a_1_prt_day20150922,
+              app_siam.toddc_saacntxn_a_1_prt_day20150923,
+              app_siam.toddc_saacntxn_a_1_prt_day20150924,
+              app_siam.toddc_saacntxn_a_1_prt_day20150925,
+              app_siam.toddc_saacntxn_a_1_prt_day20150926,
+              app_siam.toddc_saacntxn_a_1_prt_day20150927,
+              app_siam.toddc_saacntxn_a_1_prt_day20150928,
+              app_siam.toddc_saacntxn_a_1_prt_day20150929,
+              app_siam.toddc_saacntxn_a_1_prt_day20150930,
+              app_siam.toddc_saacntxn_a_1_prt_day20151001,
+              app_siam.toddc_saacntxn_a_1_prt_day20151002,
+              app_siam.toddc_saacntxn_a_1_prt_day20151003,
+              app_siam.toddc_saacntxn_a_1_prt_day20151004,
+              app_siam.toddc_saacntxn_a_1_prt_day20151005,
+              app_siam.toddc_saacntxn_a_1_prt_day20151006,
+              app_siam.toddc_saacntxn_a_1_prt_day20151007,
+              app_siam.toddc_saacntxn_a_1_prt_day20151008,
+              app_siam.toddc_saacntxn_a_1_prt_day20151009,
+              app_siam.toddc_saacntxn_a_1_prt_day20151010,
+              app_siam.toddc_saacntxn_a_1_prt_day20151011,
+              app_siam.toddc_saacntxn_a_1_prt_day20151012,
+              app_siam.toddc_saacntxn_a_1_prt_day20151013,
+              app_siam.toddc_saacntxn_a_1_prt_day20151014,
+              app_siam.toddc_saacntxn_a_1_prt_day20151015,
+              app_siam.toddc_saacntxn_a_1_prt_day20151016,
+              app_siam.toddc_saacntxn_a_1_prt_day20151017,
+              app_siam.toddc_saacntxn_a_1_prt_day20151018,
+              app_siam.toddc_saacntxn_a_1_prt_day20151019,
+              app_siam.toddc_saacntxn_a_1_prt_day20151020,
+              app_siam.toddc_saacntxn_a_1_prt_day20151021,
+              app_siam.toddc_saacntxn_a_1_prt_day20151022,
+              app_siam.toddc_saacntxn_a_1_prt_day20151023,
+              app_siam.toddc_saacntxn_a_1_prt_day20151024,
+              app_siam.toddc_saacntxn_a_1_prt_day20151025,
+              app_siam.toddc_saacntxn_a_1_prt_day20151026,
+              app_siam.toddc_saacntxn_a_1_prt_day20151027,
+              app_siam.toddc_saacntxn_a_1_prt_day20151028,
+              app_siam.toddc_saacntxn_a_1_prt_day20151029,
+              app_siam.toddc_saacntxn_a_1_prt_day20151030,
+              app_siam.toddc_saacntxn_a_1_prt_day20151031,
+              app_siam.toddc_saacntxn_a_1_prt_day20151101,
+              app_siam.toddc_saacntxn_a_1_prt_day20151102,
+              app_siam.toddc_saacntxn_a_1_prt_day20151103,
+              app_siam.toddc_saacntxn_a_1_prt_day20151104,
+              app_siam.toddc_saacntxn_a_1_prt_day20151105,
+              app_siam.toddc_saacntxn_a_1_prt_day20151106,
+              app_siam.toddc_saacntxn_a_1_prt_day20151107,
+              app_siam.toddc_saacntxn_a_1_prt_day20151108,
+              app_siam.toddc_saacntxn_a_1_prt_day20151109,
+              app_siam.toddc_saacntxn_a_1_prt_day20151110,
+              app_siam.toddc_saacntxn_a_1_prt_day20151111,
+              app_siam.toddc_saacntxn_a_1_prt_day20151112,
+              app_siam.toddc_saacntxn_a_1_prt_day20151113,
+              app_siam.toddc_saacntxn_a_1_prt_day20151114,
+              app_siam.toddc_saacntxn_a_1_prt_day20151115,
+              app_siam.toddc_saacntxn_a_1_prt_day20151116,
+              app_siam.toddc_saacntxn_a_1_prt_day20151117,
+              app_siam.toddc_saacntxn_a_1_prt_day20151118,
+              app_siam.toddc_saacntxn_a_1_prt_day20151119,
+              app_siam.toddc_saacntxn_a_1_prt_day20151120,
+              app_siam.toddc_saacntxn_a_1_prt_day20151121,
+              app_siam.toddc_saacntxn_a_1_prt_day20151122,
+              app_siam.toddc_saacntxn_a_1_prt_day20151123,
+              app_siam.toddc_saacntxn_a_1_prt_day20151124,
+              app_siam.toddc_saacntxn_a_1_prt_day20151125,
+              app_siam.toddc_saacntxn_a_1_prt_day20151126,
+              app_siam.toddc_saacntxn_a_1_prt_day20151127,
+              app_siam.toddc_saacntxn_a_1_prt_day20151128,
+              app_siam.toddc_saacntxn_a_1_prt_day20151129,
+              app_siam.toddc_saacntxn_a_1_prt_day20151130,
+              app_siam.toddc_saacntxn_a_1_prt_day20151201,
+              app_siam.toddc_saacntxn_a_1_prt_day20151202,
+              app_siam.toddc_saacntxn_a_1_prt_day20151203,
+              app_siam.toddc_saacntxn_a_1_prt_day20151204,
+              app_siam.toddc_saacntxn_a_1_prt_day20151205,
+              app_siam.toddc_saacntxn_a_1_prt_day20151206,
+              app_siam.toddc_saacntxn_a_1_prt_day20151207,
+              app_siam.toddc_saacntxn_a_1_prt_day20151208,
+              app_siam.toddc_saacntxn_a_1_prt_day20151209,
+              app_siam.toddc_saacntxn_a_1_prt_day20151210,
+              app_siam.toddc_saacntxn_a_1_prt_day20151211,
+              app_siam.toddc_saacntxn_a_1_prt_day20151212,
+              app_siam.toddc_saacntxn_a_1_prt_day20151213,
+              app_siam.toddc_saacntxn_a_1_prt_day20151214,
+              app_siam.toddc_saacntxn_a_1_prt_day20151215,
+              app_siam.toddc_saacntxn_a_1_prt_day20151216,
+              app_siam.toddc_saacntxn_a_1_prt_day20151217,
+              app_siam.toddc_saacntxn_a_1_prt_day20151218,
+              app_siam.toddc_saacntxn_a_1_prt_day20151219,
+              app_siam.toddc_saacntxn_a_1_prt_day20151220,
+              app_siam.toddc_saacntxn_a_1_prt_day20151221,
+              app_siam.toddc_saacntxn_a_1_prt_day20151222,
+              app_siam.toddc_saacntxn_a_1_prt_day20151223,
+              app_siam.toddc_saacntxn_a_1_prt_day20151224,
+              app_siam.toddc_saacntxn_a_1_prt_day20151225,
+              app_siam.toddc_saacntxn_a_1_prt_day20151226,
+              app_siam.toddc_saacntxn_a_1_prt_day20151227,
+              app_siam.toddc_saacntxn_a_1_prt_day20151228,
+              app_siam.toddc_saacntxn_a_1_prt_day20151229,
+              app_siam.toddc_saacntxn_a_1_prt_day20151230,
+              app_siam.toddc_saacntxn_a_1_prt_day20151231,
+              app_siam.toddc_saacntxn_a_1_prt_day20160101,
+              app_siam.toddc_saacntxn_a_1_prt_day20160102,
+              app_siam.toddc_saacntxn_a_1_prt_day20160103,
+              app_siam.toddc_saacntxn_a_1_prt_day20160104,
+              app_siam.toddc_saacntxn_a_1_prt_day20160105,
+              app_siam.toddc_saacntxn_a_1_prt_day20160106,
+              app_siam.toddc_saacntxn_a_1_prt_day20160107,
+              app_siam.toddc_saacntxn_a_1_prt_day20160108,
+              app_siam.toddc_saacntxn_a_1_prt_day20160109,
+              app_siam.toddc_saacntxn_a_1_prt_day20160110,
+              app_siam.toddc_saacntxn_a_1_prt_day20160111,
+              app_siam.toddc_saacntxn_a_1_prt_day20160112,
+              app_siam.toddc_saacntxn_a_1_prt_day20160113,
+              app_siam.toddc_saacntxn_a_1_prt_day20160114,
+              app_siam.toddc_saacntxn_a_1_prt_day20160115,
+              app_siam.toddc_saacntxn_a_1_prt_day20160116,
+              app_siam.toddc_saacntxn_a_1_prt_day20160117,
+              app_siam.toddc_saacntxn_a_1_prt_day20160118,
+              app_siam.toddc_saacntxn_a_1_prt_day20160119,
+              app_siam.toddc_saacntxn_a_1_prt_day20160120,
+              app_siam.toddc_saacntxn_a_1_prt_day20160121,
+              app_siam.toddc_saacntxn_a_1_prt_day20160122,
+              app_siam.toddc_saacntxn_a_1_prt_day20160123,
+              app_siam.toddc_saacntxn_a_1_prt_day20160124,
+              app_siam.toddc_saacntxn_a_1_prt_day20160125,
+              app_siam.toddc_saacntxn_a_1_prt_day20160126,
+              app_siam.toddc_saacntxn_a_1_prt_day20160127,
+              app_siam.toddc_saacntxn_a_1_prt_day20160128,
+              app_siam.toddc_saacntxn_a_1_prt_day20160129,
+              app_siam.toddc_saacntxn_a_1_prt_day20160130,
+              app_siam.toddc_saacntxn_a_1_prt_day20160131,
+              app_siam.toddc_saacntxn_a_1_prt_day20160201,
+              app_siam.toddc_saacntxn_a_1_prt_day20160202,
+              app_siam.toddc_saacntxn_a_1_prt_day20160203,
+              app_siam.toddc_saacntxn_a_1_prt_day20160204,
+              app_siam.toddc_saacntxn_a_1_prt_day20160205,
+              app_siam.toddc_saacntxn_a_1_prt_day20160206,
+              app_siam.toddc_saacntxn_a_1_prt_day20160207,
+              app_siam.toddc_saacntxn_a_1_prt_day20160208,
+              app_siam.toddc_saacntxn_a_1_prt_day20160209,
+              app_siam.toddc_saacntxn_a_1_prt_day20160210,
+              app_siam.toddc_saacntxn_a_1_prt_day20160211,
+              app_siam.toddc_saacntxn_a_1_prt_day20160212,
+              app_siam.toddc_saacntxn_a_1_prt_day20160213,
+              app_siam.toddc_saacntxn_a_1_prt_day20160214,
+              app_siam.toddc_saacntxn_a_1_prt_day20160215,
+              app_siam.toddc_saacntxn_a_1_prt_day20160216,
+              app_siam.toddc_saacntxn_a_1_prt_day20160217,
+              app_siam.toddc_saacntxn_a_1_prt_day20160218,
+              app_siam.toddc_saacntxn_a_1_prt_day20160219,
+              app_siam.toddc_saacntxn_a_1_prt_day20160220,
+              app_siam.toddc_saacntxn_a_1_prt_day20160221,
+              app_siam.toddc_saacntxn_a_1_prt_day20160222,
+              app_siam.toddc_saacntxn_a_1_prt_day20160223,
+              app_siam.toddc_saacntxn_a_1_prt_day20160224,
+              app_siam.toddc_saacntxn_a_1_prt_day20160225,
+              app_siam.toddc_saacntxn_a_1_prt_day20160226,
+              app_siam.toddc_saacntxn_a_1_prt_day20160227,
+              app_siam.toddc_saacntxn_a_1_prt_day20160228,
+              app_siam.toddc_saacntxn_a_1_prt_day20160229,
+              app_siam.toddc_saacntxn_a_1_prt_day20160301,
+              app_siam.toddc_saacntxn_a_1_prt_day20160302,
+              app_siam.toddc_saacntxn_a_1_prt_day20160303,
+              app_siam.toddc_saacntxn_a_1_prt_day20160304,
+              app_siam.toddc_saacntxn_a_1_prt_day20160305,
+              app_siam.toddc_saacntxn_a_1_prt_day20160306,
+              app_siam.toddc_saacntxn_a_1_prt_day20160307,
+              app_siam.toddc_saacntxn_a_1_prt_day20160308,
+              app_siam.toddc_saacntxn_a_1_prt_day20160309,
+              app_siam.toddc_saacntxn_a_1_prt_day20160310,
+              app_siam.toddc_saacntxn_a_1_prt_day20160311,
+              app_siam.toddc_saacntxn_a_1_prt_day20160312,
+              app_siam.toddc_saacntxn_a_1_prt_day20160313,
+              app_siam.toddc_saacntxn_a_1_prt_day20160314,
+              app_siam.toddc_saacntxn_a_1_prt_day20160315,
+              app_siam.toddc_saacntxn_a_1_prt_day20160316,
+              app_siam.toddc_saacntxn_a_1_prt_day20160317,
+              app_siam.toddc_saacntxn_a_1_prt_day20160318,
+              app_siam.toddc_saacntxn_a_1_prt_day20160319,
+              app_siam.toddc_saacntxn_a_1_prt_day20160320,
+              app_siam.toddc_saacntxn_a_1_prt_day20160321,
+              app_siam.toddc_saacntxn_a_1_prt_day20160322,
+              app_siam.toddc_saacntxn_a_1_prt_day20160323,
+              app_siam.toddc_saacntxn_a_1_prt_day20160324,
+              app_siam.toddc_saacntxn_a_1_prt_day20160325,
+              app_siam.toddc_saacntxn_a_1_prt_day20160326,
+              app_siam.toddc_saacntxn_a_1_prt_day20160327,
+              app_siam.toddc_saacntxn_a_1_prt_day20160328,
+              app_siam.toddc_saacntxn_a_1_prt_day20160329,
+              app_siam.toddc_saacntxn_a_1_prt_day20160330,
+              app_siam.toddc_saacntxn_a_1_prt_day20160331,
+              app_siam.toddc_saacntxn_a_1_prt_day20160401,
+              app_siam.toddc_saacntxn_a_1_prt_day20160402,
+              app_siam.toddc_saacntxn_a_1_prt_day20160403,
+              app_siam.toddc_saacntxn_a_1_prt_day20160404,
+              app_siam.toddc_saacntxn_a_1_prt_day20160405,
+              app_siam.toddc_saacntxn_a_1_prt_day20160406,
+              app_siam.toddc_saacntxn_a_1_prt_day20160407,
+              app_siam.toddc_saacntxn_a_1_prt_day20160408,
+              app_siam.toddc_saacntxn_a_1_prt_day20160409,
+              app_siam.toddc_saacntxn_a_1_prt_day20160410,
+              app_siam.toddc_saacntxn_a_1_prt_day20160411,
+              app_siam.toddc_saacntxn_a_1_prt_day20160412,
+              app_siam.toddc_saacntxn_a_1_prt_day20160413,
+              app_siam.toddc_saacntxn_a_1_prt_day20160414,
+              app_siam.toddc_saacntxn_a_1_prt_day20160415,
+              app_siam.toddc_saacntxn_a_1_prt_day20160416,
+              app_siam.toddc_saacntxn_a_1_prt_day20160417,
+              app_siam.toddc_saacntxn_a_1_prt_day20160418,
+              app_siam.toddc_saacntxn_a_1_prt_day20160419,
+              app_siam.toddc_saacntxn_a_1_prt_day20160420,
+              app_siam.toddc_saacntxn_a_1_prt_day20160421,
+              app_siam.toddc_saacntxn_a_1_prt_day20160422,
+              app_siam.toddc_saacntxn_a_1_prt_day20160423,
+              app_siam.toddc_saacntxn_a_1_prt_day20160424,
+              app_siam.toddc_saacntxn_a_1_prt_day20160425,
+              app_siam.toddc_saacntxn_a_1_prt_day20160426,
+              app_siam.toddc_saacntxn_a_1_prt_day20160427,
+              app_siam.toddc_saacntxn_a_1_prt_day20160428,
+              app_siam.toddc_saacntxn_a_1_prt_day20160429,
+              app_siam.toddc_saacntxn_a_1_prt_day20160430,
+              app_siam.toddc_saacntxn_a_1_prt_day20160501,
+              app_siam.toddc_saacntxn_a_1_prt_day20160502,
+              app_siam.toddc_saacntxn_a_1_prt_day20160503,
+              app_siam.toddc_saacntxn_a_1_prt_day20160504,
+              app_siam.toddc_saacntxn_a_1_prt_day20160505,
+              app_siam.toddc_saacntxn_a_1_prt_day20160506,
+              app_siam.toddc_saacntxn_a_1_prt_day20160507,
+              app_siam.toddc_saacntxn_a_1_prt_day20160508,
+              app_siam.toddc_saacntxn_a_1_prt_day20160509,
+              app_siam.toddc_saacntxn_a_1_prt_day20160510,
+              app_siam.toddc_saacntxn_a_1_prt_day20160511,
+              app_siam.toddc_saacntxn_a_1_prt_day20160512,
+              app_siam.toddc_saacntxn_a_1_prt_day20160513,
+              app_siam.toddc_saacntxn_a_1_prt_day20160514,
+              app_siam.toddc_saacntxn_a_1_prt_day20160515,
+              app_siam.toddc_saacntxn_a_1_prt_day20160516,
+              app_siam.toddc_saacntxn_a_1_prt_day20160517,
+              app_siam.toddc_saacntxn_a_1_prt_day20160518,
+              app_siam.toddc_saacntxn_a_1_prt_day20160519,
+              app_siam.toddc_saacntxn_a_1_prt_day20160520,
+              app_siam.toddc_saacntxn_a_1_prt_day20160521,
+              app_siam.toddc_saacntxn_a_1_prt_day20160522,
+              app_siam.toddc_saacntxn_a_1_prt_day20160523,
+              app_siam.toddc_saacntxn_a_1_prt_day20160524,
+              app_siam.toddc_saacntxn_a_1_prt_day20160525,
+              app_siam.toddc_saacntxn_a_1_prt_day20160526,
+              app_siam.toddc_saacntxn_a_1_prt_day20160527,
+              app_siam.toddc_saacntxn_a_1_prt_day20160528,
+              app_siam.toddc_saacntxn_a_1_prt_day20160529,
+              app_siam.toddc_saacntxn_a_1_prt_day20160530,
+              app_siam.toddc_saacntxn_a_1_prt_day20160531,
+              app_siam.toddc_saacntxn_a_1_prt_day20160601,
+              app_siam.toddc_saacntxn_a_1_prt_day20160602,
+              app_siam.toddc_saacntxn_a_1_prt_day20160603,
+              app_siam.toddc_saacntxn_a_1_prt_day20160604,
+              app_siam.toddc_saacntxn_a_1_prt_day20160605,
+              app_siam.toddc_saacntxn_a_1_prt_day20160606,
+              app_siam.toddc_saacntxn_a_1_prt_day20160607,
+              app_siam.toddc_saacntxn_a_1_prt_day20160608,
+              app_siam.toddc_saacntxn_a_1_prt_day20160609,
+              app_siam.toddc_saacntxn_a_1_prt_day20160610,
+              app_siam.toddc_saacntxn_a_1_prt_day20160611,
+              app_siam.toddc_saacntxn_a_1_prt_day20160612,
+              app_siam.toddc_saacntxn_a_1_prt_day20160613,
+              app_siam.toddc_saacntxn_a_1_prt_day20160614,
+              app_siam.toddc_saacntxn_a_1_prt_day20160615,
+              app_siam.toddc_saacntxn_a_1_prt_day20160616,
+              app_siam.toddc_saacntxn_a_1_prt_day20160617,
+              app_siam.toddc_saacntxn_a_1_prt_day20160618,
+              app_siam.toddc_saacntxn_a_1_prt_day20160619,
+              app_siam.toddc_saacntxn_a_1_prt_day20160620,
+              app_siam.toddc_saacntxn_a_1_prt_day20160621,
+              app_siam.toddc_saacntxn_a_1_prt_day20160622,
+              app_siam.toddc_saacntxn_a_1_prt_day20160623,
+              app_siam.toddc_saacntxn_a_1_prt_day20160624,
+              app_siam.toddc_saacntxn_a_1_prt_day20160625,
+              app_siam.toddc_saacntxn_a_1_prt_day20160626,
+              app_siam.toddc_saacntxn_a_1_prt_day20160627,
+              app_siam.toddc_saacntxn_a_1_prt_day20160628,
+              app_siam.toddc_saacntxn_a_1_prt_day20160629,
+              app_siam.toddc_saacntxn_a_1_prt_day20160630,
+              app_siam.toddc_saacntxn_a_1_prt_day20160701,
+              app_siam.toddc_saacntxn_a_1_prt_day20160702,
+              app_siam.toddc_saacntxn_a_1_prt_day20160703,
+              app_siam.toddc_saacntxn_a_1_prt_day20160704,
+              app_siam.toddc_saacntxn_a_1_prt_day20160705,
+              app_siam.toddc_saacntxn_a_1_prt_day20160706,
+              app_siam.toddc_saacntxn_a_1_prt_day20160707,
+              app_siam.toddc_saacntxn_a_1_prt_day20160708,
+              app_siam.toddc_saacntxn_a_1_prt_day20160709,
+              app_siam.toddc_saacntxn_a_1_prt_day20160710,
+              app_siam.toddc_saacntxn_a_1_prt_day20160711,
+              app_siam.toddc_saacntxn_a_1_prt_day20160712,
+              app_siam.toddc_saacntxn_a_1_prt_day20160713,
+              app_siam.toddc_saacntxn_a_1_prt_day20160714,
+              app_siam.toddc_saacntxn_a_1_prt_day20160715,
+              app_siam.toddc_saacntxn_a_1_prt_day20160716,
+              app_siam.toddc_saacntxn_a_1_prt_day20160717,
+              app_siam.toddc_saacntxn_a_1_prt_day20160718,
+              app_siam.toddc_saacntxn_a_1_prt_day20160719,
+              app_siam.toddc_saacntxn_a_1_prt_day20160720,
+              app_siam.toddc_saacntxn_a_1_prt_day20160721,
+              app_siam.toddc_saacntxn_a_1_prt_day20160722,
+              app_siam.toddc_saacntxn_a_1_prt_day20160723,
+              app_siam.toddc_saacntxn_a_1_prt_day20160724,
+              app_siam.toddc_saacntxn_a_1_prt_day20160725,
+              app_siam.toddc_saacntxn_a_1_prt_day20160726,
+              app_siam.toddc_saacntxn_a_1_prt_day20160727,
+              app_siam.toddc_saacntxn_a_1_prt_day20160728,
+              app_siam.toddc_saacntxn_a_1_prt_day20160729,
+              app_siam.toddc_saacntxn_a_1_prt_day20160730,
+              app_siam.toddc_saacntxn_a_1_prt_day20160731,
+              app_siam.toddc_saacntxn_a_1_prt_day20160801,
+              app_siam.toddc_saacntxn_a_1_prt_day20160802,
+              app_siam.toddc_saacntxn_a_1_prt_day20160803,
+              app_siam.toddc_saacntxn_a_1_prt_day20160804,
+              app_siam.toddc_saacntxn_a_1_prt_day20160805,
+              app_siam.toddc_saacntxn_a_1_prt_day20160806,
+              app_siam.toddc_saacntxn_a_1_prt_day20160807,
+              app_siam.toddc_saacntxn_a_1_prt_day20160808,
+              app_siam.toddc_saacntxn_a_1_prt_day20160809,
+              app_siam.toddc_saacntxn_a_1_prt_day20160810,
+              app_siam.toddc_saacntxn_a_1_prt_day20160811,
+              app_siam.toddc_saacntxn_a_1_prt_day20160812,
+              app_siam.toddc_saacntxn_a_1_prt_day20160813,
+              app_siam.toddc_saacntxn_a_1_prt_day20160814,
+              app_siam.toddc_saacntxn_a_1_prt_day20160815,
+              app_siam.toddc_saacntxn_a_1_prt_day20160816,
+              app_siam.toddc_saacntxn_a_1_prt_day20160817,
+              app_siam.toddc_saacntxn_a_1_prt_day20160818,
+              app_siam.toddc_saacntxn_a_1_prt_day20160819,
+              app_siam.toddc_saacntxn_a_1_prt_day20160820,
+              app_siam.toddc_saacntxn_a_1_prt_day20160821,
+              app_siam.toddc_saacntxn_a_1_prt_day20160822,
+              app_siam.toddc_saacntxn_a_1_prt_day20160823,
+              app_siam.toddc_saacntxn_a_1_prt_day20160824,
+              app_siam.toddc_saacntxn_a_1_prt_day20160825,
+              app_siam.toddc_saacntxn_a_1_prt_day20160826,
+              app_siam.toddc_saacntxn_a_1_prt_day20160827,
+              app_siam.toddc_saacntxn_a_1_prt_day20160828,
+              app_siam.toddc_saacntxn_a_1_prt_day20160829,
+              app_siam.toddc_saacntxn_a_1_prt_day20160830,
+              app_siam.toddc_saacntxn_a_1_prt_day20160831,
+              app_siam.toddc_saacntxn_a_1_prt_day20160901,
+              app_siam.toddc_saacntxn_a_1_prt_day20160902,
+              app_siam.toddc_saacntxn_a_1_prt_day20160903,
+              app_siam.toddc_saacntxn_a_1_prt_day20160904,
+              app_siam.toddc_saacntxn_a_1_prt_day20160905,
+              app_siam.toddc_saacntxn_a_1_prt_day20160906,
+              app_siam.toddc_saacntxn_a_1_prt_day20160907,
+              app_siam.toddc_saacntxn_a_1_prt_day20160908,
+              app_siam.toddc_saacntxn_a_1_prt_day20160909,
+              app_siam.toddc_saacntxn_a_1_prt_day20160910,
+              app_siam.toddc_saacntxn_a_1_prt_day20160911,
+              app_siam.toddc_saacntxn_a_1_prt_day20160912,
+              app_siam.toddc_saacntxn_a_1_prt_day20160913,
+              app_siam.toddc_saacntxn_a_1_prt_day20160914,
+              app_siam.toddc_saacntxn_a_1_prt_day20160915,
+              app_siam.toddc_saacntxn_a_1_prt_day20160916,
+              app_siam.toddc_saacntxn_a_1_prt_day20160917,
+              app_siam.toddc_saacntxn_a_1_prt_day20160918,
+              app_siam.toddc_saacntxn_a_1_prt_day20160919,
+              app_siam.toddc_saacntxn_a_1_prt_day20160920,
+              app_siam.toddc_saacntxn_a_1_prt_day20160921,
+              app_siam.toddc_saacntxn_a_1_prt_day20160922,
+              app_siam.toddc_saacntxn_a_1_prt_day20160923,
+              app_siam.toddc_saacntxn_a_1_prt_day20160924,
+              app_siam.toddc_saacntxn_a_1_prt_day20160925,
+              app_siam.toddc_saacntxn_a_1_prt_day20160926,
+              app_siam.toddc_saacntxn_a_1_prt_day20160927,
+              app_siam.toddc_saacntxn_a_1_prt_day20160928,
+              app_siam.toddc_saacntxn_a_1_prt_day20160929,
+              app_siam.toddc_saacntxn_a_1_prt_day20160930,
+              app_siam.toddc_saacntxn_a_1_prt_day20161001,
+              app_siam.toddc_saacntxn_a_1_prt_day20161002,
+              app_siam.toddc_saacntxn_a_1_prt_day20161003,
+              app_siam.toddc_saacntxn_a_1_prt_day20161004,
+              app_siam.toddc_saacntxn_a_1_prt_day20161005,
+              app_siam.toddc_saacntxn_a_1_prt_day20161006,
+              app_siam.toddc_saacntxn_a_1_prt_day20161007,
+              app_siam.toddc_saacntxn_a_1_prt_day20161008,
+              app_siam.toddc_saacntxn_a_1_prt_day20161009,
+              app_siam.toddc_saacntxn_a_1_prt_day20161010,
+              app_siam.toddc_saacntxn_a_1_prt_day20161011,
+              app_siam.toddc_saacntxn_a_1_prt_day20161012,
+              app_siam.toddc_saacntxn_a_1_prt_day20161013,
+              app_siam.toddc_saacntxn_a_1_prt_day20161014,
+              app_siam.toddc_saacntxn_a_1_prt_day20161015,
+              app_siam.toddc_saacntxn_a_1_prt_day20161016,
+              app_siam.toddc_saacntxn_a_1_prt_day20161017,
+              app_siam.toddc_saacntxn_a_1_prt_day20161018,
+              app_siam.toddc_saacntxn_a_1_prt_day20161019,
+              app_siam.toddc_saacntxn_a_1_prt_day20161020,
+              app_siam.toddc_saacntxn_a_1_prt_day20161021,
+              app_siam.toddc_saacntxn_a_1_prt_day20161022,
+              app_siam.toddc_saacntxn_a_1_prt_day20161023,
+              app_siam.toddc_saacntxn_a_1_prt_day20161024,
+              app_siam.toddc_saacntxn_a_1_prt_day20161025,
+              app_siam.toddc_saacntxn_a_1_prt_day20161026,
+              app_siam.toddc_saacntxn_a_1_prt_day20161027,
+              app_siam.toddc_saacntxn_a_1_prt_day20161028,
+              app_siam.toddc_saacntxn_a_1_prt_day20161029,
+              app_siam.toddc_saacntxn_a_1_prt_day20161030,
+              app_siam.toddc_saacntxn_a_1_prt_day20161031,
+              app_siam.toddc_saacntxn_a_1_prt_day20161101,
+              app_siam.toddc_saacntxn_a_1_prt_day20161102,
+              app_siam.toddc_saacntxn_a_1_prt_day20161103,
+              app_siam.toddc_saacntxn_a_1_prt_day20161104,
+              app_siam.toddc_saacntxn_a_1_prt_day20161105,
+              app_siam.toddc_saacntxn_a_1_prt_day20161106,
+              app_siam.toddc_saacntxn_a_1_prt_day20161107,
+              app_siam.toddc_saacntxn_a_1_prt_day20161108,
+              app_siam.toddc_saacntxn_a_1_prt_day20161109,
+              app_siam.toddc_saacntxn_a_1_prt_day20161110,
+              app_siam.toddc_saacntxn_a_1_prt_day20161111,
+              app_siam.toddc_saacntxn_a_1_prt_day20161112,
+              app_siam.toddc_saacntxn_a_1_prt_day20161113,
+              app_siam.toddc_saacntxn_a_1_prt_day20161114,
+              app_siam.toddc_saacntxn_a_1_prt_day20161115,
+              app_siam.toddc_saacntxn_a_1_prt_day20161116,
+              app_siam.toddc_saacntxn_a_1_prt_day20161117,
+              app_siam.toddc_saacntxn_a_1_prt_day20161118,
+              app_siam.toddc_saacntxn_a_1_prt_day20161119,
+              app_siam.toddc_saacntxn_a_1_prt_day20161120,
+              app_siam.toddc_saacntxn_a_1_prt_day20161121,
+              app_siam.toddc_saacntxn_a_1_prt_day20161122,
+              app_siam.toddc_saacntxn_a_1_prt_day20161123,
+              app_siam.toddc_saacntxn_a_1_prt_day20161124,
+              app_siam.toddc_saacntxn_a_1_prt_day20161125,
+              app_siam.toddc_saacntxn_a_1_prt_day20161126,
+              app_siam.toddc_saacntxn_a_1_prt_day20161127,
+              app_siam.toddc_saacntxn_a_1_prt_day20161128,
+              app_siam.toddc_saacntxn_a_1_prt_day20161129,
+              app_siam.toddc_saacntxn_a_1_prt_day20161130,
+              app_siam.toddc_saacntxn_a_1_prt_day20161201,
+              app_siam.toddc_saacntxn_a_1_prt_day20161202,
+              app_siam.toddc_saacntxn_a_1_prt_day20161203,
+              app_siam.toddc_saacntxn_a_1_prt_day20161204,
+              app_siam.toddc_saacntxn_a_1_prt_day20161205,
+              app_siam.toddc_saacntxn_a_1_prt_day20161206,
+              app_siam.toddc_saacntxn_a_1_prt_day20161207,
+              app_siam.toddc_saacntxn_a_1_prt_day20161208,
+              app_siam.toddc_saacntxn_a_1_prt_day20161209,
+              app_siam.toddc_saacntxn_a_1_prt_day20161210,
+              app_siam.toddc_saacntxn_a_1_prt_day20161211,
+              app_siam.toddc_saacntxn_a_1_prt_day20161212,
+              app_siam.toddc_saacntxn_a_1_prt_day20161213,
+              app_siam.toddc_saacntxn_a_1_prt_day20161214,
+              app_siam.toddc_saacntxn_a_1_prt_day20161215,
+              app_siam.toddc_saacntxn_a_1_prt_day20161216,
+              app_siam.toddc_saacntxn_a_1_prt_day20161217,
+              app_siam.toddc_saacntxn_a_1_prt_day20161218,
+              app_siam.toddc_saacntxn_a_1_prt_day20161219,
+              app_siam.toddc_saacntxn_a_1_prt_day20161220,
+              app_siam.toddc_saacntxn_a_1_prt_day20161221,
+              app_siam.toddc_saacntxn_a_1_prt_day20161222,
+              app_siam.toddc_saacntxn_a_1_prt_day20161223,
+              app_siam.toddc_saacntxn_a_1_prt_day20161224,
+              app_siam.toddc_saacntxn_a_1_prt_day20161225,
+              app_siam.toddc_saacntxn_a_1_prt_day20161226,
+              app_siam.toddc_saacntxn_a_1_prt_day20161227,
+              app_siam.toddc_saacntxn_a_1_prt_day20161228,
+              app_siam.toddc_saacntxn_a_1_prt_day20161229,
+              app_siam.toddc_saacntxn_a_1_prt_day20161230,
+              app_siam.toddc_saacntxn_a_1_prt_day20161231,
+              app_siam.toddc_saacntxn_a_1_prt_day20170101,
+              app_siam.toddc_saacntxn_a_1_prt_day20170102,
+              app_siam.toddc_saacntxn_a_1_prt_day20170103,
+              app_siam.toddc_saacntxn_a_1_prt_day20170104,
+              app_siam.toddc_saacntxn_a_1_prt_day20170105,
+              app_siam.toddc_saacntxn_a_1_prt_day20170106,
+              app_siam.toddc_saacntxn_a_1_prt_day20170107,
+              app_siam.toddc_saacntxn_a_1_prt_day20170108,
+              app_siam.toddc_saacntxn_a_1_prt_day20170109,
+              app_siam.toddc_saacntxn_a_1_prt_day20170110,
+              app_siam.toddc_saacntxn_a_1_prt_day20170111,
+              app_siam.toddc_saacntxn_a_1_prt_day20170112,
+              app_siam.toddc_saacntxn_a_1_prt_day20170113,
+              app_siam.toddc_saacntxn_a_1_prt_day20170114,
+              app_siam.toddc_saacntxn_a_1_prt_day20170115,
+              app_siam.toddc_saacntxn_a_1_prt_day20170116,
+              app_siam.toddc_saacntxn_a_1_prt_day20170117,
+              app_siam.toddc_saacntxn_a_1_prt_day20170118,
+              app_siam.toddc_saacntxn_a_1_prt_day20170119,
+              app_siam.toddc_saacntxn_a_1_prt_day20170120,
+              app_siam.toddc_saacntxn_a_1_prt_day20170121,
+              app_siam.toddc_saacntxn_a_1_prt_day20170122,
+              app_siam.toddc_saacntxn_a_1_prt_day20170123,
+              app_siam.toddc_saacntxn_a_1_prt_day20170124,
+              app_siam.toddc_saacntxn_a_1_prt_day20170125,
+              app_siam.toddc_saacntxn_a_1_prt_day20170126,
+              app_siam.toddc_saacntxn_a_1_prt_day20170127,
+              app_siam.toddc_saacntxn_a_1_prt_day20170128,
+              app_siam.toddc_saacntxn_a_1_prt_day20170129,
+              app_siam.toddc_saacntxn_a_1_prt_day20170130,
+              app_siam.toddc_saacntxn_a_1_prt_day20170131,
+              app_siam.toddc_saacntxn_a_1_prt_day20170201,
+              app_siam.toddc_saacntxn_a_1_prt_day20170202,
+              app_siam.toddc_saacntxn_a_1_prt_day20170203,
+              app_siam.toddc_saacntxn_a_1_prt_day20170204,
+              app_siam.toddc_saacntxn_a_1_prt_day20170205,
+              app_siam.toddc_saacntxn_a_1_prt_day20170206,
+              app_siam.toddc_saacntxn_a_1_prt_day20170207,
+              app_siam.toddc_saacntxn_a_1_prt_day20170208,
+              app_siam.toddc_saacntxn_a_1_prt_day20170209,
+              app_siam.toddc_saacntxn_a_1_prt_day20170210,
+              app_siam.toddc_saacntxn_a_1_prt_day20170211,
+              app_siam.toddc_saacntxn_a_1_prt_day20170212,
+              app_siam.toddc_saacntxn_a_1_prt_day20170213,
+              app_siam.toddc_saacntxn_a_1_prt_day20170214,
+              app_siam.toddc_saacntxn_a_1_prt_day20170215,
+              app_siam.toddc_saacntxn_a_1_prt_day20170216,
+              app_siam.toddc_saacntxn_a_1_prt_day20170217,
+              app_siam.toddc_saacntxn_a_1_prt_day20170218,
+              app_siam.toddc_saacntxn_a_1_prt_day20170219,
+              app_siam.toddc_saacntxn_a_1_prt_day20170220,
+              app_siam.toddc_saacntxn_a_1_prt_day20170221,
+              app_siam.toddc_saacntxn_a_1_prt_day20170222,
+              app_siam.toddc_saacntxn_a_1_prt_day20170223,
+              app_siam.toddc_saacntxn_a_1_prt_day20170224,
+              app_siam.toddc_saacntxn_a_1_prt_day20170225,
+              app_siam.toddc_saacntxn_a_1_prt_day20170226,
+              app_siam.toddc_saacntxn_a_1_prt_day20170227,
+              app_siam.toddc_saacntxn_a_1_prt_day20170228,
+              app_siam.toddc_saacntxn_a_1_prt_day20170301,
+              app_siam.toddc_saacntxn_a_1_prt_day20170302,
+              app_siam.toddc_saacntxn_a_1_prt_day20170303,
+              app_siam.toddc_saacntxn_a_1_prt_day20170304,
+              app_siam.toddc_saacntxn_a_1_prt_day20170305,
+              app_siam.toddc_saacntxn_a_1_prt_day20170306,
+              app_siam.toddc_saacntxn_a_1_prt_day20170307,
+              app_siam.toddc_saacntxn_a_1_prt_day20170308,
+              app_siam.toddc_saacntxn_a_1_prt_day20170309,
+              app_siam.toddc_saacntxn_a_1_prt_day20170310,
+              app_siam.toddc_saacntxn_a_1_prt_day20170311,
+              app_siam.toddc_saacntxn_a_1_prt_day20170312,
+              app_siam.toddc_saacntxn_a_1_prt_day20170313,
+              app_siam.toddc_saacntxn_a_1_prt_day20170314,
+              app_siam.toddc_saacntxn_a_1_prt_day20170315,
+              app_siam.toddc_saacntxn_a_1_prt_day20170316,
+              app_siam.toddc_saacntxn_a_1_prt_day20170317,
+              app_siam.toddc_saacntxn_a_1_prt_day20170318,
+              app_siam.toddc_saacntxn_a_1_prt_day20170319,
+              app_siam.toddc_saacntxn_a_1_prt_day20170320,
+              app_siam.toddc_saacntxn_a_1_prt_day20170321,
+              app_siam.toddc_saacntxn_a_1_prt_day20170322,
+              app_siam.toddc_saacntxn_a_1_prt_day20170323,
+              app_siam.toddc_saacntxn_a_1_prt_day20170324,
+              app_siam.toddc_saacntxn_a_1_prt_day20170325,
+              app_siam.toddc_saacntxn_a_1_prt_day20170326,
+              app_siam.toddc_saacntxn_a_1_prt_day20170327,
+              app_siam.toddc_saacntxn_a_1_prt_day20170328,
+              app_siam.toddc_saacntxn_a_1_prt_day20170329,
+              app_siam.toddc_saacntxn_a_1_prt_day20170330,
+              app_siam.toddc_saacntxn_a_1_prt_day20170331,
+              app_siam.toddc_saacntxn_a_1_prt_day20170401,
+              app_siam.toddc_saacntxn_a_1_prt_day20170402,
+              app_siam.toddc_saacntxn_a_1_prt_day20170403,
+              app_siam.toddc_saacntxn_a_1_prt_day20170404,
+              app_siam.toddc_saacntxn_a_1_prt_day20170405,
+              app_siam.toddc_saacntxn_a_1_prt_day20170406,
+              app_siam.toddc_saacntxn_a_1_prt_day20170407,
+              app_siam.toddc_saacntxn_a_1_prt_day20170408,
+              app_siam.toddc_saacntxn_a_1_prt_day20170409,
+              app_siam.toddc_saacntxn_a_1_prt_day20170410,
+              app_siam.toddc_saacntxn_a_1_prt_day20170411,
+              app_siam.toddc_saacntxn_a_1_prt_day20170412,
+              app_siam.toddc_saacntxn_a_1_prt_day20170413,
+              app_siam.toddc_saacntxn_a_1_prt_day20170414,
+              app_siam.toddc_saacntxn_a_1_prt_day20170415,
+              app_siam.toddc_saacntxn_a_1_prt_day20170416,
+              app_siam.toddc_saacntxn_a_1_prt_day20170417,
+              app_siam.toddc_saacntxn_a_1_prt_day20170418,
+              app_siam.toddc_saacntxn_a_1_prt_day20170419,
+              app_siam.toddc_saacntxn_a_1_prt_day20170420,
+              app_siam.toddc_saacntxn_a_1_prt_day20170421,
+              app_siam.toddc_saacntxn_a_1_prt_day20170422,
+              app_siam.toddc_saacntxn_a_1_prt_day20170423,
+              app_siam.toddc_saacntxn_a_1_prt_day20170424,
+              app_siam.toddc_saacntxn_a_1_prt_day20170425,
+              app_siam.toddc_saacntxn_a_1_prt_day20170426,
+              app_siam.toddc_saacntxn_a_1_prt_day20170427,
+              app_siam.toddc_saacntxn_a_1_prt_day20170428,
+              app_siam.toddc_saacntxn_a_1_prt_day20170429,
+              app_siam.toddc_saacntxn_a_1_prt_day20170430,
+              app_siam.toddc_saacntxn_a_1_prt_day20170501,
+              app_siam.toddc_saacntxn_a_1_prt_day20170502,
+              app_siam.toddc_saacntxn_a_1_prt_day20170503,
+              app_siam.toddc_saacntxn_a_1_prt_day20170504,
+              app_siam.toddc_saacntxn_a_1_prt_day20170505,
+              app_siam.toddc_saacntxn_a_1_prt_day20170506,
+              app_siam.toddc_saacntxn_a_1_prt_day20170507,
+              app_siam.toddc_saacntxn_a_1_prt_day20170508,
+              app_siam.toddc_saacntxn_a_1_prt_day20170509,
+              app_siam.toddc_saacntxn_a_1_prt_day20170510,
+              app_siam.toddc_saacntxn_a_1_prt_day20170511,
+              app_siam.toddc_saacntxn_a_1_prt_day20170512,
+              app_siam.toddc_saacntxn_a_1_prt_day20170513,
+              app_siam.toddc_saacntxn_a_1_prt_day20170514,
+              app_siam.toddc_saacntxn_a_1_prt_day20170515,
+              app_siam.toddc_saacntxn_a_1_prt_day20170516,
+              app_siam.toddc_saacntxn_a_1_prt_day20170517,
+              app_siam.toddc_saacntxn_a_1_prt_day20170518,
+              app_siam.toddc_saacntxn_a_1_prt_day20170519,
+              app_siam.toddc_saacntxn_a_1_prt_day20170520,
+              app_siam.toddc_saacntxn_a_1_prt_day20170521,
+              app_siam.toddc_saacntxn_a_1_prt_day20170522,
+              app_siam.toddc_saacntxn_a_1_prt_day20170523,
+              app_siam.toddc_saacntxn_a_1_prt_day20170524,
+              app_siam.toddc_saacntxn_a_1_prt_day20170525,
+              app_siam.toddc_saacntxn_a_1_prt_day20170526,
+              app_siam.toddc_saacntxn_a_1_prt_day20170527,
+              app_siam.toddc_saacntxn_a_1_prt_day20170528,
+              app_siam.toddc_saacntxn_a_1_prt_day20170529,
+              app_siam.toddc_saacntxn_a_1_prt_day20170530,
+              app_siam.toddc_saacntxn_a_1_prt_day20170531,
+              app_siam.toddc_saacntxn_a_1_prt_day20170601,
+              app_siam.toddc_saacntxn_a_1_prt_day20170602,
+              app_siam.toddc_saacntxn_a_1_prt_day20170603,
+              app_siam.toddc_saacntxn_a_1_prt_day20170604,
+              app_siam.toddc_saacntxn_a_1_prt_day20170605,
+              app_siam.toddc_saacntxn_a_1_prt_day20170606,
+              app_siam.toddc_saacntxn_a_1_prt_day20170607,
+              app_siam.toddc_saacntxn_a_1_prt_day20170608,
+              app_siam.toddc_saacntxn_a_1_prt_day20170609,
+              app_siam.toddc_saacntxn_a_1_prt_day20170610,
+              app_siam.toddc_saacntxn_a_1_prt_day20170611,
+              app_siam.toddc_saacntxn_a_1_prt_day20170612,
+              app_siam.toddc_saacntxn_a_1_prt_day20170613,
+              app_siam.toddc_saacntxn_a_1_prt_day20170614,
+              app_siam.toddc_saacntxn_a_1_prt_day20170615,
+              app_siam.toddc_saacntxn_a_1_prt_day20170616,
+              app_siam.toddc_saacntxn_a_1_prt_day20170617,
+              app_siam.toddc_saacntxn_a_1_prt_day20170618,
+              app_siam.toddc_saacntxn_a_1_prt_day20170619,
+              app_siam.toddc_saacntxn_a_1_prt_day20170620,
+              app_siam.toddc_saacntxn_a_1_prt_day20170621,
+              app_siam.toddc_saacntxn_a_1_prt_day20170622,
+              app_siam.toddc_saacntxn_a_1_prt_day20170623,
+              app_siam.toddc_saacntxn_a_1_prt_day20170624,
+              app_siam.toddc_saacntxn_a_1_prt_day20170625,
+              app_siam.toddc_saacntxn_a_1_prt_day20170626,
+              app_siam.toddc_saacntxn_a_1_prt_day20170627,
+              app_siam.toddc_saacntxn_a_1_prt_day20170628,
+              app_siam.toddc_saacntxn_a_1_prt_day20170629,
+              app_siam.toddc_saacntxn_a_1_prt_day20170630,
+              app_siam.toddc_saacntxn_a_1_prt_day20170701,
+              app_siam.toddc_saacntxn_a_1_prt_day20170702,
+              app_siam.toddc_saacntxn_a_1_prt_day20170703,
+              app_siam.toddc_saacntxn_a_1_prt_day20170704,
+              app_siam.toddc_saacntxn_a_1_prt_day20170705,
+              app_siam.toddc_saacntxn_a_1_prt_day20170706,
+              app_siam.toddc_saacntxn_a_1_prt_day20170707,
+              app_siam.toddc_saacntxn_a_1_prt_day20170708,
+              app_siam.toddc_saacntxn_a_1_prt_day20170709,
+              app_siam.toddc_saacntxn_a_1_prt_day20170710,
+              app_siam.toddc_saacntxn_a_1_prt_day20170711,
+              app_siam.toddc_saacntxn_a_1_prt_day20170712,
+              app_siam.toddc_saacntxn_a_1_prt_day20170713,
+              app_siam.toddc_saacntxn_a_1_prt_day20170714,
+              app_siam.toddc_saacntxn_a_1_prt_day20170715,
+              app_siam.toddc_saacntxn_a_1_prt_day20170716,
+              app_siam.toddc_saacntxn_a_1_prt_day20170717,
+              app_siam.toddc_saacntxn_a_1_prt_day20170718,
+              app_siam.toddc_saacntxn_a_1_prt_day20170719,
+              app_siam.toddc_saacntxn_a_1_prt_day20170720,
+              app_siam.toddc_saacntxn_a_1_prt_day20170721,
+              app_siam.toddc_saacntxn_a_1_prt_day20170722,
+              app_siam.toddc_saacntxn_a_1_prt_day20170723,
+              app_siam.toddc_saacntxn_a_1_prt_day20170724,
+              app_siam.toddc_saacntxn_a_1_prt_day20170725,
+              app_siam.toddc_saacntxn_a_1_prt_day20170726,
+              app_siam.toddc_saacntxn_a_1_prt_day20170727,
+              app_siam.toddc_saacntxn_a_1_prt_day20170728,
+              app_siam.toddc_saacntxn_a_1_prt_day20170729,
+              app_siam.toddc_saacntxn_a_1_prt_day20170730,
+              app_siam.toddc_saacntxn_a_1_prt_day20170731,
+              app_siam.toddc_saacntxn_a_1_prt_day20170801,
+              app_siam.toddc_saacntxn_a_1_prt_day20170802,
+              app_siam.toddc_saacntxn_a_1_prt_day20170803,
+              app_siam.toddc_saacntxn_a_1_prt_day20170804,
+              app_siam.toddc_saacntxn_a_1_prt_day20170805,
+              app_siam.toddc_saacntxn_a_1_prt_day20170806,
+              app_siam.toddc_saacntxn_a_1_prt_day20170807,
+              app_siam.toddc_saacntxn_a_1_prt_day20170808,
+              app_siam.toddc_saacntxn_a_1_prt_day20170809,
+              app_siam.toddc_saacntxn_a_1_prt_day20170810,
+              app_siam.toddc_saacntxn_a_1_prt_day20170811,
+              app_siam.toddc_saacntxn_a_1_prt_day20170812,
+              app_siam.toddc_saacntxn_a_1_prt_day20170813,
+              app_siam.toddc_saacntxn_a_1_prt_day20170814,
+              app_siam.toddc_saacntxn_a_1_prt_day20170815,
+              app_siam.toddc_saacntxn_a_1_prt_day20170816,
+              app_siam.toddc_saacntxn_a_1_prt_day20170817,
+              app_siam.toddc_saacntxn_a_1_prt_day20170818,
+              app_siam.toddc_saacntxn_a_1_prt_day20170819,
+              app_siam.toddc_saacntxn_a_1_prt_day20170820,
+              app_siam.toddc_saacntxn_a_1_prt_day20170821,
+              app_siam.toddc_saacntxn_a_1_prt_day20170822,
+              app_siam.toddc_saacntxn_a_1_prt_day20170823,
+              app_siam.toddc_saacntxn_a_1_prt_day20170824,
+              app_siam.toddc_saacntxn_a_1_prt_day20170825,
+              app_siam.toddc_saacntxn_a_1_prt_day20170826,
+              app_siam.toddc_saacntxn_a_1_prt_day20170827,
+              app_siam.toddc_saacntxn_a_1_prt_day20170828,
+              app_siam.toddc_saacntxn_a_1_prt_day20170829,
+              app_siam.toddc_saacntxn_a_1_prt_day20170830,
+              app_siam.toddc_saacntxn_a_1_prt_day20170831,
+              app_siam.toddc_saacntxn_a_1_prt_day20170901,
+              app_siam.toddc_saacntxn_a_1_prt_day20170902,
+              app_siam.toddc_saacntxn_a_1_prt_day20170903,
+              app_siam.toddc_saacntxn_a_1_prt_day20170904,
+              app_siam.toddc_saacntxn_a_1_prt_day20170905,
+              app_siam.toddc_saacntxn_a_1_prt_day20170906,
+              app_siam.toddc_saacntxn_a_1_prt_day20170907,
+              app_siam.toddc_saacntxn_a_1_prt_day20170908,
+              app_siam.toddc_saacntxn_a_1_prt_day20170909,
+              app_siam.toddc_saacntxn_a_1_prt_day20170910,
+              app_siam.toddc_saacntxn_a_1_prt_day20170911,
+              app_siam.toddc_saacntxn_a_1_prt_day20170912,
+              app_siam.toddc_saacntxn_a_1_prt_day20170913,
+              app_siam.toddc_saacntxn_a_1_prt_day20170914,
+              app_siam.toddc_saacntxn_a_1_prt_day20170915,
+              app_siam.toddc_saacntxn_a_1_prt_day20170916,
+              app_siam.toddc_saacntxn_a_1_prt_day20170917,
+              app_siam.toddc_saacntxn_a_1_prt_day20170918,
+              app_siam.toddc_saacntxn_a_1_prt_day20170919,
+              app_siam.toddc_saacntxn_a_1_prt_day20170920,
+              app_siam.toddc_saacntxn_a_1_prt_day20170921,
+              app_siam.toddc_saacntxn_a_1_prt_day20170922,
+              app_siam.toddc_saacntxn_a_1_prt_day20170923,
+              app_siam.toddc_saacntxn_a_1_prt_day20170924,
+              app_siam.toddc_saacntxn_a_1_prt_day20170925,
+              app_siam.toddc_saacntxn_a_1_prt_day20170926,
+              app_siam.toddc_saacntxn_a_1_prt_day20170927,
+              app_siam.toddc_saacntxn_a_1_prt_day20170928,
+              app_siam.toddc_saacntxn_a_1_prt_day20170929,
+              app_siam.toddc_saacntxn_a_1_prt_day20170930,
+              app_siam.toddc_saacntxn_a_1_prt_day20171001,
+              app_siam.toddc_saacntxn_a_1_prt_day20171002,
+              app_siam.toddc_saacntxn_a_1_prt_day20171003,
+              app_siam.toddc_saacntxn_a_1_prt_day20171004,
+              app_siam.toddc_saacntxn_a_1_prt_day20171005,
+              app_siam.toddc_saacntxn_a_1_prt_day20171006,
+              app_siam.toddc_saacntxn_a_1_prt_day20171007,
+              app_siam.toddc_saacntxn_a_1_prt_day20171008,
+              app_siam.toddc_saacntxn_a_1_prt_day20171009,
+              app_siam.toddc_saacntxn_a_1_prt_day20171010,
+              app_siam.toddc_saacntxn_a_1_prt_day20171011,
+              app_siam.toddc_saacntxn_a_1_prt_day20171012,
+              app_siam.toddc_saacntxn_a_1_prt_day20171013,
+              app_siam.toddc_saacntxn_a_1_prt_day20171014,
+              app_siam.toddc_saacntxn_a_1_prt_day20171015,
+              app_siam.toddc_saacntxn_a_1_prt_day20171016,
+              app_siam.toddc_saacntxn_a_1_prt_day20171017,
+              app_siam.toddc_saacntxn_a_1_prt_day20171018,
+              app_siam.toddc_saacntxn_a_1_prt_day20171019,
+              app_siam.toddc_saacntxn_a_1_prt_day20171020,
+              app_siam.toddc_saacntxn_a_1_prt_day20171021,
+              app_siam.toddc_saacntxn_a_1_prt_day20171022,
+              app_siam.toddc_saacntxn_a_1_prt_day20171023,
+              app_siam.toddc_saacntxn_a_1_prt_day20171024,
+              app_siam.toddc_saacntxn_a_1_prt_day20171025,
+              app_siam.toddc_saacntxn_a_1_prt_day20171026,
+              app_siam.toddc_saacntxn_a_1_prt_day20171027,
+              app_siam.toddc_saacntxn_a_1_prt_day20171028,
+              app_siam.toddc_saacntxn_a_1_prt_day20171029,
+              app_siam.toddc_saacntxn_a_1_prt_day20171030,
+              app_siam.toddc_saacntxn_a_1_prt_day20171031,
+              app_siam.toddc_saacntxn_a_1_prt_day20171101,
+              app_siam.toddc_saacntxn_a_1_prt_day20171102,
+              app_siam.toddc_saacntxn_a_1_prt_day20171103,
+              app_siam.toddc_saacntxn_a_1_prt_day20171104,
+              app_siam.toddc_saacntxn_a_1_prt_day20171105,
+              app_siam.toddc_saacntxn_a_1_prt_day20171106,
+              app_siam.toddc_saacntxn_a_1_prt_day20171107,
+              app_siam.toddc_saacntxn_a_1_prt_day20171108,
+              app_siam.toddc_saacntxn_a_1_prt_day20171109,
+              app_siam.toddc_saacntxn_a_1_prt_day20171110,
+              app_siam.toddc_saacntxn_a_1_prt_day20171111,
+              app_siam.toddc_saacntxn_a_1_prt_day20171112,
+              app_siam.toddc_saacntxn_a_1_prt_day20171113,
+              app_siam.toddc_saacntxn_a_1_prt_day20171114,
+              app_siam.toddc_saacntxn_a_1_prt_day20171115,
+              app_siam.toddc_saacntxn_a_1_prt_day20171116,
+              app_siam.toddc_saacntxn_a_1_prt_day20171117,
+              app_siam.toddc_saacntxn_a_1_prt_day20171118,
+              app_siam.toddc_saacntxn_a_1_prt_day20171119,
+              app_siam.toddc_saacntxn_a_1_prt_day20171120,
+              app_siam.toddc_saacntxn_a_1_prt_day20171121,
+              app_siam.toddc_saacntxn_a_1_prt_day20171122,
+              app_siam.toddc_saacntxn_a_1_prt_day20171123,
+              app_siam.toddc_saacntxn_a_1_prt_day20171124,
+              app_siam.toddc_saacntxn_a_1_prt_day20171125,
+              app_siam.toddc_saacntxn_a_1_prt_day20171126,
+              app_siam.toddc_saacntxn_a_1_prt_day20171127,
+              app_siam.toddc_saacntxn_a_1_prt_day20171128,
+              app_siam.toddc_saacntxn_a_1_prt_day20171129,
+              app_siam.toddc_saacntxn_a_1_prt_day20171130,
+              app_siam.toddc_saacntxn_a_1_prt_day20171201,
+              app_siam.toddc_saacntxn_a_1_prt_day20171202,
+              app_siam.toddc_saacntxn_a_1_prt_day20171203,
+              app_siam.toddc_saacntxn_a_1_prt_day20171204,
+              app_siam.toddc_saacntxn_a_1_prt_day20171205,
+              app_siam.toddc_saacntxn_a_1_prt_day20171206,
+              app_siam.toddc_saacntxn_a_1_prt_day20171207,
+              app_siam.toddc_saacntxn_a_1_prt_day20171208,
+              app_siam.toddc_saacntxn_a_1_prt_day20171209,
+              app_siam.toddc_saacntxn_a_1_prt_day20171210,
+              app_siam.toddc_saacntxn_a_1_prt_day20171211,
+              app_siam.toddc_saacntxn_a_1_prt_day20171212,
+              app_siam.toddc_saacntxn_a_1_prt_day20171213,
+              app_siam.toddc_saacntxn_a_1_prt_day20171214,
+              app_siam.toddc_saacntxn_a_1_prt_day20171215,
+              app_siam.toddc_saacntxn_a_1_prt_day20171216,
+              app_siam.toddc_saacntxn_a_1_prt_day20171217,
+              app_siam.toddc_saacntxn_a_1_prt_day20171218,
+              app_siam.toddc_saacntxn_a_1_prt_day20171219,
+              app_siam.toddc_saacntxn_a_1_prt_day20171220,
+              app_siam.toddc_saacntxn_a_1_prt_day20171221,
+              app_siam.toddc_saacntxn_a_1_prt_day20171222,
+              app_siam.toddc_saacntxn_a_1_prt_day20171223,
+              app_siam.toddc_saacntxn_a_1_prt_day20171224,
+              app_siam.toddc_saacntxn_a_1_prt_day20171225,
+              app_siam.toddc_saacntxn_a_1_prt_day20171226,
+              app_siam.toddc_saacntxn_a_1_prt_day20171227,
+              app_siam.toddc_saacntxn_a_1_prt_day20171228,
+              app_siam.toddc_saacntxn_a_1_prt_day20171229,
+              app_siam.toddc_saacntxn_a_1_prt_day20171230,
+              app_siam.toddc_saacntxn_a_1_prt_day20171231
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (sa_acct_no, sa_ddp_acct_no_det_n)
+Tablespace: "ldsdb_siam_data_01"
+
+                    Append-Only Table "app_siam.t05_pbcs_event"
+        Column        |          Type          | Modifiers | Storage  | Description 
+----------------------+------------------------+-----------+----------+-------------
+ event_id             | character varying(50)  |           | extended | 
+ account_num          | character varying(200) |           | extended | 
+ account_modifier_num | character varying(100) |           | extended | 
+ mainframe_deal_num   | character varying(20)  |           | extended | 
+ tx_dt                | date                   |           | plain    | 
+ branch_id            | character varying(16)  |           | extended | 
+ pbcs_tran_type_cd    | character varying(6)   |           | extended | 
+ pbcs_tran_nature_cd  | character varying(6)   |           | extended | 
+ debit_customer_num   | character varying(32)  |           | extended | 
+ debit_book_no        | character varying(20)  |           | extended | 
+ debit_seq_no         | character varying(20)  |           | extended | 
+ credit_customer_num  | character varying(32)  |           | extended | 
+ credit_acct_num      | character varying(22)  |           | extended | 
+ credit_book_no       | integer                |           | plain    | 
+ credit_seq_no        | integer                |           | plain    | 
+ currency_cd          | character varying(3)   |           | extended | 
+ currency_bill_ind_cd | character varying(6)   |           | extended | 
+ trade_amt            | numeric(18,2)          |           | main     | 
+ service_charge       | numeric(18,2)          |           | main     | 
+ service_charge_ind   | character varying(1)   |           | extended | 
+ tx_status            | character varying(20)  |           | extended | 
+ return_code          | character varying(20)  |           | extended | 
+ comm_context         | character varying(20)  |           | extended | 
+ tx_code              | character varying(20)  |           | extended | 
+ tx_operator          | character varying(32)  |           | extended | 
+ operator_role_cd     | character varying(4)   |           | extended | 
+ channel_num          | character varying(10)  |           | extended | 
+ reverse_ind          | character varying(1)   |           | extended | 
+ comm_context1        | character varying(20)  |           | extended | 
+ comm_context2        | character varying(20)  |           | extended | 
+ auth_operator_1      | character varying(32)  |           | extended | 
+ auth_operator_2      | character varying(32)  |           | extended | 
+ etl_job              | character varying(60)  |           | extended | 
+ etl_src              | character varying(30)  |           | extended | 
+ etl_first_date       | date                   |           | plain    | 
+ etl_tx_date          | date                   |           | plain    | 
+ credit_currency_cd   | character varying(20)  |           | extended | 
+ debit_acct_num       | character varying(26)  |           | extended | 
+ dual_curr_debit_amt  | numeric(18,2)          |           | main     | 
+ dual_curr_credit_amt | numeric(18,2)          |           | main     | 
+ cred_type_cd         | character varying(50)  |           | extended | 
+ cred_num             | character varying(26)  |           | extended | 
+ cred_pages           | integer                |           | plain    | 
+ busi_type_cd         | character varying(50)  |           | extended | 
+ deal_exg_rate        | numeric(18,2)          |           | main     | 
+ card_kind            | character varying(26)  |           | extended | 
+ blng_cust_manag      | character varying(26)  |           | extended | 
+Compression Type: zlib
+Compression Level: 5
+Block Size: 32768
+Checksum: t
+Has OIDs: no
+Options: appendonly=true, compresstype=zlib, compresslevel=5
+Distributed by: (tx_dt)
+Tablespace: "ldsdb_siam_data_01"
+

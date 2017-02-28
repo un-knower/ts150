@@ -1,22 +1,68 @@
 use sor;
 
 
-
 --提取重要非账务性流水表的时间、柜员号、交易描述
-insert overwrite table ILLEGAL_REFINE_DETAIL_FCM partition (p9_data_date = '$p9_data_date')
+insert overwrite table ILLEGAL_REFINE_DETAIL_FCM_TMP partition (p9_data_date = '$p9_data_date')
 select distinct a.cm_tx_dt as tx_dt,
-       b.CM_OPUN_CODE as Branch_Id,
-       c.pass_num
-  from (select *
-          from TODDC_FCMARLD_A a
-         where (cm_acct_no IS not NULL and cm_acct_no <> '')
-           and cm_tx_dt = '$p9_data_date') a
- inner join TODDC_FCMTLR0_H b on a.oper_code = b.CM_OPR_NO
-   and b.P9_END_DATE = '2999-12-31'
- inner join SIAM_CARD_INFO_H c 
-   on (a.cm_acct_no = c.card_no or a.cm_acct_no = c.pass_num 
-       or a.cm_acct_no = c.CUSTNO);
+                a.cm_teller_id as oper_code,
+                a.cm_acct_no,
+                a.cm_aply_data_dscrp_arl as aply_dscrp
+  from TODDC_FCMARLD_A a
+ where (a.cm_acct_no IS not NULL and a.cm_acct_no <> '')
+   and a.cm_tx_dt ='$p9_data_date';
+
+--添加机构信息
+insert overwrite table ILLEGAL_REFINE_DETAIL_FCM_ORG partition (p9_data_date = '$p9_data_date')
+select a.tx_dt,
+       a.oper_code,
+       a.cm_acct_no,
+       a.aply_dscrp,
+       b.CM_OPUN_CODE as Branch_Id
+  from ILLEGAL_REFINE_DETAIL_FCM_TMP a
+ inner join TODDC_FCMTLR0_H b 
+   on a.oper_code = b.CM_OPR_NO
+ and b.P9_END_DATE = '2999-12-31';
+
+
+--提取身份证，卡号
+insert overwrite table ILLEGAL_REFINE_DETAIL_FCM partition (p9_data_date = '$p9_data_date')
+select  a.tx_dt,
+                a.oper_code,
+                a.Branch_Id,
+                a.cm_acct_no as card_no,
+                b.pass_num,
+                a.aply_dscrp
+  from (select * from  ILLEGAL_REFINE_DETAIL_FCM_ORG where p9_data_date='$p9_data_date')  a
+ inner join SIAM_CARD_INFO_H b 
+ on a.cm_acct_no = b.card_no;
+ 
+insert into table ILLEGAL_REFINE_DETAIL_FCM partition (p9_data_date = '$p9_data_date')
+select    a.tx_dt,
+                a.oper_code,
+                a.Branch_Id,
+                a.cm_acct_no as card_no,
+                b.pass_num,
+                a.aply_dscrp
+  from (select * from ILLEGAL_REFINE_DETAIL_FCM_ORG where p9_data_date='$p9_data_date') a
+ inner join SIAM_CARD_INFO_H b 
+ on a.cm_acct_no = b.pass_num;
+
+insert into table ILLEGAL_REFINE_DETAIL_FCM partition (p9_data_date = '$p9_data_date')
+ select   a.tx_dt,
+                a.oper_code,
+                a.Branch_Id,
+                a.cm_acct_no as card_no,
+                b.pass_num,
+                a.aply_dscrp
+  from (select * from  ILLEGAL_REFINE_DETAIL_FCM_ORG where p9_data_date='$p9_data_date') a
+ inner join SIAM_CARD_INFO_H b 
+ on a.cm_acct_no = b.CUSTNO;
+ 
+ 
        
+       
+
+
 
 --ATM提取时间、柜员号、交易描述
 insert overwrite table ILLEGAL_REFINE_DETAIL_ATM partition (p9_data_date = '$p9_data_date')
@@ -81,24 +127,28 @@ select distinct a.SA_TX_DT as tx_dt,
 
 
 #汇总交易明细表时间,卡号,网点号,身份证号
-beeline <<!
-use mid;
-
-insert overwrite table Refine1Detail partition (p9_data_date = '$p9_data_date')
+insert overwrite table ILLEGAL_REFINE_DETAIL partition (p9_data_date = '$p9_data_date')
 select distinct tx_dt, Branch_Id, pass_num
-  from FCMARLDDetail
+  from ILLEGAL_REFINE_DETAIL_FCM
  where p9_data_date = '$p9_data_date'
 union
 select tx_dt, Branch_Id, pass_num
-  from ATMDetail
+  from ILLEGAL_REFINE_DETAIL_ATM
  where p9_data_date = '$p9_data_date'
 union
 select tx_dt, Branch_Id, pass_num
-  from MainFlowDetail
+  from ILLEGAL_REFINE_DETAIL_QY
  where p9_data_date = '$p9_data_date'
 union
 select tx_dt, Branch_Id, pass_num
-  from TXEVENTDetail
+  from ILLEGAL_REFINE_DETAIL_GM
  where p9_data_date = '$p9_data_date';
-   
-!
+
+
+----删除临时表信息
+ALTER TABLE ILLEGAL_REFINE_DETAIL_FCM_TMP DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_REFINE_DETAIL_FCM_ORG DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_REFINE_DETAIL_FCM DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_REFINE_DETAIL_ATM DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_REFINE_DETAIL_QY DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_REFINE_DETAIL_GM DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');

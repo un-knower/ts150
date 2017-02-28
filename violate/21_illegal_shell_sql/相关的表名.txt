@@ -1,0 +1,27 @@
+
+ccbins_provice 父亲机构
+T1000_SIGN_MAIN_FLOW_A
+T0042_TBPC1010_H
+
+
+
+
+
+T0651_CCBINS_INF_H 开户机构名称（OK）
+TODDC_FCMTLR0_H 柜员身份号（OK）
+T0042_TBPC1010_H 客户信息（ok）
+TODDC_CRCRDCRD_H 卡信息（ok）
+T0861_EMPE_H 员工信息（ok）
+TODDC_FCMARLD_A   非账务流水表（ok）
+TODDC_CRATMDET_A   AMT流水表（ok）
+TODEC_SIGN_MAIN_FLOW_A   签约主流水表（ok）
+TODDC_SAACNTXN_A   柜面交易明细（ok）
+T05_PBCS_EVENT PBCS 流水表
+p2log_ccbs_res CCBS 综合前置
+T0162_CUST_QUEUE_INFO_A 排队信息
+T05_Card_PASS_NUM 排队信息老系统
+p2log_cst_query P2日志查询
+SIAM_CARD_INFO_H 卡信息表
+
+
+

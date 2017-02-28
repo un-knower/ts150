@@ -13,7 +13,8 @@ select a.tx_date,
        a.inst_level1_branch_id,
        a.BRANCH_ID,
        a.CST_ID,
-       a.FS_ACCT_NO
+       a.FS_ACCT_NO,
+       a.Id_Crdt_No
   from p2log_cst_query a
 where substr(a.tx_code,1,9) in ('A00421502', 'A00421517', 'A00421538', 'A00421547')
   and a.tx_date = '$p9_data_date'
@@ -97,7 +98,21 @@ select a.tx_date,
 --通过银行卡号，获取银行卡开户机构
 --获取无卡查询机构对比信息
 insert overwrite table ILLEGAL_P2NOCARD_OPUN partition (p9_data_date = '$p9_data_date')
-select a.*,
+select a.tx_date,
+       a.tx_time,
+       a.tx_code,
+       a.OPER_CODE,
+       a.OPER_NAME,
+       a.TERMINAL_MAC,
+       a.TERMINAL_IP,
+       a.org_short_cname,
+       a.inst_level1_branch_id,
+       a.BRANCH_ID,
+       a.CST_ID,
+       a.pass_num,
+       a.FS_ACCT_NO,
+       a.card_no,
+       
        b.CR_OPUN_COD,
        (case
          when (substr(a.INST_LEVEL1_BRANCH_ID, 1, 3) =
@@ -150,7 +165,7 @@ select a.tx_date,
  on a.tx_date = b.tx_date
     and a.tx_time = b.tx_time
     and a.OPER_CODE = b.OPER_CODE
-    and a.pass_num = b.pass_num);
+    and a.pass_num = b.pass_num;
 
 
 
@@ -172,7 +187,7 @@ select  a.tx_date,
        a.CR_OPUN_COD,
         b.ccbins_chn_shrtnm as CR_OPUN_NM
   from (select * from ILLEGAL_P2NOCARD_NOSAME_A where p9_data_date = '$p9_data_date') a
- inner join 机构表 b on a.CR_OPUN_COD = b.ccbins_id;
+ inner join T0651_CCBINS_INF_H b on a.CR_OPUN_COD = b.ccbins_id;
 
 
 
@@ -202,8 +217,8 @@ select a.tx_date,
  inner join T0861_EMPE_H b on OPER_CODE = b.CCB_EMPID
      and b.P9_END_DATE = '2999-12-31'
  inner join T0651_CCBINS_INF_H c on b.BLNG_INSID = c.ccbins_id
-     and c.P9_END_DATE = '2999-12-31')
- inner join 机构 d on a.a.CM_OPUN_CODE = d.scdy_ccbins_id;
+     and c.P9_END_DATE = '2999-12-31'
+ inner join ccbins_provice d on b.BLNG_INSID = d.scdy_ccbins_id;
 
 
 --统计信息
@@ -225,3 +240,16 @@ select a.tx_date,
           a.parent_id,
           a.parent_chn_shrtnm
  order by num desc;
+
+
+
+
+
+----删除临时表信息
+ALTER TABLE ILLEGAL_P2NOCARD DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_P2NOCARD_CUST_INFO DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_P2NOCARD_OPUN DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_P2NOCARD_NOSAME_PASSNUM DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_P2NOCARD_NOSAME_A DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_P2NOCARD_NOSAME_A_CUSTORG DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_P2NOCARD_NOSAME_A_OPERORG DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');

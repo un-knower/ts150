@@ -8,7 +8,7 @@ select a.cst_ofrnum_dt as TX_DT, b.pass_num
   from T0162_CUST_QUEUE_INFO_A a
  inner join SIAM_CARD_INFO_H b 
    on a.srcsys_ar_id = b.card_no
-   and a.cst_ofrnum_dt = '$p9_data_date')
+   and a.cst_ofrnum_dt = '$p9_data_date'
 union
 select a.cst_ofrnum_dt as TX_DT,
        substr(a.srcsys_ar_id, 3, length(a.srcsys_ar_id) - 2) as pass_num
@@ -19,9 +19,11 @@ select a.cst_ofrnum_dt as TX_DT,
 
 --新老系统结合
 insert overwrite table ILLEGAL_CUST_QUEUE_INFO partition (p9_data_date = '$p9_data_date')
-select distinct *
-  from CUST_QUEUE_INFO_A_tmp
+select distinct TX_DT,pass_num
+  from ILLEGAL_CUST_QUEUE_INFO_TMP where p9_data_date='$p9_data_date'
 union
-select  * from T05_Card_PASS_NUM;
+select  TX_DT,pass_num from T05_Card_PASS_NUM  where TX_DT='$p9_data_date';
 
 
+----删除临时表信息
+ALTER TABLE ILLEGAL_CUST_QUEUE_INFO_TMP DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');

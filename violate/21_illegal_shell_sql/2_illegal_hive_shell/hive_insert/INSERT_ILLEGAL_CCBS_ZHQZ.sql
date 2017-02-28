@@ -1,9 +1,16 @@
 use sor;
 
 
---Í¨¹ı¿¨ºÅ»ñÈ¡¿ª¿¨»ú¹¹
+--é€šè¿‡å¡å·è·å–å¼€å¡æœºæ„
 insert overwrite table ILLEGAL_CCBS_ZHQZ_OPENORG partition (p9_data_date = '$p9_data_date')
-select distinct a.*, b.CARD_BRANCH
+select distinct a.QUE_DATE ,
+    a.QUERY_ORG ,
+    a.QUE_TIME ,
+    a.TLR_ID ,
+    a.CARD_NO ,
+    a.CUST_NO ,
+    a.CRDT_NO ,
+    b.CARD_BRANCH
   from (select *
           from p2log_ccbs_res k
          where k.que_date = '$p9_data_date'
@@ -11,32 +18,52 @@ select distinct a.*, b.CARD_BRANCH
  inner join SIAM_CARD_INFO_H b on a.card_no = b.card_no;
  
 
---ĞĞÎªÒìµØµÄ²éÑ¯
+--è¡Œä¸ºå¼‚åœ°çš„æŸ¥è¯¢
 insert overwrite table ILLEGAL_CCBS_ZHQZ_NOSAME partition (p9_data_date = '$p9_data_date')
-select a.*
+select QUE_DATE ,
+    QUERY_ORG ,
+    QUE_TIME ,
+    TLR_ID ,
+    CARD_NO ,
+    CUST_NO ,
+    CRDT_NO ,
+    CARD_BRANCH
   from ILLEGAL_CCBS_ZHQZ_OPENORG a
- where  p9_data_datee = '$p9_data_date'
+ where  p9_data_date = '$p9_data_date'
    and substr(query_org, 1, 3) <> substr(CARD_BRANCH, 1, 3)
-   and ((a.query_org IS Not null and a.query_org <> '') or
-        (a.CARD_BRANCH IS Not null and a.CARD_BRANCH <> ''));
+   and ( (a.query_org IS Not null and a.query_org <> '') or (a.CARD_BRANCH IS Not null and a.CARD_BRANCH <> '') );
 
 
 
 
---²»ÔÚÅÅ¶Ó»úÏµÍ³µÄÈÕÖ¾ĞÅÏ¢
+--ä¸åœ¨æ’é˜Ÿæœºç³»ç»Ÿçš„æ—¥å¿—ä¿¡æ¯
 insert overwrite table ILLEGAL_CCBS_ZHQZ_NOQUEUE partition (p9_data_date = '$p9_data_date')
-select a.*
-  from (select * from ILLEGAL_CCBS_ZHQZ_NOSAME where p9_data_date = '$p9_data_date') a
-  left join (select * from ILLEGAL_CUST_QUEUE_INFO where p9_data_date = 'p9_data_date') 
-    on a.que_date = b.tx_dt
+select a.QUE_DATE ,
+    a.QUERY_ORG ,
+    a.QUE_TIME ,
+    a.TLR_ID ,
+    a.CARD_NO ,
+    a.CUST_NO ,
+    a.CRDT_NO ,
+    a.CARD_BRANCH
+  from (select * from ILLEGAL_CCBS_ZHQZ_NOSAME where p9_data_date = '$p9_data_date')  a
+  left join (select * from ILLEGAL_CUST_QUEUE_INFO  where p9_data_date = 'p9_data_date')  b on a.que_date = b.tx_dt
     and a.crdt_no = b.PASS_NUM
  where b.tx_dt IS NULL;
 
 
 
---»ñÈ¡¿Í»§¿¨¿ª»§ĞĞ»ú¹¹Ãû³Æ
+--è·å–å®¢æˆ·å¡å¼€æˆ·è¡Œæœºæ„åç§°
 insert overwrite table ILLEGAL_CCBS_ZHQZ_CARD_BRANCH partition (p9_data_date = '$p9_data_date')
-select a.*, b.ccbins_chn_shrtnm as card_branch_nm
+select a.QUE_DATE ,
+    a.QUERY_ORG ,
+    a.QUE_TIME ,
+    a.TLR_ID ,
+    a.CARD_NO ,
+    a.CUST_NO ,
+    a.CRDT_NO ,
+    a.CARD_BRANCH,
+    b.ccbins_chn_shrtnm as card_branch_nm
   from (select * from  ILLEGAL_CCBS_ZHQZ_NOSAME  where p9_data_date = '$p9_data_date' ) a
  inner join T0651_CCBINS_INF_H b 
    on a.CARD_BRANCH = b.ccbins_id
@@ -44,29 +71,50 @@ select a.*, b.ccbins_chn_shrtnm as card_branch_nm
 
 
 
---»ñÈ¡Ìí¼Ó¹ñÔ±Éí·İÖ¤ºÅ
+--è·å–æ·»åŠ æŸœå‘˜èº«ä»½è¯å·
 insert overwrite table ILLEGAL_CCBS_ZHQZ_OPER_PASSNUM partition (p9_data_date = '$p9_data_date')
-select a.*, b.CM_id_NO
-  from (select * from ILLEGAL_CCBS_ZHQZ_CARD_BRANCH p9_data_date='$p9_data_date') a
+select a.QUE_DATE ,
+    a.QUERY_ORG ,
+    a.QUE_TIME ,
+    a.TLR_ID ,
+    a.CARD_NO ,
+    a.CUST_NO ,
+    a.CRDT_NO ,
+    a.CARD_BRANCH,
+    a.card_branch_nm,
+    b.CM_id_NO
+  from (select * from ILLEGAL_CCBS_ZHQZ_CARD_BRANCH where p9_data_date='$p9_data_date') a
  inner join TODDC_FCMTLR0_H b 
   on a.tlr_id = b.cm_opr_no
   and b.P9_END_DATE = '2999-12-31';
 
 
 
---»ñÈ¡Ô±¹¤Ãû³ÆÓëÔ±¹¤ËùÔÚ»ú¹¹Ãû³Æ
+--è·å–å‘˜å·¥åç§°ä¸å‘˜å·¥æ‰€åœ¨æœºæ„åç§°
 insert overwrite table ILLEGAL_CCBS_ZHQZ_OPER_INFO partition (p9_data_date = '$p9_data_date')
-select a.*, b.CM_OPR_NAME, b.CM_OPUN_CODE, c.ccbins_chn_shrtnm
+select a.QUE_DATE ,
+    a.QUERY_ORG ,
+    a.QUE_TIME ,
+    a.TLR_ID ,
+    a.CARD_NO ,
+    a.CUST_NO ,
+    a.CRDT_NO ,
+    a.CARD_BRANCH,
+    a.card_branch_nm,
+    a.CM_id_NO, 
+    b.CM_OPR_NAME, 
+    b.CM_OPUN_CODE, 
+    c.ccbins_chn_shrtnm
   from (select * from ILLEGAL_CCBS_ZHQZ_OPER_PASSNUM where p9_data_date='$p9_data_date') a
  inner join TODDC_FCMTLR0_H b 
    on a.tlr_id = b.CM_OPR_NO
    and b.P9_END_DATE = '2999-12-31'
  inner join T0651_CCBINS_INF_H c 
    on b.CM_OPUN_CODE = c.ccbins_id
-   and c.P9_END_DATE = '2999-12-31');
+   and c.P9_END_DATE = '2999-12-31';
 
 
---»ñÈ¡¸¸»ú¹¹ºÅ
+--è·å–çˆ¶æœºæ„å·
 insert overwrite table ILLEGAL_CCBS_ZHQZ_OPER_PARENT partition (p9_data_date = '$p9_data_date')
 select a.que_date,
        a.que_time,
@@ -76,23 +124,37 @@ select a.que_date,
        a.query_org,
        a.CM_OPUN_CODE,
        a.ccbins_chn_shrtnm,
-       b.parent_id,
-       b.ccbins_chn_shrtnm as parent_chn_shrtnm,
        a.card_no,
        a.CARD_BRANCH,
        a.card_branch_nm,
        a.cust_no,
-       a.crdt_no
+       a.crdt_no,
+       b.parent_id,
+       b.ccbins_chn_shrtnm as parent_chn_shrtnm
   from (select * from ILLEGAL_CCBS_ZHQZ_OPER_INFO where  p9_data_date='$p9_data_date') a
  inner join ccbins_provice b 
    on a.CM_OPUN_CODE = b.scdy_ccbins_id;
 
 
---¹ıÂËµôÃ»ÓĞÔÚATM¡¢Ç©Ô¼µÈ½»Ò×µÄ
+--è¿‡æ»¤æ‰æ²¡æœ‰åœ¨ATMã€ç­¾çº¦ç­‰äº¤æ˜“çš„
 insert overwrite table ILLEGAL_CCBS_ZHQZ_NOTXN partition (p9_data_date = '$p9_data_date')
-select a.*
-  from ( select * from ILLEGAL_CCBS_ZHQZ_OPER_INFO where p9_data_date='$p9_data_date')  a
-  left join Refine1Detail b 
+select a.que_date,
+       a.que_time,
+       a.tlr_id,
+       a.CM_id_NO,
+       a.CM_OPR_NAME,
+       a.query_org,
+       a.CM_OPUN_CODE,
+       a.ccbins_chn_shrtnm,
+       a.card_no,
+       a.CARD_BRANCH,
+       a.card_branch_nm,
+       a.cust_no,
+       a.crdt_no,
+       a.parent_id,
+       a.parent_chn_shrtnm
+  from ( select * from ILLEGAL_CCBS_ZHQZ_OPER_PARENT where p9_data_date='$p9_data_date')  a
+  left join ILLEGAL_REFINE_DETAIL b 
     on a.que_date = b.tx_dt
     and a.crdt_no = b.PASS_NUM
     and a.query_org = b.branch_id
@@ -100,7 +162,7 @@ select a.*
 
 
 
---°´ÈÕÆÚÍ³¼Æ
+--æŒ‰æ—¥æœŸç»Ÿè®¡
 insert overwrite table ILLEGAL_CCBS_ZHQZ_A partition (p9_data_date = '$p9_data_date')
 select a.que_date,
        a.tlr_id,
@@ -123,4 +185,16 @@ select a.que_date,
           a.parent_id,
           a.parent_chn_shrtnm
  order by num desc;
+
+
+
+----åˆ é™¤ä¸´æ—¶è¡¨ä¿¡æ¯
+ALTER TABLE ILLEGAL_CCBS_ZHQZ_OPENORG DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_CCBS_ZHQZ_NOSAME DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_CCBS_ZHQZ_NOQUEUE DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_CCBS_ZHQZ_CARD_BRANCH DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_CCBS_ZHQZ_OPER_PASSNUM DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_CCBS_ZHQZ_OPER_INFO DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_CCBS_ZHQZ_OPER_PARENT DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
+ALTER TABLE ILLEGAL_CCBS_ZHQZ_NOTXN DROP IF EXISTS PARTITION(p9_data_date='$p9_data_date');
 
