@@ -13,15 +13,18 @@ class MiddleTableStruct():
  
         self.table_join_map = {
             #对私客户信息
-            'MID_CUSTOMER_CUR':(u'对私客户信息整合表，带原系统客户号', ('T0042_TBPC9030_H', 'T0042_TBPC1010_H')),
+            # 'MID_CUSTOMER_CUR':(u'对私客户信息整合表，带原系统客户号', ('T0042_TBPC9030_H', 'T0042_TBPC1010_H')),
             #卡与帐户中间表
-            'MID_CARD_CUR':(u'CCBS帐户与卡整合表', ('TODDC_SAACNACN_H','TODDC_CRCRDCRD_H')), 
+            # 'MID_CARD_CUR':(u'CCBS帐户与卡整合表', ('TODDC_SAACNACN_H','TODDC_CRCRDCRD_H')), 
             #客户与卡中间表
-            'MID_CARD_CUSTOMER_CUR':(u'CCBS账户与客户信息整合表', ('MID_CARD_CUR', 'MID_CUSTOMER_CUR')),
+            # 'MID_CARD_CUSTOMER_CUR':(u'CCBS账户与客户信息整合表', ('MID_CARD_CUR', 'MID_CUSTOMER_CUR')),
             #机构表、机构关系、员工
-            # 'T0651_CCBINS_INF_H', 'T0651_CCBINS_REL_H', 'T0861_EMPE_H'
+            'MID_CCBINS_CUR':(u'机构表', ('T0651_CCBINS_INF_H', 'T0651_CCBINS_REL_H')), 
+
+            # 'MID_EMPE_CCBINS_CUR':(u'员工机构信息表', ('T0861_EMPE_H', 'MID_CCBINS_CUR')),
+            # 'MID_FCMTLR0_CCBINS_CUR':(u'柜员机构信息表', ('TODDC_FCMTLR0_H', 'MID_CCBINS_CUR')),
         }
-        sts = SlideTableStruct()
+        self.sts = SlideTableStruct()
 
         # 从贴源表生成的中间表
         self.exist_table_map = {}
@@ -29,8 +32,9 @@ class MiddleTableStruct():
             all_field_list = []
             for src_table in src_join_set:
                 # 源表为贴源数据
-                if src_table in sts.exist_table_map.keys():
-                    td = sts.exist_table_map[src_table]
+                if src_table in self.sts.exist_table_map.keys():
+                    td = self.sts.exist_table_map[src_table]
+                    self.exist_table_map[src_table] = td
                     all_field_list.extend(td.field_array)
 
             filter_field_list = [x for x in all_field_list if x[0] not in ('P9_START_DATE', 'P9_END_DATE')]
@@ -39,12 +43,17 @@ class MiddleTableStruct():
 
         # 从中间表生成的下一步中间表
         for target_table, (table_cn, src_join_set) in self.table_join_map.items():
-            all_field_list = self.exist_table_map[target_table].field_array
+            all_field_list = []
             for src_table in src_join_set:
                 # 源表为中间表数据
                 if src_table in self.exist_table_map.keys():
                     td = self.exist_table_map[src_table]
                     all_field_list.extend(td.field_array)
+
+                # 源表为贴源数据
+                # if src_table in self.sts.exist_table_map.keys():
+                #     td = self.sts.exist_table_map[src_table]
+                #     all_field_list.extend(td.field_array)
 
             filter_field_list = [x for x in all_field_list if x[0] not in ('P9_START_DATE', 'P9_END_DATE')]
             target_td = TableDefine(target_table, table_cn, filter_field_list)
@@ -91,8 +100,9 @@ def main():
     mts = MiddleTableStruct()
     # build_hive_create_sql(mts.TODDC_CRCRDCRD_H)
     for table_en, td in mts.exist_table_map.items():
-        build_hive_create_sql(td)
-        print 'table: %s finish' % table_en
+        if table_en[0:4] == 'MID_':
+            build_hive_create_sql(td)
+            print 'table: %s finish' % table_en
 
 
 if __name__ == '__main__':

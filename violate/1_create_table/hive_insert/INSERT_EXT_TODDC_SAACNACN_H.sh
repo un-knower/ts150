@@ -5,7 +5,7 @@
 ######################################################
 
 #引用基础Shell函数库
-source /home/ap/dip_ts150/ts150_script/base.sh
+source /home/ap/dip/appjob/shelljob/TS150/violate/base.sh
 
 #登录Hadoop
 hadoop_login
@@ -22,5 +22,12 @@ OUT_CUR_HIVE=INN_TODDC_SAACNACN_H
 
 run()
 {
-   beeline -f ./hive_insert/INSERT_EXT_TODDC_SAACNACN_H.sql --hivevar log_date=${log_date}
+   beeline -f $script_path/1_create_table/hive_insert/INSERT_EXT_TODDC_SAACNACN_H.sql --hivevar log_date=${log_date}
+   # ret=$?
+
+   # 插入成功则删除HDFS源文件
+   # if [ $ret -eq 0 ]; then
+   #    hadoop fs -rm -r -f -skipTrash /bigdata/input/TS150/case_trace/TODDC_SAACNACN_H
+   # fi
+   return $?
 }

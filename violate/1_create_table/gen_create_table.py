@@ -11,7 +11,7 @@ def build_hive_create_sql(td):
     add_partition = ""
 
     # 生成 导入外部表字段
-    ext_field_stmt_list = ['  -- %s\n   %-30s string' % (field[1], field[0]) for field in td.field_array]
+    ext_field_stmt_list = ['   -- %s\n   %-30s string' % (field[1], field[0]) for field in td.field_array]
     ext_field_stmt = ",\n".join(ext_field_stmt_list)
     sql = u'''use sor;
 
@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS EXT_%(en)s;
 CREATE EXTERNAL TABLE IF NOT EXISTS EXT_%(en)s(
 %(ext_field)s
 )
-STORED AS TEXTFILE
-PARTITIONED BY (LOAD_DATE string);
+PARTITIONED BY (LOAD_DATE string)
+STORED AS TEXTFILE;
 ''' % {'en':td.table_en, 'cn':td.table_cn, 'ext_field':ext_field_stmt}
 
     # 分区字段不放入字段列表中
@@ -62,10 +62,6 @@ CREATE TABLE IF NOT EXISTS CT_%(en)s_MID (
 )
 PARTITIONED BY (%(partition_field)s string)
 STORED AS ORC;
-
-ALTER TABLE CT_%(en)s_MID ADD PARTITION(%(partition_field)s='SRC');
-ALTER TABLE CT_%(en)s_MID ADD PARTITION(%(partition_field)s='CUR_NO_DUP');
-ALTER TABLE CT_%(en)s_MID ADD PARTITION(%(partition_field)s='PRE_NO_DUP');
 
 -- 最终拉链表
 DROP TABLE IF EXISTS CT_%(en)s;
