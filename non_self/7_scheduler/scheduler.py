@@ -25,22 +25,15 @@ class Scheduler:
     def run_gp_sql(self):
         pass
 
-    def domain(self):
+    def run_python(self):
+        pass
+
+    def daemon(self):
         pass
 
 
 def list_work(*args, **kwargs):
     print 'list_work'
-    exit(0)
-
-def start(*args, **kwargs):
-    '''启动服务'''
-    print 'start: %d' % os.getpid()
-    
-    exit(0)
-
-def stop(*args, **kwargs):
-    print 'stop'
     exit(0)
 
 
@@ -58,8 +51,7 @@ def main():
     parser.add_option("--error_notice", action="store_true", default=False, dest="error_notice", help=u"出错时短信邮件通知")
     parser.add_option("--over_notice", action="store_true", default=False, dest="over_notice", help=u"完成时短信邮件通知")
     parser.add_option("--debug", action="store_true", default=False, dest="debug", help=u"调试模式")
-    parser.add_option("--start", action="callback", callback=start, help=u"启动后台服务")
-    parser.add_option("--stop", action="callback", callback=stop, help=u"关闭后台服务")
+
 
     
     (options, args) = parser.parse_args()

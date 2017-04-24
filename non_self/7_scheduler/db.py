@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding:utf8
 
-import os
+import os, sys
 import sqlite3
 from var import *
 from log import *
@@ -43,7 +43,8 @@ class DbHelper:
                 self.conn.close()
                 self.conn = sqlite3.connect(dbFileName)
             else:
-                log.error("数据库不存在，建表文件:[%s]也不存在" % createDbFileName)
+                sys.stderr.write("数据库不存在，建表文件:[%s]也不存在\n" % createDbFileName)
+                exit(1)
 
 
     def __del__(self):
