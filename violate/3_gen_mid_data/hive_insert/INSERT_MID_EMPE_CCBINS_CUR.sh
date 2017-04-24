@@ -22,4 +22,5 @@ OUT_CUR_HIVE="MID_EMPE_CCBINS_CUR"
 run()
 {
    beeline -f $script_path/3_gen_mid_data/hive_insert/INSERT_MID_EMPE_CCBINS_CUR.sql --hivevar log_date=${log_date}
+   return $?
 }
