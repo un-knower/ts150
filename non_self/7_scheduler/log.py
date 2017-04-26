@@ -3,7 +3,7 @@
 
 import logging
 import logging.config
-
+from var import *
 
 # 日志记录类
 class Log:
@@ -22,7 +22,8 @@ class Log:
         pass
 
     def debug(self, msg):
-        self.log.debug(msg)
+        if log_level == 'debug':
+            self.log.debug(msg)
         
 
 # 全局变量

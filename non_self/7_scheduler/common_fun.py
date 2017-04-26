@@ -124,6 +124,24 @@ def isLinux():
         return False
 
 
+def findFile(path, findFileName):
+    ''' 查找文件 '''
+    if not os.path.exists(path):
+        return None
+
+    for root, dirs, files in os.walk(path):
+        # root为文件夹
+        stat = os.stat(root)
+
+        if root != path:
+            pass
+        for fileName in files:
+            fullFileName = root + os.sep + fileName
+            if fileName == findFileName:
+                return fullFileName
+    return None
+
+
 def main():
     # returncode, out_lines = execute_command('dir')
     # for line in out_lines:
@@ -136,7 +154,8 @@ def main():
     print dateValid('20171132')
     print dateValid('20171131')
     print dateValid('20171130')
-
+    print findFile('/home/pi/ts150/non_self', '7_predict.sh')
+    print findFile('/home/pi/ts150/non_self', 'a.txt')
 
 if __name__ == '__main__':
     main()

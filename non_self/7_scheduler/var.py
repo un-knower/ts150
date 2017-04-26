@@ -10,10 +10,16 @@ app = "train"
 #base_path=/home/ap/dip/appjob/shelljob/TS150/violate
 base_path = "/home/ap/dip_ts150/ts150_script/ccb_risk_scoring"
 # base_path = r"G:/1_Tienon/3_安全监控/模型分析/git/non_self".decode('utf8').encode('gbk')
-base_path = "../"
+base_path = ".."
 
 # 运行目录
 run_path = "%s/train" % base_path
 
 # 默认Hive数据库名
-default_db = "train"
+default_hive_db = "train"
+
+# 默认GP数据库名
+default_gp_schema = "train"
+
+# 日志级别
+log_level = 'debug'

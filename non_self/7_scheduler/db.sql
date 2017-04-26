@@ -45,9 +45,10 @@ drop table if exists entity;
 create table entity(
    id INTEGER PRIMARY KEY AUTOINCREMENT,
    ts datetime default (datetime('now', 'localtime')),
-   type char(1) not null,
+   flag char(1) not null,
    entity varchar(255) not null,
-   data_date varchar(8) not null
+   data_date varchar(8) not null,
+   status varchar(16) default('')
 );
 
 -- 作业配置表
@@ -57,8 +58,10 @@ create table work_config(
    id INTEGER PRIMARY KEY AUTOINCREMENT,
    ts datetime default (datetime('now', 'localtime')),
    script varchar(255) not null,
-   entity varchar(255) not null,
+   options varchar(255) not null,
    start_date varchar(8) not null,
    end_date varchar(8) not null,
-   over_date varchar(8) not null
+   priority INTEGER default(1),
+   over_date varchar(8) default(''),
+   status varchar(16) default('')
 );
