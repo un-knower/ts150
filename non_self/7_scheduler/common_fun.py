@@ -1,7 +1,8 @@
 #!/usr/bin/python
-#coding:gbk
+#coding:utf8
+
 '''
-    ³£ÓÃº¯Êı¿â           2016.2.27
+    å¸¸ç”¨å‡½æ•°åº“           2016.2.27
 '''
 
 import sys, os, time, datetime
@@ -11,18 +12,18 @@ import subprocess
 import shlex
 import commands
 
-# È¡Ö÷»úÃû
+# å–ä¸»æœºå
 hostname = socket.gethostname()
 save_path = './'
 
 def today(fmt='%Y%m%d'):
-    '''È¡µ±Ç°ÈÕÆÚ×Ö·û´®YYYYMMDD'''
+    '''å–å½“å‰æ—¥æœŸå­—ç¬¦ä¸²YYYYMMDD'''
     t = time.strftime(fmt, time.localtime())
     return t
 
 
 def dateCalc(strDate, iDay, fmt='%Y%m%d'):
-    ''' ÈÕÆÚÔËËã '''
+    ''' æ—¥æœŸè¿ç®— '''
     chkDate = time.strptime(strDate, fmt)
     dateTmp = datetime.datetime(chkDate[0], chkDate[1], chkDate[2])
     resultDate = dateTmp + datetime.timedelta(days=iDay)
@@ -30,7 +31,7 @@ def dateCalc(strDate, iDay, fmt='%Y%m%d'):
 
 
 def dateValid(strDate, fmt='%Y%m%d'):
-    ''' ÈÕÆÚ¸ñÊ½¼ìÑé '''
+    ''' æ—¥æœŸæ ¼å¼æ£€éªŒ '''
     try:
         chkDate = time.strptime(strDate, fmt)
         # print chkDate
@@ -39,15 +40,21 @@ def dateValid(strDate, fmt='%Y%m%d'):
         return False
 
 
+def executeShell(cmdstring):
+    returncode, out = commands.getstatusoutput(cmdstring)
+    out_lines = out.split('\n')
+    return (returncode, out_lines)
+
+
 def execute_command(cmdstring, cwd=None, timeout=None, shell=True):
-    """Ö´ĞĞÒ»¸öSHELLÃüÁî
-            ·â×°ÁËsubprocessµÄPopen·½·¨, Ö§³Ö³¬Ê±ÅĞ¶Ï£¬Ö§³Ö¶ÁÈ¡stdoutºÍstderr
-           ²ÎÊı:
-        cwd: ÔËĞĞÃüÁîÊ±¸ü¸ÄÂ·¾¶£¬Èç¹û±»Éè¶¨£¬×Ó½ø³Ì»áÖ±½ÓÏÈ¸ü¸Äµ±Ç°Â·¾¶µ½cwd
-        timeout: ³¬Ê±Ê±¼ä£¬Ãë£¬Ö§³ÖĞ¡Êı£¬¾«¶È0.1Ãë
-        shell: ÊÇ·ñÍ¨¹ıshellÔËĞĞ
+    """æ‰§è¡Œä¸€ä¸ªSHELLå‘½ä»¤
+            å°è£…äº†subprocessçš„Popenæ–¹æ³•, æ”¯æŒè¶…æ—¶åˆ¤æ–­ï¼Œæ”¯æŒè¯»å–stdoutå’Œstderr
+           å‚æ•°:
+        cwd: è¿è¡Œå‘½ä»¤æ—¶æ›´æ”¹è·¯å¾„ï¼Œå¦‚æœè¢«è®¾å®šï¼Œå­è¿›ç¨‹ä¼šç›´æ¥å…ˆæ›´æ”¹å½“å‰è·¯å¾„åˆ°cwd
+        timeout: è¶…æ—¶æ—¶é—´ï¼Œç§’ï¼Œæ”¯æŒå°æ•°ï¼Œç²¾åº¦0.1ç§’
+        shell: æ˜¯å¦é€šè¿‡shellè¿è¡Œ
     Returns: return_code
-    Raises:  Exception: Ö´ĞĞ³¬Ê±
+    Raises:  Exception: æ‰§è¡Œè¶…æ—¶
     """
     if shell:
         cmdstring_list = cmdstring
@@ -56,9 +63,9 @@ def execute_command(cmdstring, cwd=None, timeout=None, shell=True):
     if timeout:
         end_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
 
-    log.info('¿ªÊ¼ÔÚÖ÷»ú:[%s]ÉÏÖ´ĞĞShellÃüÁî:[%s]' % (hostname, cmdstring))
+    log.info('å¼€å§‹åœ¨ä¸»æœº:[%s]ä¸Šæ‰§è¡ŒShellå‘½ä»¤:[%s]' % (hostname, cmdstring))
 
-    # ÁíÍâÒ»ÖÖShellÃüÁîÖ´ĞĞ·½·¨
+    # å¦å¤–ä¸€ç§Shellå‘½ä»¤æ‰§è¡Œæ–¹æ³•
     # returncode, out = commands.getstatusoutput(cmdstring)
     returncode, out = commands.getstatusoutput('dir')
     print out
@@ -67,25 +74,25 @@ def execute_command(cmdstring, cwd=None, timeout=None, shell=True):
     # print returncode
     # print out_lines
 
-    #Ã»ÓĞÖ¸¶¨±ê×¼Êä³öºÍ´íÎóÊä³öµÄ¹ÜµÀ£¬Òò´Ë»á´òÓ¡µ½ÆÁÄ»ÉÏ£»
+    #æ²¡æœ‰æŒ‡å®šæ ‡å‡†è¾“å‡ºå’Œé”™è¯¯è¾“å‡ºçš„ç®¡é“ï¼Œå› æ­¤ä¼šæ‰“å°åˆ°å±å¹•ä¸Šï¼›
     # sub = subprocess.Popen(cmdstring_list, cwd=cwd, 
     #     stdin=subprocess.PIPE,
     #     stdout=subprocess.PIPE,
     #     stderr=subprocess.PIPE,
     #     shell=shell,bufsize=1024000)
     
-    # #subprocess.poll()·½·¨£º¼ì²é×Ó½ø³ÌÊÇ·ñ½áÊøÁË£¬Èç¹û½áÊøÁË£¬Éè¶¨²¢·µ»ØÂë£¬·ÅÔÚsubprocess.returncode±äÁ¿ÖĞ 
+    # #subprocess.poll()æ–¹æ³•ï¼šæ£€æŸ¥å­è¿›ç¨‹æ˜¯å¦ç»“æŸäº†ï¼Œå¦‚æœç»“æŸäº†ï¼Œè®¾å®šå¹¶è¿”å›ç ï¼Œæ”¾åœ¨subprocess.returncodeå˜é‡ä¸­ 
     # while sub.poll() is None:
     #     time.sleep(0.1)
     #     if timeout:
     #         if end_time <= datetime.datetime.now():
-    #             raise Exception("Timeout£º%s"%cmdstring)
+    #             raise Exception("Timeoutï¼š%s"%cmdstring)
      
     # out_lines = sub.stdout.readlines()
     # err_lines = sub.stderr.readlines()
     # returncode = sub.returncode
 
-    # log.info('Íê³ÉÔÚÖ÷»ú:[%s]ÉÏÖ´ĞĞShellÃüÁî:[%s], ·µ»ØÖµ:[%d]' % (hostname, cmdstring, returncode))
+    # log.info('å®Œæˆåœ¨ä¸»æœº:[%s]ä¸Šæ‰§è¡ŒShellå‘½ä»¤:[%s], è¿”å›å€¼:[%d]' % (hostname, cmdstring, returncode))
 
 
     cmd = cmdstring.split(' ')[0]
@@ -107,13 +114,13 @@ def execute_command(cmdstring, cwd=None, timeout=None, shell=True):
     return (returncode, out_lines)
 
 class CommonError(Exception):
-    """¹«¹²Òì³£Àà"""
+    """å…¬å…±å¼‚å¸¸ç±»"""
     def __init__(self, code="", msg=""):
         self.code = code
         self.msg = msg
         
     def __repr__(self):
-        return '×Ô¶¨Òå³ö´íĞÅÏ¢%s:%s' % self.code, self.msg
+        return 'è‡ªå®šä¹‰å‡ºé”™ä¿¡æ¯%s:%s' % self.code, self.msg
 
 
 def isLinux():
@@ -125,12 +132,12 @@ def isLinux():
 
 
 def findFile(path, findFileName):
-    ''' ²éÕÒÎÄ¼ş '''
+    ''' æŸ¥æ‰¾æ–‡ä»¶ '''
     if not os.path.exists(path):
         return None
 
     for root, dirs, files in os.walk(path):
-        # rootÎªÎÄ¼ş¼Ğ
+        # rootä¸ºæ–‡ä»¶å¤¹
         stat = os.stat(root)
 
         if root != path:
@@ -148,14 +155,16 @@ def main():
     #     print line
     # returncode, out_lines = execute_command('ping -n 1 192.168.19.130')
     # pass
-    print dateValid('20170101')
-    print dateValid('201701010')
-    print dateValid('20172101')
-    print dateValid('20171132')
-    print dateValid('20171131')
-    print dateValid('20171130')
-    print findFile('/home/pi/ts150/non_self', '7_predict.sh')
-    print findFile('/home/pi/ts150/non_self', 'a.txt')
+    # print dateValid('20170101')
+    # print dateValid('201701010')
+    # print dateValid('20172101')
+    # print dateValid('20171132')
+    # print dateValid('20171131')
+    # print dateValid('20171130')
+    # print findFile('/home/pi/ts150/non_self', '7_predict.sh')
+    # print findFile('/home/pi/ts150/non_self', 'a.txt')
+    executeShell('echo $pid; sleep 10')
+
 
 if __name__ == '__main__':
     main()

@@ -69,6 +69,7 @@ class DbHelper:
             else:
                 sys.stderr.write("数据库不存在，建表文件:[%s]也不存在\n" % createDbFileName)
                 exit(1)
+        self.conn.isolation_level = None
         self.cur = self.conn.cursor()
 
 
@@ -160,7 +161,7 @@ class DbHelper:
     # 作业配置表更新
     def update_work_config(self, id, over_date=None, status=None):
         where = 'where id = %d' % id
-        update_field_array = []
+        update_field_array = ["ts = datetime('now', 'localtime')", ]
         if over_date:
             update_field_array.append("over_date = '%s'" % over_date)
         if status:

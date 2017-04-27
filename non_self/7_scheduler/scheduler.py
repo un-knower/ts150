@@ -4,11 +4,16 @@
 import os
 import time
 from optparse import OptionParser
-from multiprocessing import Process
+from multiprocessing import Process, Pool
 from common_fun import *
 from var import *
 from log import *
 from db import *
+import check
+import signal 
+
+# 初始化进程池
+check_pool = Pool(5)
 
 # 调度类
 class Scheduler:
@@ -76,6 +81,62 @@ class Scheduler:
                     self.db.insert_entity(flag, entity, data_date)
                     data_date = dateCalc(data_date, 1)
 
+    # 依赖项实体表--数据检查
+    def check_depend_entity(self, id=0):
+        if id > 0:
+            row_map = self.db.query_entity(id)
+        else:
+            # 时间差大于15分钟
+            minute_interval = "julianday('now', 'localtime')*1440 - julianday(ts)*1440 > 15"
+            row_map = self.db.query_entity(where="where status<>'exist' and (status<>'processing' and %s) order by data_date, ts" % minute_interval)
+
+
+
+        rn_list = row_map.keys()
+        rn_list.sort()
+        for rn in rn_list:
+            row = row_map[rn]
+            print row
+            check_pool.apply_async(func=self.check_depend_entity_start, args=(row, ), callback=self.check_depend_entity_callback)
+
+        # check_pool.close()
+        # check_pool.join()
+
+
+    def check_depend_entity_callback(self, arg):
+        print arg
+        (id, over_status) = arg
+        if over_status:
+            self.db.update_entity(id, 'exist')
+        else:
+            self.db.update_entity(id, 'not exist')
+
+        return arg
+
+    def check_depend_entity_start(self, row):
+        self.db.update_entity(row['id'], 'processing')
+        over_status = False
+        if row['flag'] == '1':
+            #HDFS
+            path = '%s/%s' % (row['entity'], row['data_date'])
+            over_status = check.has_hdfs_file(path)
+            # pool.apply_async(func=check.has_hdfs_file, args=(path,), callback=self.Bar)
+
+            pass
+        elif row['flag'] == '2':
+            #Hive
+            # pool.apply_async(func=check.has_hive_table_partition, args=(row['entity'], row['data_date']), callback=self.Bar)
+            over_status = check.has_hive_table_partition(row['entity'], row['data_date'])
+            pass
+        elif row['flag'] == '3':
+            #GP
+            pass
+        elif row['flag'] == '4':
+            #local file
+            pass
+
+        return (row['id'], over_status)
+        
 
     def run_shell(self):
         pass
@@ -89,8 +150,12 @@ class Scheduler:
     def run_python(self):
         pass
 
+    # 守护进程
     def daemon(self):
         while True:
+            # 依赖实体检查
+            self.check_depend_entity()
+            
             row_map = self.db.query_work_config(where="where (end_date > over_date or over_date is null) and status is null")
             rn_list = row_map.keys()
             rn_list.sort()
@@ -101,9 +166,9 @@ class Scheduler:
                 script = options['script']
                 log.info('id[%d] ts[%s] script[%s] start[%s] end[%s] over[%s] status[%s]' % (row['id'], row['ts'], script, row['start_date'], row['end_date'], row['over_date'], row['status']))
                 # print options
-                script_depend = self.get_script_depend(row['scriptName'])
-                print script_depend
-                self.insert_depend_entity(script_depend, row['start_date'], row['end_date'])
+                # script_depend = self.get_script_depend(row['scriptName'])
+                # print script_depend
+                # self.insert_depend_entity(script_depend, row['start_date'], row['end_date'])
                 # break
             break
             sys.stdout.write('%s:' % (time.ctime(),))
@@ -200,5 +265,14 @@ def main():
     sched.add_work_config()
 
 
+def sig_handler(sig, frame):
+    check_pool.close()
+    check_pool.terminate()
+    sys.exit(9)
+
 if __name__ == '__main__':
+    signal.signal(signal.SIGTERM, sig_handler)
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGQUIT, sig_handler)
+
     main()
