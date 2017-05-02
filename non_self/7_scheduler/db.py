@@ -55,7 +55,7 @@ class DbHelper:
         dbFileName = r"%s/%s.db" % (run_path, app)
 
         hasDb = os.path.exists(dbFileName)
-        log.debug("库%s是否存在:%s" % (dbFileName, hasDb))
+        # log.debug("库%s是否存在:%s" % (dbFileName, hasDb))
         
         self.conn = sqlite3.connect(dbFileName)
         
@@ -79,6 +79,32 @@ class DbHelper:
             self.conn.commit()
             self.conn.close()
 
+
+    # 取SQL select执行结果字段名列表
+    def get_field_list(self, description=None):
+        field_list = []
+        if not description:
+            description = self.cur.description
+
+        for field in description:
+            field_list.append(field[0])
+
+        return field_list
+
+    # 通用查询执行
+    def query_sql(self, sql, field_list=None):
+        log.debug("query_sql:%s" % sql)
+
+        self.cur.execute(sql)
+        res = self.cur.fetchall()
+        field_list = self.get_field_list()
+
+        row_array = []
+        for row in res:
+            column_map = dict(zip(field_list, row))
+            row_array.append(column_map)
+
+        return row_array
 
     # 日志插入
 
@@ -104,7 +130,6 @@ class DbHelper:
     # 实体表查询
     def query_entity(self, id=0, where=''):
         log.debug('query_entity:[%d][%s]' % (id, where))
-        field_list = ['id', 'ts', 'flag', 'entity', 'data_date', 'status']
 
         if id > 0:
             where = 'where id = %d' % id
@@ -112,6 +137,7 @@ class DbHelper:
         self.cur.execute(sql)
         res = self.cur.fetchall()
 
+        field_list = self.get_field_list()
         row_map = {}
         for row in res:
             column_map = dict(zip(field_list, row))
@@ -120,10 +146,16 @@ class DbHelper:
         return row_map
 
     # 实体表更新
-    def update_entity(self, id, status):
+    def update_entity(self, id, status=None, pid=0):
         log.debug('update_entity:[%s][%s]' % (id, status))
-       
-        sql = "update entity set ts=datetime('now', 'localtime'), status='%s' where id=%d" % (status, id)
+        
+        update_field_array = ["ts = datetime('now', 'localtime')", ]
+        if status:
+            update_field_array.append("status = '%s'" % status)
+        if pid > 0:
+            update_field_array.append("pid = %d" % pid)
+
+        sql = "update entity set %s where id=%d" % (','.join(update_field_array), id)
         log.debug(sql)
         self.cur.execute(sql)
             
@@ -142,14 +174,13 @@ class DbHelper:
 
     # 作业配置表查询
     def query_work_config(self, id=0, where=''):
-        field_list = ['id', 'ts', 'scriptName', 'options', 'start_date', 'end_date', 'priority', 'over_date', 'status']
-
         if id > 0:
             where = 'where id = %d' % id
         sql = "select * from work_config %s" % where
         self.cur.execute(sql)
         res = self.cur.fetchall()
 
+        field_list = self.get_field_list()
         row_map = {}
         for row in res:
             column_map = dict(zip(field_list, row))
@@ -159,13 +190,15 @@ class DbHelper:
         return row_map
 
     # 作业配置表更新
-    def update_work_config(self, id, over_date=None, status=None):
+    def update_work_config(self, id, over_date=None, status=None, pid=0):
         where = 'where id = %d' % id
         update_field_array = ["ts = datetime('now', 'localtime')", ]
         if over_date:
             update_field_array.append("over_date = '%s'" % over_date)
         if status:
             update_field_array.append("status = '%s'" % status)
+        if pid > 0:
+            update_field_array.append("pid = %d" % pid)
 
         if len(update_field_array) > 0:
             sql = "update work_config set %s %s" % (','.join(update_field_array), where)
@@ -183,12 +216,14 @@ class DbHelper:
 
 def main():
     db = DbHelper()
-    print db.update_work_config(1, '20171212', 'processing')
-    print db.query_entity(1)
-    print db.query_entity(where="where data_date='20170101'")
-    print db.update_entity(1, 'exists')
-    print db.query_entity(1)
-    print db.query_entity(where="where status<>'exists' order by data_date")
+    # print db.update_work_config(1, '20171212', 'processing')
+    # print db.query_entity(1)
+    # print db.query_entity(where="where data_date='20170101'")
+    # print db.update_entity(1, 'exists')
+    # print db.query_entity(1)
+    # print db.query_entity(where="where status<>'exists' order by data_date")
+    # print db.query_sql('select * from entity ')
+    print db.query_sql('select flag, entity, min(data_date) as min_data_date from entity group by flag, entity')
     pass
 
 

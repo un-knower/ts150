@@ -40,6 +40,31 @@ def dateValid(strDate, fmt='%Y%m%d'):
         return False
 
 
+def getDateList(start_date, end_date):
+    ''' 返回两个日期间每一天的列表 '''
+    if not dateValid(start_date):
+        return None
+
+    if not dateValid(end_date):
+        return None
+
+    ret_list = []
+    # 防止Start - end 写反
+    if start_date > end_date:
+        max_date = start_date
+        min_date = end_date
+    else:
+        min_date = start_date
+        max_date = end_date
+
+    data_date = min_date
+    while data_date <= max_date:
+        data_date = dateCalc(data_date, 1)
+        ret_list.append(data_date)
+
+    return ret_list
+
+
 def executeShell(cmdstring):
     returncode, out = commands.getstatusoutput(cmdstring)
     out_lines = out.split('\n')

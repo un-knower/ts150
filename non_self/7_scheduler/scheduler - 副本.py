@@ -5,20 +5,32 @@ import os
 import time
 import atexit
 from optparse import OptionParser
-from multiprocessing import Process
+from multiprocessing import Process, Pool
 from common_fun import *
 from var import *
 from log import *
 from db import *
 import check
 import signal 
-
+import scheduler
 
 pidfile = '%s/scheduler_%s.pid' % (run_path, app)
 
+# 子进程执行函数不能在类中
+def check_depend_entity_callback(arg):
+    # db = DbHelper()
+    (db, id, over_status) = arg
+    if over_status:
+        db.update_entity(id, 'exist')
+    else:
+        db.update_entity(id, 'not exist')
 
-def check_depend_entity_process(db, row):
-    db.update_entity(row['id'], 'processing', os.getpid())
+    return arg
+
+
+def check_depend_entity_start(db, row):
+    # db = DbHelper()
+    db.update_entity(row['id'], 'processing')
     over_status = False
     if row['flag'] == '1':
         #HDFS
@@ -38,13 +50,7 @@ def check_depend_entity_process(db, row):
         #local file
         pass
 
-    if over_status:
-        db.update_entity(row['id'], 'exist')
-    else:
-        db.update_entity(row['id'], 'not exist')
-
-    return 0
-
+    return (db, row['id'], over_status)
 
 # 依赖项实体表--数据检查
 def check_depend_entity(db, id=0):
@@ -55,7 +61,7 @@ def check_depend_entity(db, id=0):
     else:
         # 时间差大于15分钟
         minute_interval = "julianday('now', 'localtime')*1440 - julianday(ts)*1440 > 15"
-        where = "status<>'exist' and (status='processing' and %s) " % minute_interval
+        where="status<>'exist' and (status<>'processing' and %s) " % minute_interval
         sql = "select flag, entity, min(data_date) as min_data_date from entity where %s group by flag, entity" % where
         row_array = db.query_sql(sql)
 
@@ -66,8 +72,9 @@ def check_depend_entity(db, id=0):
             row_map.update(again_row_map)
 
     for row in row_map.values():
-        job = Process(target=check_depend_entity_process, args=(db, row), name="%s_%s" % (row['entity'], row['data_date']))
-        job.start()
+        # print row
+        job = check_pool.apply_async(func=check_depend_entity_start, args=(db, row), callback=check_depend_entity_callback)
+        # job = check_pool.apply_async(func=scheduler.check_depend_entity_start, args=(db, row), callback=scheduler.check_depend_entity_callback)
         job_list.append(job)
 
     return job_list
@@ -76,7 +83,7 @@ def check_depend_entity(db, id=0):
 # 运行作业
 def run_work(db):
     job_list = []
-    row_map = db.query_work_config(where="where end_date > over_date and status = ''")
+    row_map = db.query_work_config(where="where (end_date > over_date or over_date is null) and status is null")
     rn_list = row_map.keys()
     rn_list.sort()
 
@@ -86,81 +93,64 @@ def run_work(db):
         script = options['script']
         log.info('id[%d] ts[%s] script[%s] start[%s] end[%s] over[%s] status[%s]' % (row['id'], row['ts'], script, row['start_date'], row['end_date'], row['over_date'], row['status']))
 
-        job = Process(target=run_work_process, args=(db, row), name="%s_%s" % (script, row['start_date']))
-        job.start()
+
+        job = run_pool.apply_async(func=scheduler.run_work_start, args=(db, row), callback=scheduler.run_work_callback)
         job_list.append(job)
-        
 
     return job_list
 
+def run_work_callback(arg):
+    print arg
+    # (db, id, over_status) = arg
+    # if over_status:
+    #     db.update_entity(id, 'exist')
+    # else:
+    #     db.update_entity(id, 'not exist')
 
-def run_work_process(db, row):
-    log.debug("子进程开始执行作业:%s" % row)
-    options = eval(row['options'])
-    scriptName = options['script']
-
-    # 断点重跑
-    if row['over_date'] == '':
-        start_date = row['start_date']
-    else:
-        if row['status'] == 'over':
-            start_date = dateCalc(row['over_date'], 1)
-        else:
-            start_date = row['over_date']
-
-    # 按日期一天天往下跑
-    sched = Scheduler()
-    for data_date in getDateList(start_date, row['end_date']):
-        db.update_work_config(row['id'], over_date=data_date, status='processing', pid=os.getpid())
-
-        over_status = 'fail'
-        # 脚本类型
-        script_type = get_script_type(scriptName)
-        if script_type == '.sh':
-            over_status = sched.run_shell()
-        elif script_type == '.py':
-            over_status = sched.run_python()
-        elif script_type == '.sql':
-            over_status = sched.run_hive_sql()
-
-        db.update_work_config(row['id'], over_date=data_date, status=over_status, pid=os.getpid())
+    # return arg
 
 
-    return 0
+def run_work_start(db, row):
+    log.debug("子进程开始执行作业:%s", row)
+    time.sleep(10)
+    # db.update_entity(row['id'], 'processing')
+    over_status = False
+    # if row['flag'] == '1':
+    #     #HDFS
+    #     path = '%s/%s' % (row['entity'], row['data_date'])
+    #     over_status = check.has_hdfs_file(path)
+    #     # pool.apply_async(func=check.has_hdfs_file, args=(path,), callback=self.Bar)
 
+    # elif row['flag'] == '2':
+    #     #Hive
+    #     # pool.apply_async(func=check.has_hive_table_partition, args=(row['entity'], row['data_date']), callback=self.Bar)
+    #     over_status = check.has_hive_table_partition(row['entity'], row['data_date'])
+    #     pass
+    # elif row['flag'] == '3':
+    #     #GP
+    #     pass
+    # elif row['flag'] == '4':
+    #     #local file
+    #     pass
+
+    return (db, row['id'], over_status)
 
 # 守护进程
 def daemon():
     db = DbHelper()
 
-    job_list = []
     while True:
         # 依赖实体检查
         check_job_list = check_depend_entity(db)
         
         # 运行作业
-        run_job_list = run_work(db)
+        # run_job_list = run_work(db)
 
-        job_list.extend(check_job_list)
-        job_list.extend(run_job_list)
+        check_pool.close()
+        # run_pool.close()
 
-
-        # 检查进程完成情况
-        over_job_list = []
-        while True:
-            for job in job_list:
-                if job in over_job_list:
-                    continue
-
-                job.join(1)
-                if job.is_alive():
-                    print "pid:%d, name:%s is_alive" % (job.pid, job.name)
-                else:
-                    print "pid:%d, name:%s exit code:%d" % (job.pid, job.name, job.exitcode)
-                    over_job_list.append(job)
-            if len(over_job_list) == len(job_list):
-                break
-
+        check_pool.join()
+        # run_pool.join()
 
         break
         sys.stdout.flush()
@@ -168,27 +158,49 @@ def daemon():
     pass
 
 
-# 获取脚本语言类型
-def get_script_type(scriptName):
-    file_array = os.path.splitext(scriptName)
-    if len(file_array) == 2:
-        ext = file_array[1]
-        return ext
-    else:
-        return None
-
-
 # 调度类
 class Scheduler:
     """调度类"""
-    def __init__(self, options=None, scriptName=None, db=None):
+    def __init__(self, options=None, scriptName=None):
         self.options = options
         self.scriptName = scriptName
 
-        if not db:
-            self.db = DbHelper()
+        self.db = DbHelper()
         self.depend_key_list = ('IN_CUR_HIVE', 'IN_PRE_HIVE', 'IN_CUR_HDFS', 'OUT_CUR_HIVE')
 
+    # 获取脚本语言类型
+    def get_script_type(self, scriptName=None):
+        if scriptName:
+            script = scriptName
+        else:
+            script = self.scriptName
+        file_array = os.path.splitext(script)
+        if len(file_array) == 2:
+            ext = file_array[1]
+            return ext
+        else:
+            return None
+
+    # 脚本依赖项
+    def get_script_depend(self, scriptName=None):
+        if not scriptName:
+            scriptName = self.scriptName
+        kv_map = {}
+        script_type = self.get_script_type(scriptName)
+        if script_type == '.sh':
+            kv_map = getRemarkKV(scriptName, None)
+        elif script_type == '.py':
+            kv_map = getRemarkKV(scriptName, '#')
+        elif script_type == '.sql':
+            kv_map = getRemarkKV(scriptName, '--')
+        else:
+            pass
+
+        depend_map = {}
+        for key in kv_map.keys():
+            if key in self.depend_key_list:
+                depend_map[key] = kv_map[key]
+        return depend_map
 
 
     # 插入脚本依赖项到实体表
@@ -213,27 +225,6 @@ class Scheduler:
                     data_date = dateCalc(data_date, 1)
 
         
-    # 脚本依赖项
-    def get_script_depend(self, scriptName=None):
-        if not scriptName:
-            scriptName = self.scriptName
-        kv_map = {}
-        script_type = get_script_type(scriptName)
-        if script_type == '.sh':
-            kv_map = getRemarkKV(scriptName, None)
-        elif script_type == '.py':
-            kv_map = getRemarkKV(scriptName, '#')
-        elif script_type == '.sql':
-            kv_map = getRemarkKV(scriptName, '--')
-        else:
-            pass
-
-        depend_map = {}
-        for key in kv_map.keys():
-            if key in self.depend_key_list:
-                depend_map[key] = kv_map[key]
-        return depend_map
-
 
     def run_shell(self):
         pass
@@ -272,30 +263,25 @@ def list_work(*args, **kwargs):
         if len(script) > max_script_len:
             max_script_len = len(script)
 
-    log.info('ID  %-23s%s%s %s %s %s %s' % ('时间戳', '脚本名'.ljust(max_script_len + 4), '起始日期', '终止日期', '完成日期', '处理状态', '进程号'))
+    log.info('ID  %-23s%s%s %s %s %s' % ('时间戳', '脚本名'.ljust(max_script_len + 4), '起始日期', '终止日期', '完成日期', '处理状态'))
     for rn in rn_list:
         row = row_map[rn]
         options = eval(row['options'])
         script = options['script'].ljust(max_script_len + 1)
-        log.info('%-4d%-20s%s%-9s%-9s%-9s%s' % (row['id'], row['ts'], script, row['start_date'], row['end_date'], row['over_date'], row['status'], row['pid']))
+        log.info('%-4d%-20s%s%-9s%-9s%-9s%s' % (row['id'], row['ts'], script, row['start_date'], row['end_date'], row['over_date'], row['status']))
         # print row
     exit(0)
 
 def debug_work(*args, **kwargs):
     log.debug('debug_work')
-    pid = str(os.getpid())
-    file(pidfile, 'w').write('%s' % pid)
 
     #注册退出函数，根据文件pid判断是否存在进程
     atexit.register(delpid)
-    signal.signal(signal.SIGTERM, sig_handler)
-    signal.signal(signal.SIGINT, sig_handler)
-    signal.signal(signal.SIGQUIT, sig_handler)
 
+    # sched = Scheduler()
+    # sched.daemon()
     daemon()
-
     exit(0)
-
 
 def main():
     parser = OptionParser(usage='usage: %prog [options]')
@@ -365,7 +351,11 @@ def stop(*args, **kwargs):
         while 1:
             print '杀进程:%d' % pid
             os.kill(pid, signal.SIGTERM)
+            os.kill(pid, signal.SIGKILL)
             time.sleep(0.1)
+            #os.system('hadoop-daemon.sh stop datanode')
+            #os.system('hadoop-daemon.sh stop tasktracker')
+            #os.remove(self.pidfile)
     except OSError, err:
         err = str(err)
         if err.find('No such process') > 0:
@@ -382,9 +372,25 @@ def delpid():
 
 
 def sig_handler(sig, frame):
+    # check_pool.close()
+    # check_pool.terminate()
     delpid()
+
     sys.exit(9)
 
 
 if __name__ == '__main__':
+
+
+    signal.signal(signal.SIGTERM, sig_handler)
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGQUIT, sig_handler)
+
+    pid = str(os.getpid())
+    file(pidfile, 'w').write('%s' % pid)
+
+    # 初始化进程池
+    check_pool = Pool(5)
+    run_pool = Pool(5)
+
     main()

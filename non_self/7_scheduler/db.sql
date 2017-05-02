@@ -48,7 +48,8 @@ create table entity(
    flag char(1) not null,
    entity varchar(255) not null,
    data_date varchar(8) not null,
-   status varchar(16) default('')
+   status varchar(16) default(''),
+   pid INTEGER default 0         -- 处理进程ID
 );
 
 -- 作业配置表
@@ -63,5 +64,6 @@ create table work_config(
    end_date varchar(8) not null,
    priority INTEGER default(1),
    over_date varchar(8) default(''),
-   status varchar(16) default('')
+   status varchar(16) default(''),     -- 完成情况
+   pid INTEGER default 0         -- 处理进程ID
 );
