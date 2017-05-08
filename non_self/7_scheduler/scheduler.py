@@ -43,7 +43,7 @@ def check_depend_entity_process(db, row):
     else:
         db.update_entity(row['id'], 'not exist')
 
-    return 0
+    return over_status
 
 
 # 依赖项实体表--数据检查
@@ -54,18 +54,23 @@ def check_depend_entity(db, id=0):
         row_map = db.query_entity(id)
     else:
         # 时间差大于15分钟
-        minute_interval = "julianday('now', 'localtime')*1440 - julianday(ts)*1440 > 15"
-        where = "status<>'exist' and (status='processing' and %s) " % minute_interval
+        # minute_interval = "julianday('now', 'localtime')*1440 - julianday(ts)*1440 > 15"
+        # where = "status<>'exist' and (status='processing' and %s) " % minute_interval
+        where = "status<>'exist'"
         sql = "select flag, entity, min(data_date) as min_data_date from entity where %s group by flag, entity" % where
         row_array = db.query_sql(sql)
 
         for row in row_array:
             again_row_map = db.query_entity(where="where flag='%s' and entity='%s' and data_date='%s'" % \
-                            (row['flag'], row['entity'], row['min_data_date']))
+                                                   (row['flag'], row['entity'], row['min_data_date']))
 
             row_map.update(again_row_map)
 
     for row in row_map.values():
+        # 正在处理中，且进程存在，则排除
+        if row['status'] == 'processing' and exist_pid(row['pid']):
+            continue
+
         job = Process(target=check_depend_entity_process, args=(db, row), name="%s_%s" % (row['entity'], row['data_date']))
         job.start()
         job_list.append(job)
@@ -109,24 +114,33 @@ def run_work_process(db, row):
             start_date = row['over_date']
 
     # 按日期一天天往下跑
-    sched = Scheduler()
     for data_date in getDateList(start_date, row['end_date']):
-        db.update_work_config(row['id'], over_date=data_date, status='processing', pid=os.getpid())
-
-        over_status = 'fail'
-        # 脚本类型
-        script_type = get_script_type(scriptName)
-        if script_type == '.sh':
-            over_status = sched.run_shell()
-        elif script_type == '.py':
-            over_status = sched.run_python()
-        elif script_type == '.sql':
-            over_status = sched.run_hive_sql()
-
-        db.update_work_config(row['id'], over_date=data_date, status=over_status, pid=os.getpid())
+        over_status = run_work_one_date(db, row, data_date)
 
 
-    return 0
+
+# 跑一天的脚本
+def run_work_one_date(db, row, data_date):
+    sched = Scheduler(db=db)
+    options = eval(row['options'])
+    scriptName = options['script']
+
+    db.update_work_config(row['id'], over_date=data_date, status='processing', pid=os.getpid())
+
+    over_status = ''
+    # 脚本类型
+    script_type = get_script_type(scriptName)
+    if script_type == '.sh':
+        over_status = sched.run_shell(row, data_date)
+    elif script_type == '.py':
+        over_status = sched.run_python()
+    elif script_type == '.sql':
+        over_status = sched.run_hive_sql()
+
+    db.update_work_config(row['id'], over_date=data_date, status=over_status, pid=os.getpid())
+
+
+    return over_status
 
 
 # 守护进程
@@ -190,7 +204,6 @@ class Scheduler:
         self.depend_key_list = ('IN_CUR_HIVE', 'IN_PRE_HIVE', 'IN_CUR_HDFS', 'OUT_CUR_HIVE')
 
 
-
     # 插入脚本依赖项到实体表
     def insert_depend_entity(self, script_depend, start_date, end_date):
         for k,v in script_depend.items():
@@ -213,7 +226,7 @@ class Scheduler:
                     data_date = dateCalc(data_date, 1)
 
         
-    # 脚本依赖项
+    # 获取脚本依赖项
     def get_script_depend(self, scriptName=None):
         if not scriptName:
             scriptName = self.scriptName
@@ -235,8 +248,28 @@ class Scheduler:
         return depend_map
 
 
-    def run_shell(self):
-        pass
+    # 判断依赖项是否准备好
+    def check_depend(self, row, data_date):
+        options = eval(row['options'])
+        scriptName = options['script']
+
+        # 判断脚本输入依赖
+        depend_map = self.get_script_depend(row['script'])
+
+
+
+    def run_shell(self, row, data_date):
+        options = eval(row['options'])
+        scriptName = options['script']
+
+        # 判断脚本输入依赖
+        depend_map = self.get_script_depend(row['script'])
+
+        # 运行脚本
+
+        # 判断脚本输出
+
+        return 'over'
 
     def run_hive_sql(self):
         pass
@@ -250,7 +283,7 @@ class Scheduler:
     # 加入新的作业配置与实体依赖
     def add_work_config(self):
         print self.db.insert_work_config(self.scriptName, self.options, self.options.start_date, 
-                                   self.options.end_date, self.options.priority)
+                                         self.options.end_date, self.options.priority)
         script_depend = self.get_script_depend()
         self.insert_depend_entity(script_depend, self.options.start_date, self.options.end_date)
 
@@ -280,6 +313,7 @@ def list_work(*args, **kwargs):
         log.info('%-4d%-20s%s%-9s%-9s%-9s%s' % (row['id'], row['ts'], script, row['start_date'], row['end_date'], row['over_date'], row['status'], row['pid']))
         # print row
     exit(0)
+
 
 def debug_work(*args, **kwargs):
     log.debug('debug_work')

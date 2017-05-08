@@ -155,7 +155,7 @@ class DbHelper:
         if pid > 0:
             update_field_array.append("pid = %d" % pid)
 
-        sql = "update entity set %s where id=%d" % (','.join(update_field_array), id)
+        sql = "update entity set %s where id=%d" % (', '.join(update_field_array), id)
         log.debug(sql)
         self.cur.execute(sql)
             
@@ -201,7 +201,7 @@ class DbHelper:
             update_field_array.append("pid = %d" % pid)
 
         if len(update_field_array) > 0:
-            sql = "update work_config set %s %s" % (','.join(update_field_array), where)
+            sql = "update work_config set %s %s" % (', '.join(update_field_array), where)
             # print sql
             self.cur.execute(sql)
 

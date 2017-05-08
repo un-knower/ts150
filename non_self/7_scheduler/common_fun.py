@@ -65,10 +65,38 @@ def getDateList(start_date, end_date):
     return ret_list
 
 
+def exist_pid(pid):
+    if isinstance(pid, str):
+        cmd = 'ps -p %s' % pid
+    elif isinstance(pid, int):
+        cmd = 'ps -p %d' % pid
+    else:
+        return False
+
+    # print cmd
+    returncode, out_lines = executeShell(cmd)
+    if returncode == 0:
+        return True
+    else:
+        return False
+
+
 def executeShell(cmdstring):
     returncode, out = commands.getstatusoutput(cmdstring)
     out_lines = out.split('\n')
     return (returncode, out_lines)
+
+
+# 可靠的Shell
+def executeShell_ex(cmdstring, num=3):
+    for i in range(num):
+        (returncode, out_lines) = executeShell(cmdstring)
+        if returncode != 0:
+            continue
+        return (returncode, out_lines)
+
+    raise CommonError(msg='命令出错:%s\n%s' % (cmdstring, '\n'.join(out_lines)))
+
 
 
 def execute_command(cmdstring, cwd=None, timeout=None, shell=True):
@@ -138,11 +166,14 @@ def execute_command(cmdstring, cwd=None, timeout=None, shell=True):
 
     return (returncode, out_lines)
 
+
 class CommonError(Exception):
     """公共异常类"""
     def __init__(self, code="", msg=""):
         self.code = code
         self.msg = msg
+        sys.stderr.write('异常: %s (%s)\n' % (code, msg))
+
         
     def __repr__(self):
         return '自定义出错信息%s:%s' % self.code, self.msg
@@ -188,8 +219,10 @@ def main():
     # print dateValid('20171130')
     # print findFile('/home/pi/ts150/non_self', '7_predict.sh')
     # print findFile('/home/pi/ts150/non_self', 'a.txt')
-    executeShell('echo $pid; sleep 10')
-
+    # executeShell('echo $pid; sleep 10')
+    print exist_pid('17930')
+    print exist_pid(17930)
+    print exist_pid(178923)
 
 if __name__ == '__main__':
     main()
