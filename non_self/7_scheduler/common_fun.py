@@ -1,5 +1,5 @@
-#!/usr/bin/python
-#coding:utf8
+#!/usr/bin/env python
+#coding: utf-8
 
 '''
     常用函数库           2016.2.27
@@ -8,13 +8,13 @@
 import sys, os, time, datetime
 import platform
 import socket
-import subprocess
 import shlex
 import commands
 
 # 取主机名
 hostname = socket.gethostname()
 save_path = './'
+
 
 def today(fmt='%Y%m%d'):
     '''取当前日期字符串YYYYMMDD'''
@@ -59,8 +59,8 @@ def getDateList(start_date, end_date):
 
     data_date = min_date
     while data_date <= max_date:
-        data_date = dateCalc(data_date, 1)
         ret_list.append(data_date)
+        data_date = dateCalc(data_date, 1)
 
     return ret_list
 
@@ -94,9 +94,10 @@ def executeShell_ex(cmdstring, num=3):
         if returncode != 0:
             continue
         return (returncode, out_lines)
-
+    # for line in out_lines:
+    #     print line
     raise CommonError(msg='命令出错:%s\n%s' % (cmdstring, '\n'.join(out_lines)))
-
+    # raise CommonError(msg='Command Error:%s\n%s' % (cmdstring, '\n'.join(out_lines)))
 
 
 def execute_command(cmdstring, cwd=None, timeout=None, shell=True):
@@ -173,6 +174,7 @@ class CommonError(Exception):
         self.code = code
         self.msg = msg
         sys.stderr.write('异常: %s (%s)\n' % (code, msg))
+        # sys.stderr.write('Error: %s (%s)\n' % (code, msg))
 
         
     def __repr__(self):
@@ -225,4 +227,6 @@ def main():
     print exist_pid(178923)
 
 if __name__ == '__main__':
-    main()
+    # main()
+    # print '们吴'
+    raise CommonError(msg='命令出错:%s\n%s' % ('hello', '\n'.join(['们', 'hello'])))

@@ -80,8 +80,9 @@ def check_depend_entity(db, id=0):
 
 # 运行作业
 def run_work(db):
+    log.debug('运行跑批作业调度')
     job_list = []
-    row_map = db.query_work_config(where="where end_date > over_date and status = ''")
+    row_map = db.query_work_config(where="where over_date<end_date or (over_date=end_date and status<>'over')")
     rn_list = row_map.keys()
     rn_list.sort()
 
@@ -89,12 +90,19 @@ def run_work(db):
         row = row_map[rn]
         options = eval(row['options'])
         script = options['script']
-        log.info('id[%d] ts[%s] script[%s] start[%s] end[%s] over[%s] status[%s]' % (row['id'], row['ts'], script, row['start_date'], row['end_date'], row['over_date'], row['status']))
+
+        # log.debug('找到跑批作业：%s,%s,%s' % (script, row['status'], row['pid']))
+        log.debug('找到跑批作业：%s' % (script))
+
+        # 正在处理中，且进程存在，则排除
+        if row['status'] in ('processing', 'checking') and exist_pid(row['pid']):
+            continue
+
+        log.info('开始运行:id[%d] ts[%s] script[%s] start[%s] end[%s] over[%s] status[%s]' % (row['id'], row['ts'], script, row['start_date'], row['end_date'], row['over_date'], row['status']))
 
         job = Process(target=run_work_process, args=(db, row), name="%s_%s" % (script, row['start_date']))
         job.start()
         job_list.append(job)
-        
 
     return job_list
 
@@ -116,7 +124,8 @@ def run_work_process(db, row):
     # 按日期一天天往下跑
     for data_date in getDateList(start_date, row['end_date']):
         over_status = run_work_one_date(db, row, data_date)
-
+        if 'over' != over_status:
+            break
 
 
 # 跑一天的脚本
@@ -125,20 +134,25 @@ def run_work_one_date(db, row, data_date):
     options = eval(row['options'])
     scriptName = options['script']
 
-    db.update_work_config(row['id'], over_date=data_date, status='processing', pid=os.getpid())
-
-    over_status = ''
-    # 脚本类型
-    script_type = get_script_type(scriptName)
-    if script_type == '.sh':
-        over_status = sched.run_shell(row, data_date)
-    elif script_type == '.py':
-        over_status = sched.run_python()
-    elif script_type == '.sql':
-        over_status = sched.run_hive_sql()
-
+    over_status = 'checking'
     db.update_work_config(row['id'], over_date=data_date, status=over_status, pid=os.getpid())
 
+    if sched.check_depend(row, data_date, io='in'):
+        db.update_work_config(row['id'], over_date=data_date, status='processing', pid=os.getpid())
+
+        # 脚本类型
+        script_type = get_script_type(scriptName)
+        if script_type == '.sh':
+            over_status = sched.run_shell(row, data_date)
+        elif script_type == '.py':
+            over_status = sched.run_python()
+        elif script_type == '.sql':
+            over_status = sched.run_hive_sql()
+
+    else:
+        over_status = 'depend-no-finish'
+        
+    db.update_work_config(row['id'], over_date=data_date, status=over_status, pid=os.getpid())
 
     return over_status
 
@@ -150,7 +164,8 @@ def daemon():
     job_list = []
     while True:
         # 依赖实体检查
-        check_job_list = check_depend_entity(db)
+        check_job_list = []
+        # check_job_list = check_depend_entity(db)
         
         # 运行作业
         run_job_list = run_work(db)
@@ -168,13 +183,13 @@ def daemon():
 
                 job.join(1)
                 if job.is_alive():
-                    print "pid:%d, name:%s is_alive" % (job.pid, job.name)
+                    # print "pid:%d, name:%s is_alive" % (job.pid, job.name)
+                    pass
                 else:
                     print "pid:%d, name:%s exit code:%d" % (job.pid, job.name, job.exitcode)
                     over_job_list.append(job)
             if len(over_job_list) == len(job_list):
                 break
-
 
         break
         sys.stdout.flush()
@@ -249,13 +264,47 @@ class Scheduler:
 
 
     # 判断依赖项是否准备好
-    def check_depend(self, row, data_date):
+    def check_depend(self, row, data_date, io='in'):
         options = eval(row['options'])
         scriptName = options['script']
 
         # 判断脚本输入依赖
         depend_map = self.get_script_depend(row['script'])
+        for key in depend_map.keys():
+            # 不符合条件的，不检查
+            if 'IN_' != key[:3] and io == 'in': continue
+            if 'OUT_' != key[:4] and io == 'out': continue
 
+            depend_condition_array = key.split('_')
+
+            # 检查输入项格式
+            assert len(depend_condition_array) == 3
+
+            depend_date = depend_condition_array[1]
+            depend_type = depend_condition_array[2]
+
+            # 检查日期判断
+            if 'CUR' == depend_date:
+                check_date = data_date
+            if 'PRE' == depend_date:
+                check_date = dateCalc(data_date, -1)
+
+            log.info('开始检查实体:[%s][%s]在日期:[%s]的完成情况' % (key, depend_map[key], check_date))
+            valid_success = False
+            if 'HDFS' == depend_type:
+                path = '%s/%s' % (depend_map[key], check_date)
+                valid_success = check.valid_hdfs_file(path)
+                pass
+            elif 'HIVE' == depend_type:
+                table = depend_map[key]
+                valid_success = check.valid_hive_table(table, check_date)
+            elif 'GP' == depend_type:
+                pass
+            else:
+                pass
+            return valid_success
+
+        return True
 
 
     def run_shell(self, row, data_date):
@@ -263,13 +312,14 @@ class Scheduler:
         scriptName = options['script']
 
         # 判断脚本输入依赖
-        depend_map = self.get_script_depend(row['script'])
+        # depend_map = self.get_script_depend(row['script'])
 
         # 运行脚本
 
         # 判断脚本输出
 
-        return 'over'
+        return 'fail'
+        # return 'over'
 
     def run_hive_sql(self):
         pass
@@ -305,12 +355,12 @@ def list_work(*args, **kwargs):
         if len(script) > max_script_len:
             max_script_len = len(script)
 
-    log.info('ID  %-23s%s%s %s %s %s %s' % ('时间戳', '脚本名'.ljust(max_script_len + 4), '起始日期', '终止日期', '完成日期', '处理状态', '进程号'))
+    log.info('ID  %-23s%s%s %s %s %s    %s' % ('时间戳', '脚本名'.ljust(max_script_len + 4), '起始日期', '终止日期', '完成日期', '处理状态', '进程号'))
     for rn in rn_list:
         row = row_map[rn]
         options = eval(row['options'])
         script = options['script'].ljust(max_script_len + 1)
-        log.info('%-4d%-20s%s%-9s%-9s%-9s%s' % (row['id'], row['ts'], script, row['start_date'], row['end_date'], row['over_date'], row['status'], row['pid']))
+        log.info('%-4d%-20s%s%-9s%-9s%-9s%-12s%s' % (row['id'], row['ts'], script, row['start_date'], row['end_date'], row['over_date'], row['status'], row['pid']))
         # print row
     exit(0)
 

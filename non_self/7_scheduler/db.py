@@ -58,7 +58,6 @@ class DbHelper:
         # log.debug("库%s是否存在:%s" % (dbFileName, hasDb))
         
         self.conn = sqlite3.connect(dbFileName)
-        
         if not hasDb:
             createDbFileName = r"%s/7_scheduler/db.sql" % (base_path)
             if os.path.exists(createDbFileName):
@@ -69,6 +68,9 @@ class DbHelper:
             else:
                 sys.stderr.write("数据库不存在，建表文件:[%s]也不存在\n" % createDbFileName)
                 exit(1)
+
+        # 默认返回的数据是Unicode，改为str可适应utf8与gbk
+        self.conn.text_factory = str
         self.conn.isolation_level = None
         self.cur = self.conn.cursor()
 
@@ -101,6 +103,7 @@ class DbHelper:
 
         row_array = []
         for row in res:
+            # print row
             column_map = dict(zip(field_list, row))
             row_array.append(column_map)
 
@@ -132,7 +135,7 @@ class DbHelper:
         log.debug('query_entity:[%d][%s]' % (id, where))
 
         if id > 0:
-            where = 'where id = %d' % id
+            where = 'where id=%d' % id
         sql = "select * from entity %s" % where
         self.cur.execute(sql)
         res = self.cur.fetchall()
@@ -149,11 +152,11 @@ class DbHelper:
     def update_entity(self, id, status=None, pid=0):
         log.debug('update_entity:[%s][%s]' % (id, status))
         
-        update_field_array = ["ts = datetime('now', 'localtime')", ]
+        update_field_array = ["ts=datetime('now', 'localtime')", ]
         if status:
-            update_field_array.append("status = '%s'" % status)
+            update_field_array.append("status='%s'" % status)
         if pid > 0:
-            update_field_array.append("pid = %d" % pid)
+            update_field_array.append("pid=%d" % pid)
 
         sql = "update entity set %s where id=%d" % (', '.join(update_field_array), id)
         log.debug(sql)
@@ -175,7 +178,7 @@ class DbHelper:
     # 作业配置表查询
     def query_work_config(self, id=0, where=''):
         if id > 0:
-            where = 'where id = %d' % id
+            where = 'where id=%d' % id
         sql = "select * from work_config %s" % where
         self.cur.execute(sql)
         res = self.cur.fetchall()
@@ -191,14 +194,14 @@ class DbHelper:
 
     # 作业配置表更新
     def update_work_config(self, id, over_date=None, status=None, pid=0):
-        where = 'where id = %d' % id
-        update_field_array = ["ts = datetime('now', 'localtime')", ]
+        where = 'where id=%d' % id
+        update_field_array = ["ts=datetime('now', 'localtime')", ]
         if over_date:
-            update_field_array.append("over_date = '%s'" % over_date)
+            update_field_array.append("over_date='%s'" % over_date)
         if status:
-            update_field_array.append("status = '%s'" % status)
+            update_field_array.append("status='%s'" % status)
         if pid > 0:
-            update_field_array.append("pid = %d" % pid)
+            update_field_array.append("pid=%d" % pid)
 
         if len(update_field_array) > 0:
             sql = "update work_config set %s %s" % (', '.join(update_field_array), where)
@@ -223,7 +226,11 @@ def main():
     # print db.query_entity(1)
     # print db.query_entity(where="where status<>'exists' order by data_date")
     # print db.query_sql('select * from entity ')
-    print db.query_sql('select flag, entity, min(data_date) as min_data_date from entity group by flag, entity')
+    res_array = db.query_sql('select flag, entity, min(data_date) as min_data_date from entity group by flag, entity')
+    for row in res_array:
+        print row
+        # print '行:%s' % (row['flag'].encode('utf8'))
+        print '行:%s' % (row['flag'])
     pass
 
 

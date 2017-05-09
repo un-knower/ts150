@@ -15,6 +15,10 @@ space_pattern = re.compile(r'\s+')
         
 # GP 流水分区表检查
 
+# 获取GP表或分区属性
+def get_gp_table_attribute(table, partition_value=None):
+    pass
+    
 # GP 拉连表检查
 
 
@@ -305,7 +309,7 @@ def main():
     # print get_hive_table_attribute('ts150.test_gbk_5', True)
     # print get_hive_table_attribute('ts150.test_gbk_6', True)
     # print get_hive_table_attribute('ts150.test_gbk_2')
-    # print valid_hive_table("sor.inn_t0861_empe_h:{(file_num>1 and file_size>=1024, partition_num==1, record_num>100) or True}", '20170131')
+    print valid_hive_table("sor.inn_t0861_empe_h:{(file_num>1 and file_size>=1024, partition_num==1, record_num>100) or True}", '20170131')
     # print valid_hive_table("sor.inn_t0861_empe_h")
 
 
