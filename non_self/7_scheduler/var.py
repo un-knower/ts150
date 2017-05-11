@@ -16,7 +16,7 @@ base_path = ".."
 run_path = "%s/train" % base_path
 
 # 默认Hive数据库名
-default_hive_db = "train"
+default_hive_db = "sor"
 
 # 默认GP数据库名
 default_gp_schema = "train"

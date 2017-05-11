@@ -39,7 +39,7 @@ def getRemarkKV(fileName, remark_flag=None):
             else:
                 stmt = line
             kv_array = stmt.split('=')
-            if len(kv_array) <= 1:
+            if len(kv_array) <= 1 or kv_array[1].strip() == '':
                 continue
             kv_map[kv_array[0]] = kv_array[1].strip().replace('"', '').replace("'", "")
 
@@ -149,20 +149,46 @@ class DbHelper:
         return row_map
 
     # 实体表更新
-    def update_entity(self, id, status=None, pid=0):
-        log.debug('update_entity:[%s][%s]' % (id, status))
+    def update_entity_from_id(self, id, status=None, pid=0, file_num=None, file_size=None, partition_num=None, record_num=None):
+        log.debug('update_entity_from_id:[%s][%s]' % (id, status))
         
         update_field_array = ["ts=datetime('now', 'localtime')", ]
         if status:
             update_field_array.append("status='%s'" % status)
         if pid > 0:
             update_field_array.append("pid=%d" % pid)
-
+        if file_num:
+            update_field_array.append("status=%s" % file_num)
+        if file_size:
+            update_field_array.append("status=%s" % file_size)
+        if partition_num:
+            update_field_array.append("status=%s" % partition_num)
+        if record_num:
+            update_field_array.append("status=%s" % record_num)
+            
         sql = "update entity set %s where id=%d" % (', '.join(update_field_array), id)
         log.debug(sql)
         self.cur.execute(sql)
             
         return self.cur.rowcount
+
+
+    # 实体表更新
+    def update_entity(self, flag, entity, data_date, status=None, pid=0, file_num=None, file_size=None, partition_num=None, record_num=None):
+        log.debug('update_entity:[%s][%s][%s]' % (flag, entity, data_date))
+        where = "where flag='%s' and entity='%s' and data_date='%s'" % \
+                (flag, entity, data_date)
+
+        row_map = self.query_entity(where=where)
+
+        updated_num = 0
+        for row in row_map.values():        
+            # print sql
+            self.update_entity_from_id(row['id'], status, pid, file_num, file_size, partition_num, record_num)
+            
+            updated_num += 1
+
+        return updated_num
 
 
     # 作业配置表插入
@@ -193,7 +219,7 @@ class DbHelper:
         return row_map
 
     # 作业配置表更新
-    def update_work_config(self, id, over_date=None, status=None, pid=0):
+    def update_work_config(self, id, over_date=None, status=None, pid=0, end_date=None):
         where = 'where id=%d' % id
         update_field_array = ["ts=datetime('now', 'localtime')", ]
         if over_date:
@@ -202,7 +228,9 @@ class DbHelper:
             update_field_array.append("status='%s'" % status)
         if pid > 0:
             update_field_array.append("pid=%d" % pid)
-
+        if end_date:
+            update_field_array.append("end_date='%s'" % end_date)
+            
         if len(update_field_array) > 0:
             sql = "update work_config set %s %s" % (', '.join(update_field_array), where)
             # print sql

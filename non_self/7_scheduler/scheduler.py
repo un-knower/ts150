@@ -18,32 +18,10 @@ pidfile = '%s/scheduler_%s.pid' % (run_path, app)
 
 
 def check_depend_entity_process(db, row):
-    db.update_entity(row['id'], 'processing', os.getpid())
-    over_status = False
-    if row['flag'] == '1':
-        #HDFS
-        path = '%s/%s' % (row['entity'], row['data_date'])
-        over_status = check.has_hdfs_file(path)
-        # pool.apply_async(func=check.has_hdfs_file, args=(path,), callback=self.Bar)
+    sched = Scheduler(db=db)
+    valid_success = sched.check_entity(row['entity'], row['data_date'], flag=row['flag'])
 
-    elif row['flag'] == '2':
-        #Hive
-        # pool.apply_async(func=check.has_hive_table_partition, args=(row['entity'], row['data_date']), callback=self.Bar)
-        over_status = check.has_hive_table_partition(row['entity'], row['data_date'])
-        pass
-    elif row['flag'] == '3':
-        #GP
-        pass
-    elif row['flag'] == '4':
-        #local file
-        pass
-
-    if over_status:
-        db.update_entity(row['id'], 'exist')
-    else:
-        db.update_entity(row['id'], 'not exist')
-
-    return over_status
+    return valid_success
 
 
 # 依赖项实体表--数据检查
@@ -79,10 +57,13 @@ def check_depend_entity(db, id=0):
 
 
 # 运行作业
-def run_work(db):
+def run_work(db, id=None):
     log.debug('运行跑批作业调度')
     job_list = []
-    row_map = db.query_work_config(where="where over_date<end_date or (over_date=end_date and status<>'over')")
+    if id:
+        row_map = db.query_work_config(id=id)
+    else:
+        row_map = db.query_work_config(where="where over_date<end_date or (over_date=end_date and status<>'over')")
     rn_list = row_map.keys()
     rn_list.sort()
 
@@ -121,6 +102,10 @@ def run_work_process(db, row):
         else:
             start_date = row['over_date']
 
+    if start_date > row['end_date']:
+        log.info('%s[%s][%s]已跑批结束，退出' % (scriptName, start_date, row['end_date']))
+        return
+
     # 按日期一天天往下跑
     for data_date in getDateList(start_date, row['end_date']):
         over_status = run_work_one_date(db, row, data_date)
@@ -134,12 +119,16 @@ def run_work_one_date(db, row, data_date):
     options = eval(row['options'])
     scriptName = options['script']
 
+    log.debug('准备开始跑脚本:[%s][%s]' % (scriptName, data_date))
+
     over_status = 'checking'
     db.update_work_config(row['id'], over_date=data_date, status=over_status, pid=os.getpid())
 
-    if sched.check_depend(row, data_date, io='in'):
+    # 输入依赖检查
+    if sched.check_script_depend(row['script'], data_date, io='in'):
         db.update_work_config(row['id'], over_date=data_date, status='processing', pid=os.getpid())
 
+        log.debug('输入检查通过，开始跑脚本:[%s][%s]' % (scriptName, data_date))
         # 脚本类型
         script_type = get_script_type(scriptName)
         if script_type == '.sh':
@@ -149,8 +138,14 @@ def run_work_one_date(db, row, data_date):
         elif script_type == '.sql':
             over_status = sched.run_hive_sql()
 
+        log.debug('跑脚本:[%s][%s]完成:[%s]' % (scriptName, data_date, over_status))
+        
+        # 输出结果检查
+        if over_status == 'over' and not sched.check_script_depend(row['script'], data_date, io='out'):
+            over_status = 'non-result'
+
     else:
-        over_status = 'depend-no-finish'
+        over_status = 'non-depend'
         
     db.update_work_config(row['id'], over_date=data_date, status=over_status, pid=os.getpid())
 
@@ -214,31 +209,57 @@ class Scheduler:
         self.options = options
         self.scriptName = scriptName
 
-        if not db:
-            self.db = DbHelper()
-        self.depend_key_list = ('IN_CUR_HIVE', 'IN_PRE_HIVE', 'IN_CUR_HDFS', 'OUT_CUR_HIVE')
+        self.db = db if db else DbHelper()
+
+        self.depend_key_list = ('IN_CUR_HIVE', 'IN_PRE_HIVE', 'IN_CUR_HDFS', 'IN_CUR_GP', 'IN_CUR_LOCAL',
+                                'OUT_CUR_HIVE', 'OUT_CUR_GP', 'OUT_CUR_LOCAL')
 
 
     # 插入脚本依赖项到实体表
     def insert_depend_entity(self, script_depend, start_date, end_date):
-        for k,v in script_depend.items():
-            if 'HDFS' in k:
-                flag = '1'
-            elif 'HIVE' in k:
-                flag = '2'
-            elif 'GP' in k:
-                flag = '3'
+        for k,entity in script_depend.items():
+            depend_condition_array = k.split('_')
+
+            # 检查输入项格式
+            assert len(depend_condition_array) == 3
+
+            depend_date = depend_condition_array[1]
+            depend_type = depend_condition_array[2]
+
+            # 检查日期判断
+            if 'CUR' == depend_date:
+                start_date = start_date
+            if 'PRE' == depend_date:
+                start_date = dateCalc(start_date, -1)
+
+            # valid_success = False
+            if 'HDFS' == depend_type:
+                pass
+                
+                # valid_success = check.valid_hdfs_file(entity, check_date)
+                
+            elif 'HIVE' == depend_type:
+                
+                if len(entity.split('.')) == 1:
+                    entity = '%s.%s' % (default_hive_db, entity)
+
+                # valid_success = check.valid_hive_table(entity, check_date)
+            elif 'GP' == depend_type:
+                
+                if len(entity.split('.')) == 1:
+                    entity = '%s.%s' % (default_gp_schema, entity)
+
+                pass
+            elif 'LOCAL' == depend_type:
+                
+                pass
             else:
                 continue
-            
-            entity_list = v.split(' ')
-            for entity in entity_list:
-                data_date = start_date
-                while data_date <= end_date:
-                    if flag == '2' and len(entity.split('.')) == 1:
-                        entity = '%s.%s' % (default_hive_db, entity)
-                    self.db.insert_entity(flag, entity, data_date)
-                    data_date = dateCalc(data_date, 1)
+
+            # 按日期一天天增加实体
+            for data_date in getDateList(start_date, end_date):
+                self.db.insert_entity(depend_type, entity, data_date)
+
 
         
     # 获取脚本依赖项
@@ -259,28 +280,58 @@ class Scheduler:
         depend_map = {}
         for key in kv_map.keys():
             if key in self.depend_key_list:
+                if '' == kv_map[key]:
+                    continue
+
                 depend_map[key] = kv_map[key]
         return depend_map
 
 
-    # 判断依赖项是否准备好
-    def check_depend(self, row, data_date, io='in'):
-        options = eval(row['options'])
-        scriptName = options['script']
+    # 判断脚本依赖项是否准备好
+    def check_script_depend(self, scriptName, data_date, io='in'):
+        # options = eval(row['options'])
+        # scriptName = options['script']
 
         # 判断脚本输入依赖
-        depend_map = self.get_script_depend(row['script'])
+        depend_map = self.get_script_depend(scriptName)
         for key in depend_map.keys():
             # 不符合条件的，不检查
-            if 'IN_' != key[:3] and io == 'in': continue
-            if 'OUT_' != key[:4] and io == 'out': continue
-
             depend_condition_array = key.split('_')
 
             # 检查输入项格式
             assert len(depend_condition_array) == 3
+            
+            depend_io = depend_condition_array[0]
+
+            if 'IN' != depend_io and io == 'in': continue
+            if 'OUT' != depend_io and io == 'out': continue
+
+            valid_success = self.check_entity(depend_map[key], data_date, entity_name=key)
+
+            # 检查实体不存在，返回False
+            if not valid_success:
+                log.info('脚本:[%s]对应的实体[%s]:[%s][%s]在日期:[%s]的未完成' % (scriptName, io, key, depend_map[key], data_date))
+                return valid_success
+
+        log.debug('脚本:[%s]对应的实体[%s]在日期:[%s]的已完成, 通过' % (scriptName, io, data_date))
+        return True
+
+
+    # 判断实体是否准备好
+    def check_entity(self, entity, data_date, entity_name=None, flag=None):
+        # 输入项名称或实体类型标志必输一项
+        assert entity_name or flag
+
+        if entity_name:
+            # 分割实体名称
+            depend_condition_array = entity_name.split('_')
+
+            # 检查实体名称格式
+            assert len(depend_condition_array) == 3
 
             depend_date = depend_condition_array[1]
+            assert depend_date in ('CUR', 'PRE')
+            
             depend_type = depend_condition_array[2]
 
             # 检查日期判断
@@ -288,20 +339,36 @@ class Scheduler:
                 check_date = data_date
             if 'PRE' == depend_date:
                 check_date = dateCalc(data_date, -1)
+        elif flag:
+            check_date = data_date
+            depend_type = flag
+        
+        assert depend_type in ('HDFS', 'HIVE', 'GP', 'LOCAL')
 
-            log.info('开始检查实体:[%s][%s]在日期:[%s]的完成情况' % (key, depend_map[key], check_date))
-            valid_success = False
-            if 'HDFS' == depend_type:
-                path = '%s/%s' % (depend_map[key], check_date)
-                valid_success = check.valid_hdfs_file(path)
-                pass
-            elif 'HIVE' == depend_type:
-                table = depend_map[key]
-                valid_success = check.valid_hive_table(table, check_date)
-            elif 'GP' == depend_type:
-                pass
-            else:
-                pass
+
+        self.db.update_entity(depend_type, entity, check_date, 'processing', os.getpid())
+
+        valid_success = False
+        if 'HDFS' == depend_type:
+            valid_success = check.valid_hdfs_file(entity, check_date)
+
+        elif 'HIVE' == depend_type:
+            if len(entity.split('.')) == 1:
+                entity = '%s.%s' % (default_hive_db, entity)
+            valid_success = check.valid_hive_table(entity, check_date)
+
+        elif 'GP' == depend_type:
+            if len(entity.split('.')) == 1:
+                entity = '%s.%s' % (default_gp_db, entity)
+            pass
+
+        elif 'LOCAL' == depend_type:
+            pass
+
+        self.db.update_entity(depend_type, entity, check_date, 'exist' if valid_success else 'not exist', os.getpid())
+
+        # 检查实体不存在，返回False
+        if not valid_success:
             return valid_success
 
         return True
@@ -311,15 +378,19 @@ class Scheduler:
         options = eval(row['options'])
         scriptName = options['script']
 
-        # 判断脚本输入依赖
-        # depend_map = self.get_script_depend(row['script'])
-
         # 运行脚本
+        cmd = '%s -d %s' % (row['script'], data_date)
+        (returncode, out_lines) = executeShell_ex(cmd)
+
+        for line in out_lines:
+            log.debug(line)
 
         # 判断脚本输出
-
+        if returncode == 0:
+            return 'over'
+            
         return 'fail'
-        # return 'over'
+
 
     def run_hive_sql(self):
         pass
@@ -388,7 +459,7 @@ def main():
     parser.add_option("-e", "--end_date", dest="end_date", help=u"终止日期，默认与起始日期一致")
     parser.add_option("-f", "--force", action="store_true", default=False, dest="force", help=u"强制重跑")
     parser.add_option("-w", "--no_wait", action="store_true", default=False, dest="no_wait", help=u"源数据未准备好时退出")
-    parser.add_option("-v", "--via_db_check", action="store_true", default=True, dest="via_db_check", help=u"通过Task任务表检查完成情况")
+    parser.add_option("-v", "--via_db_check", action="store_true", default=True, dest="via_db_check", help=u"通过表检查完成情况")
     # parser.add_option("-l", "--list", action="store_true", default=False, dest="list", help=u"列出调度任务运行状态")
     parser.add_option("-l", "--list", action="callback", callback=list_work, help=u"列出调度任务运行状态")
     parser.add_option("-t", "--task", type="int", default=0, dest="task_id", help=u"指定任务ID，断点重跑")
@@ -398,36 +469,73 @@ def main():
     parser.add_option("--debug", action="callback", callback=debug_work, help=u"调试模式")
     parser.add_option("--kill", action="callback", callback=stop, help=u"停止调试进程")
 
-
     (options, args) = parser.parse_args()
+    sched = Scheduler(options)
 
+    # 指定任务ID跑批
     if options.task_id:
         print '指定任务ID:%d，断点重跑' % options.task_id
+        row_map = sched.db.query_work_config(id=options.task_id)
+
+        if len(row_map) == 0:
+            print '指定任务ID:%d不存在' % options.task_id
+            return
+
+        row = row_map[options.task_id]
+        status = ''
+        # 重新指定起始日期
+        if options.start_date:
+            assert dateValid(options.start_date)
+            start_date = options.start_date
+        else:
+            # 强制从第一天开始跑
+            if options.force:
+                start_date = row['start_date']
+                status = 'init'
+            else:
+                start_date = row['over_date']
+
+        # 重新指定终止日期
+        if options.end_date:
+            assert dateValid(options.end_date)
+            end_date = options.end_date
+        else:
+            end_date = row['end_date']
+
+        # 更新作业配置表
+        sched.db.update_work_config(options.task_id, over_date=start_date, status=status, pid=0, end_date=end_date)
+
+        # 开始子进程跑批
+        job_list = run_work(sched.db, options.task_id)
+        for job in job_list:
+            while True:
+                job.join(1)
+                if not job.is_alive():
+                    break
+
         return
 
-    if not options.script:
-        print '--script 脚本名称不能为空'
-        return
+    # '--script 新增作业'
+    if options.script:
+        # 找到脚本文件
+        scriptName = findFile(run_path, options.script)
+        if not scriptName:
+            print '--script 脚本:[%s]在目录:[%s]未找到' % (run_path, options.script)
+            return
 
-    # 找到脚本文件
-    scriptName = findFile(run_path, options.script)
-    if not scriptName:
-        print '--script 脚本:[%s]在目录:[%s]未找到' % (run_path, options.script)
-        return
+        if not options.start_date:
+            print '起始日期不能为空'
+            return
+        if not options.end_date:
+            options.end_date = options.start_date
 
-    if not options.start_date:
-        print '起始日期不能为空'
-        return
-    if not options.end_date:
-        options.end_date = options.start_date
+        # 日期格式校验
+        if not dateValid(options.start_date) or not dateValid(options.end_date):
+            print '日期格式有误:[%s][%s]' % (options.start_date, options.start_date)
+            return
 
-    # 日期格式校验
-    if not dateValid(options.start_date) or not dateValid(options.end_date):
-        print '日期格式有误:[%s][%s]' % (options.start_date, options.start_date)
-        return
-
-    sched = Scheduler(options, scriptName)
-    sched.add_work_config()
+        sched.scriptName = scriptName
+        sched.add_work_config()
 
 
 def stop(*args, **kwargs):
@@ -472,3 +580,4 @@ def sig_handler(sig, frame):
 
 if __name__ == '__main__':
     main()
+

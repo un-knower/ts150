@@ -194,6 +194,13 @@ def findFile(path, findFileName):
     if not os.path.exists(path):
         return None
 
+    # 全路径文件不需要查找
+    if '/' == findFileName[0]:
+        if os.path.exists(findFileName):
+            return findFileName
+        else:
+            return None
+
     for root, dirs, files in os.walk(path):
         # root为文件夹
         stat = os.stat(root)
@@ -229,4 +236,6 @@ def main():
 if __name__ == '__main__':
     # main()
     # print '们吴'
-    raise CommonError(msg='命令出错:%s\n%s' % ('hello', '\n'.join(['们', 'hello'])))
+    # raise CommonError(msg='命令出错:%s\n%s' % ('hello', '\n'.join(['们', 'hello'])))
+    for data_date in getDateList('20170131', '20170131'):
+        print data_date
