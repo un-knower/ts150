@@ -50,7 +50,9 @@ def get_hdfs_file_attribute(path):
     fileNumTotal = 0
     processing = False
 
-    cmd = 'hadoop fs -ls -R %s' % path
+    cmd = 'hadoop fs -ls -R "%s"' % path
+    print cmd
+    print "==========================================="
     for i in range(3):
         retcode, outlines = executeShell(cmd)
         if retcode != 0:
@@ -102,7 +104,7 @@ def valid_hdfs_file(path, data_date=None):
     try:
         if data_date:
             path = '%s/%s' % (path, data_date)
-            
+
         (processing, file_num, file_size) = get_hdfs_file_attribute(path)
 
         # 正在处理标识

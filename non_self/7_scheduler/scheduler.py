@@ -124,8 +124,9 @@ def run_work_one_date(db, row, data_date):
     over_status = 'checking'
     db.update_work_config(row['id'], over_date=data_date, status=over_status, pid=os.getpid())
 
+
     # 输入依赖检查
-    if sched.check_script_depend(row['script'], data_date, io='in'):
+    if sched.check_script_depend(row['script'], data_date, io='in', viaTable=not options['force']):
         db.update_work_config(row['id'], over_date=data_date, status='processing', pid=os.getpid())
 
         log.debug('输入检查通过，开始跑脚本:[%s][%s]' % (scriptName, data_date))
@@ -136,7 +137,9 @@ def run_work_one_date(db, row, data_date):
         elif script_type == '.py':
             over_status = sched.run_python()
         elif script_type == '.sql':
-            over_status = sched.run_hive_sql()
+            over_status = sched.run_hive_sql(row, data_date)
+        elif script_type == '.gpsql':
+            over_status = sched.run_gp_sql(row, data_date)
 
         log.debug('跑脚本:[%s][%s]完成:[%s]' % (scriptName, data_date, over_status))
         
@@ -160,14 +163,13 @@ def daemon():
     while True:
         # 依赖实体检查
         check_job_list = []
-        # check_job_list = check_depend_entity(db)
+        # check_job_list =  (db)
         
         # 运行作业
         run_job_list = run_work(db)
 
         job_list.extend(check_job_list)
         job_list.extend(run_job_list)
-
 
         # 检查进程完成情况
         over_job_list = []
@@ -183,10 +185,13 @@ def daemon():
                 else:
                     print "pid:%d, name:%s exit code:%d" % (job.pid, job.name, job.exitcode)
                     over_job_list.append(job)
-            if len(over_job_list) == len(job_list):
+            if len(over_job_list) >= 1:
                 break
+        # 删除已完成的作业
+        for over_job in over_job_list:
+            job_list.remove(over_job)
 
-        break
+        # break
         sys.stdout.flush()
         time.sleep(20)
     pass
@@ -288,10 +293,7 @@ class Scheduler:
 
 
     # 判断脚本依赖项是否准备好
-    def check_script_depend(self, scriptName, data_date, io='in'):
-        # options = eval(row['options'])
-        # scriptName = options['script']
-
+    def check_script_depend(self, scriptName, data_date, io='in', viaTable=False):
         # 判断脚本输入依赖
         depend_map = self.get_script_depend(scriptName)
         for key in depend_map.keys():
@@ -302,11 +304,27 @@ class Scheduler:
             assert len(depend_condition_array) == 3
             
             depend_io = depend_condition_array[0]
+            depend_date = depend_condition_array[1]
+            depend_type = depend_condition_array[2]
 
             if 'IN' != depend_io and io == 'in': continue
             if 'OUT' != depend_io and io == 'out': continue
+            
+            assert depend_date in ('CUR', 'PRE')
+            
+            # 检查日期判断
+            if 'PRE' == depend_date:
+                data_date = dateCalc(data_date, -1)
 
-            valid_success = self.check_entity(depend_map[key], data_date, entity_name=key)
+            # print viaTable
+            if viaTable:
+                # 通过entity表检查
+                valid_success = self.check_entity_via_table(depend_type, depend_map[key], data_date)
+                if not valid_success:
+                    valid_success = self.check_entity(depend_map[key], data_date, depend_type)
+            else:
+                # 通过实体检查
+                valid_success = self.check_entity(depend_map[key], data_date, depend_type)
 
             # 检查实体不存在，返回False
             if not valid_success:
@@ -318,33 +336,12 @@ class Scheduler:
 
 
     # 判断实体是否准备好
-    def check_entity(self, entity, data_date, entity_name=None, flag=None):
+    def check_entity(self, entity, data_date, flag):
         # 输入项名称或实体类型标志必输一项
-        assert entity_name or flag
-
-        if entity_name:
-            # 分割实体名称
-            depend_condition_array = entity_name.split('_')
-
-            # 检查实体名称格式
-            assert len(depend_condition_array) == 3
-
-            depend_date = depend_condition_array[1]
-            assert depend_date in ('CUR', 'PRE')
-            
-            depend_type = depend_condition_array[2]
-
-            # 检查日期判断
-            if 'CUR' == depend_date:
-                check_date = data_date
-            if 'PRE' == depend_date:
-                check_date = dateCalc(data_date, -1)
-        elif flag:
-            check_date = data_date
-            depend_type = flag
+        check_date = data_date
+        depend_type = flag
         
         assert depend_type in ('HDFS', 'HIVE', 'GP', 'LOCAL')
-
 
         self.db.update_entity(depend_type, entity, check_date, 'processing', os.getpid())
 
@@ -374,6 +371,21 @@ class Scheduler:
         return True
 
 
+    # 通过表判断实体是否准备好
+    def check_entity_via_table(self, flag, entity, data_date):
+        where = "where flag='%s' and entity='%s' and data_date='%s'" % \
+                (flag, entity, data_date)
+
+        row_map = self.db.query_entity(where=where)
+        if len(row_map) < 1:
+            log.error('entity表找不到应对实体记录：[%s][%s][%s]' % (flag, entity, data_date))
+            return False
+
+        row = row_map.values()[0]
+
+        return True if 'exist' == row['status'] else False
+
+
     def run_shell(self, row, data_date):
         options = eval(row['options'])
         scriptName = options['script']
@@ -391,11 +403,44 @@ class Scheduler:
             
         return 'fail'
 
+    def run_hive_sql(self, row, data_date):
+        # options = eval(row['options'])
+        script = row['script']
 
-    def run_hive_sql(self):
-        pass
+        cmd = 'beeline -f %s ' % script
 
-    def run_gp_sql(self):
+        patt = re.compile(r'less_(\d+)_date')
+        for var in getVar(script):
+            # print var
+            assert var in ('db', 'log_date', 'p9_data_date', 'data_date', 'less_1_date', 'less_7_date', 'less_30_date', 'less_90_date')
+            if var == 'db':
+                value = default_hive_db
+            elif var in ('log_date', 'p9_data_date', 'data_date'):
+                value = data_date
+            else:
+                m = patt.match(var)
+                if m:
+                    days = m.group(1)
+                    value = dateCalc(data_date, days)
+                else:
+                    raise CommonError(msg='Hive变量未定义:[%s]' % var)
+
+            cmd += ' --hivevar %s="%s"' % (var, value)
+
+        # 运行脚本
+        (returncode, out_lines) = executeShell_ex(cmd)
+
+        for line in out_lines:
+            log.debug(line)
+
+        # 判断脚本输出
+        if returncode == 0:
+            return 'over'
+            
+        return 'fail'
+        
+
+    def run_gp_sql(self, row, data_date):
         pass
 
     def run_python(self):
@@ -459,7 +504,7 @@ def main():
     parser.add_option("-e", "--end_date", dest="end_date", help=u"终止日期，默认与起始日期一致")
     parser.add_option("-f", "--force", action="store_true", default=False, dest="force", help=u"强制重跑")
     parser.add_option("-w", "--no_wait", action="store_true", default=False, dest="no_wait", help=u"源数据未准备好时退出")
-    parser.add_option("-v", "--via_db_check", action="store_true", default=True, dest="via_db_check", help=u"通过表检查完成情况")
+    # parser.add_option("-v", "--via_db_check", action="store_true", default=False, dest="via_db_check", help=u"通过表检查完成情况")
     # parser.add_option("-l", "--list", action="store_true", default=False, dest="list", help=u"列出调度任务运行状态")
     parser.add_option("-l", "--list", action="callback", callback=list_work, help=u"列出调度任务运行状态")
     parser.add_option("-t", "--task", type="int", default=0, dest="task_id", help=u"指定任务ID，断点重跑")
@@ -468,18 +513,24 @@ def main():
     parser.add_option("--over_notice", action="store_true", default=False, dest="over_notice", help=u"完成时短信邮件通知")
     parser.add_option("--debug", action="callback", callback=debug_work, help=u"调试模式")
     parser.add_option("--kill", action="callback", callback=stop, help=u"停止调试进程")
+    parser.add_option("--deltask", action="store_true", default=False, dest="delete_task", help=u"删除作业配置")
 
     (options, args) = parser.parse_args()
     sched = Scheduler(options)
 
     # 指定任务ID跑批
     if options.task_id:
-        print '指定任务ID:%d，断点重跑' % options.task_id
+        print '指定任务ID:%d' % options.task_id
         row_map = sched.db.query_work_config(id=options.task_id)
 
         if len(row_map) == 0:
             print '指定任务ID:%d不存在' % options.task_id
             return
+
+        # 删除作业
+        if options.delete_task:
+            sched.db.delete_work_config(id=options.task_id)
+            return 
 
         row = row_map[options.task_id]
         status = ''

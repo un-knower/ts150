@@ -127,8 +127,8 @@ class Daemon:
         #     sys.stdout.write('%s:hello world\n' % (time.ctime(),))
         #     sys.stdout.flush()
         #     time.sleep(2)
-        sched = scheduler.Scheduler()
-        sched.daemon()
+        # sched = scheduler.Scheduler()
+        scheduler.daemon()
 
 
 def sig_handler(sig, frame):
@@ -142,7 +142,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGQUIT, sig_handler)
 
-    daemon = Daemon(pidfile, stdout='/tmp/watch_stdout.log', stderr='/tmp/err.log')
+    daemon = Daemon(pidfile, stdout='%s/stdout.log' % run_path, stderr='%s/err.log' % run_path)
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
             daemon.start()

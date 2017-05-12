@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding:utf8
 
-import os, sys
+import os, sys, re
 import sqlite3
 import base64
 from var import *
@@ -21,7 +21,12 @@ def getSql(fileName):
         #     self.conn.execute(sql)
 
         f.close()
-    return all_lines.split(';')
+    sql_array = []
+    for sql in all_lines.split(';'):
+        if sql.strip() != '':
+            sql_array.append(sql.strip())
+
+    return sql_array
 
 
 # 获取SQL脚本文件中的注释语句中包含k-v
@@ -41,10 +46,25 @@ def getRemarkKV(fileName, remark_flag=None):
             kv_array = stmt.split('=')
             if len(kv_array) <= 1 or kv_array[1].strip() == '':
                 continue
-            kv_map[kv_array[0]] = kv_array[1].strip().replace('"', '').replace("'", "")
+
+            # 需要处理表达式中的等号
+            kv_map[kv_array[0]] = '='.join(kv_array[1:]).strip().replace('"', '').replace("'", "")
 
         f.close()
     return kv_map
+
+
+# 获取SQL脚本文件中变量
+def getVar(fileName):
+    var_list = []
+    patt = re.compile(r'\$\{(\w+)\}', re.M)
+
+    for line in getSql(fileName):
+        # print '[%s]' % line
+
+        var_list.extend(patt.findall(line)) 
+    
+    return set(var_list)
 
 
 # 作业调度数据表操作Helper
@@ -230,7 +250,7 @@ class DbHelper:
             update_field_array.append("pid=%d" % pid)
         if end_date:
             update_field_array.append("end_date='%s'" % end_date)
-            
+
         if len(update_field_array) > 0:
             sql = "update work_config set %s %s" % (', '.join(update_field_array), where)
             # print sql
@@ -239,6 +259,15 @@ class DbHelper:
             return self.cur.rowcount
         else:
             return 0
+
+    # 作业配置表删除
+    def delete_work_config(self, id=0, where=''):
+        if id > 0:
+            where = 'where id=%d' % id
+        sql = "delete from work_config %s" % where
+        self.cur.execute(sql)
+        
+        return self.cur.rowcount
 
     # 任务表插入
 
@@ -263,4 +292,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    print sys.argv
+    for var in getVar(sys.argv[1]):
+        print var
