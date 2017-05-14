@@ -90,7 +90,7 @@ def get_hdfs_file_attribute(path):
 # HDFS目录检查,支持目录名后带表达式：(file_num>1 and file_size>=1024) or True
 def valid_hdfs_file(path, data_date=None):
     if ':' in path:
-        patt = re.compile(r'([\S+]+):\{(.*)\}')
+        patt = re.compile(r'(\S+):\{(.*)\}')
         m = patt.match(path)
         if m:
             # print m.groups()

@@ -45,10 +45,14 @@ drop table if exists entity;
 create table entity(
    id INTEGER PRIMARY KEY AUTOINCREMENT,
    ts datetime default (datetime('now', 'localtime')),
-   flag char(1) not null,
+   flag varchar(8) not null,
    entity varchar(255) not null,
    data_date varchar(8) not null,
    status varchar(16) default(''),
+   file_num INTEGER default 0,
+   file_size INTEGER default 0,
+   partition_num INTEGER default 0,
+   record_num INTEGER default 0,
    pid INTEGER default 0         -- 处理进程ID
 );
 
