@@ -10,6 +10,7 @@ import platform
 import socket
 import shlex
 import commands
+import subprocess
 
 # 取主机名
 hostname = socket.gethostname()
@@ -90,17 +91,20 @@ def executeShell(cmdstring):
 # 可靠的Shell
 def executeShell_ex(cmdstring, num=3):
     for i in range(num):
+        #(returncode, out_lines, err_lines) = execute_command(cmdstring)
         (returncode, out_lines) = executeShell(cmdstring)
+
         if returncode != 0:
             continue
+
         return (returncode, out_lines)
+
     # for line in out_lines:
     #     print line
     raise CommonError(msg='命令出错:%s\n%s' % (cmdstring, '\n'.join(out_lines)))
-    # raise CommonError(msg='Command Error:%s\n%s' % (cmdstring, '\n'.join(out_lines)))
 
 
-def execute_command(cmdstring, cwd=None, timeout=None, shell=True):
+def execute_command(cmdstring, cwd=None, timeout=None):
     """执行一个SHELL命令
             封装了subprocess的Popen方法, 支持超时判断，支持读取stdout和stderr
            参数:
@@ -110,62 +114,41 @@ def execute_command(cmdstring, cwd=None, timeout=None, shell=True):
     Returns: return_code
     Raises:  Exception: 执行超时
     """
-    if shell:
-        cmdstring_list = cmdstring
-    else:
-        cmdstring_list = shlex.split(cmdstring)
+    cmdstring_list = shlex.split(cmdstring)
     if timeout:
         end_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
 
-    log.info('开始在主机:[%s]上执行Shell命令:[%s]' % (hostname, cmdstring))
-
-    # 另外一种Shell命令执行方法
-    # returncode, out = commands.getstatusoutput(cmdstring)
-    returncode, out = commands.getstatusoutput('dir')
-    print out
-    out_lines = out.split('\n')
-    err_lines = []
-    # print returncode
-    # print out_lines
-
     #没有指定标准输出和错误输出的管道，因此会打印到屏幕上；
-    # sub = subprocess.Popen(cmdstring_list, cwd=cwd, 
-    #     stdin=subprocess.PIPE,
-    #     stdout=subprocess.PIPE,
-    #     stderr=subprocess.PIPE,
-    #     shell=shell,bufsize=1024000)
-    
-    # #subprocess.poll()方法：检查子进程是否结束了，如果结束了，设定并返回码，放在subprocess.returncode变量中 
-    # while sub.poll() is None:
-    #     time.sleep(0.1)
-    #     if timeout:
-    #         if end_time <= datetime.datetime.now():
-    #             raise Exception("Timeout：%s"%cmdstring)
-     
-    # out_lines = sub.stdout.readlines()
-    # err_lines = sub.stderr.readlines()
-    # returncode = sub.returncode
+    sub = subprocess.Popen(cmdstring_list, cwd=cwd,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True, bufsize=1024)
+
+    out_lines = []
+    err_lines = []
+    #subprocess.poll()方法：检查子进程是否结束了，如果结束了，设定并返回码，放在subprocess.returncode变量中
+    while sub.poll() is None:
+        time.sleep(0.1)
+
+        #line = sub.stdout.readline()
+        #line = line.strip()
+        #out_lines.append(line)
+        #print line
+
+        if timeout:
+            if end_time <= datetime.datetime.now():
+                raise Exception("Timeout：%s"%cmdstring)
+
+    out_lines.extend(sub.stdout.readlines())
+    err_lines.extend(sub.stderr.readlines())
+
+    returncode = sub.returncode
 
     # log.info('完成在主机:[%s]上执行Shell命令:[%s], 返回值:[%d]' % (hostname, cmdstring, returncode))
 
-
-    cmd = cmdstring.split(' ')[0]
-    result_file_name = '%s/%s%s' % (save_path, cmd, today('_%H%M%S'))
-    f = open(result_file_name, 'w')
-
-    f.write('---------------shell---------------------\n')
-    f.write(cmdstring + '\n')
-    f.write('---------------------------------------\n')
-    f.write('return code:[%d]\n' % returncode)
-    f.write('--------------stdout--------------------\n')
-    for line in out_lines:
-        f.write(line + '\n')
-    f.write('--------------stderr-------------------\n')
-    for line in err_lines:
-        f.write(line + '\n')
-    f.close()
-
-    return (returncode, out_lines)
+    return (returncode, out_lines, err_lines)
+    # return (returncode, out_lines)
 
 
 class CommonError(Exception):
@@ -212,6 +195,16 @@ def findFile(path, findFileName):
             if fileName == findFileName:
                 return fullFileName
     return None
+
+
+# 获取脚本语言类型
+def get_script_type(scriptName):
+    file_array = os.path.splitext(scriptName)
+    if len(file_array) == 2:
+        ext = file_array[1]
+        return ext
+    else:
+        return None
 
 
 def main():

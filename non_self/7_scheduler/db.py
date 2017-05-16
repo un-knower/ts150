@@ -31,7 +31,7 @@ def getSql(fileName):
 
 # 获取SQL脚本文件中的注释语句中包含k-v
 def getRemarkKV(fileName, remark_flag=None):
-    kv_map = {}
+    ret_kv_array = []
     if os.path.exists(fileName):
         f = open(fileName, "r")
 
@@ -48,10 +48,13 @@ def getRemarkKV(fileName, remark_flag=None):
                 continue
 
             # 需要处理表达式中的等号
-            kv_map[kv_array[0]] = '='.join(kv_array[1:]).strip().replace('"', '').replace("'", "")
+            express = '='.join(kv_array[1:]).strip().replace('"', '').replace("'", "")
+
+            ret_kv_array.append( (kv_array[0], express) )
 
         f.close()
-    return kv_map
+
+    return ret_kv_array
 
 
 # 获取SQL脚本文件中变量
@@ -233,13 +236,14 @@ class DbHelper:
         row_map = {}
         for row in res:
             column_map = dict(zip(field_list, row))
-            column_map['options'] = base64.b64decode(column_map['options'])
+            options_str = base64.b64decode(column_map['options'])
+            column_map['options'] = eval(options_str)
             row_map[column_map['id']] = column_map
 
         return row_map
 
     # 作业配置表更新
-    def update_work_config(self, id, over_date=None, status=None, pid=0, end_date=None):
+    def update_work_config(self, id, over_date=None, status=None, pid=0, end_date=None, options=None):
         where = 'where id=%d' % id
         update_field_array = ["ts=datetime('now', 'localtime')", ]
         if over_date:
@@ -250,6 +254,9 @@ class DbHelper:
             update_field_array.append("pid=%d" % pid)
         if end_date:
             update_field_array.append("end_date='%s'" % end_date)
+        if options:
+            options_base64 = base64.b64encode(str(options))
+            update_field_array.append("options='%s'" % options_base64)
 
         if len(update_field_array) > 0:
             sql = "update work_config set %s %s" % (', '.join(update_field_array), where)

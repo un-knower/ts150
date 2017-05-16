@@ -51,8 +51,8 @@ def get_hdfs_file_attribute(path):
     processing = False
 
     cmd = 'hadoop fs -ls -R "%s"' % path
-    print cmd
-    print "==========================================="
+    # print cmd
+    # print "==========================================="
     for i in range(3):
         retcode, outlines = executeShell(cmd)
         if retcode != 0:

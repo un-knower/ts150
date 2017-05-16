@@ -6,7 +6,7 @@
 import sys, os, time, atexit, string
 import signal 
 from var import *
-import scheduler
+import main
 
 pidfile = '%s/%s.pid' % (run_path, app)
 
@@ -128,7 +128,7 @@ class Daemon:
         #     sys.stdout.flush()
         #     time.sleep(2)
         # sched = scheduler.Scheduler()
-        scheduler.daemon()
+        main.daemon()
 
 
 def sig_handler(sig, frame):
