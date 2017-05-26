@@ -85,6 +85,9 @@ def exist_pid(pid):
 def executeShell(cmdstring):
     returncode, out = commands.getstatusoutput(cmdstring)
     out_lines = out.split('\n')
+    # print (returncode, out_lines)
+    # for line in out_lines:
+    #     print type(line)
     return (returncode, out_lines)
 
 
@@ -207,6 +210,12 @@ def get_script_type(scriptName):
         return None
 
 
+def mkdir(pathName):
+    if not os.path.exists(pathName):
+        os.mkdir(pathName, 0777)
+        os.chmod(pathName, 0777)
+
+
 def main():
     # returncode, out_lines = execute_command('dir')
     # for line in out_lines:
@@ -225,6 +234,7 @@ def main():
     print exist_pid('17930')
     print exist_pid(17930)
     print exist_pid(178923)
+
 
 if __name__ == '__main__':
     # main()

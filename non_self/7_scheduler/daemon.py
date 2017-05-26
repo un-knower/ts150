@@ -6,6 +6,7 @@
 import sys, os, time, atexit, string
 import signal 
 from var import *
+from common_fun import *
 import main
 
 pidfile = '%s/%s.pid' % (run_path, app)
@@ -19,7 +20,7 @@ class Daemon:
         self.stdout = stdout
         self.stderr = stderr
         self.pidfile = pidfile
-    
+
 
     def _daemonize(self):
         try:
@@ -120,15 +121,10 @@ class Daemon:
 
 
     def _run(self):
-        """ TODO: run your fun  """
-        # while True:
-        #     #fp=open('/tmp/result','a+')
-        #     #fp.write('Hello World\n')
-        #     sys.stdout.write('%s:hello world\n' % (time.ctime(),))
-        #     sys.stdout.flush()
-        #     time.sleep(2)
-        # sched = scheduler.Scheduler()
-        main.daemon()
+        if run_mode == 'sequential':
+            main.daemon()
+        if run_mode == 'timer':
+            main.timer()
 
 
 def sig_handler(sig, frame):
@@ -142,7 +138,10 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGQUIT, sig_handler)
 
-    daemon = Daemon(pidfile, stdout='%s/stdout.log' % run_path, stderr='%s/err.log' % run_path)
+    log_path = '%s/log' % run_path
+    mkdir(log_path)
+
+    daemon = Daemon(pidfile, stdout='%s/stdout.log' % log_path, stderr='%s/stderr.log' % log_path)
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
             daemon.start()

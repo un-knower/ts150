@@ -137,21 +137,27 @@ class DbHelper:
     # 日志查询
 
     # 实体表插入
-    def insert_entity(self, flag, entity, data_date):
+    def insert_entity(self, flag, entity, data_date, status=''):
         log.debug('insert_entity:[%s][%s][%s]' % (flag, entity, data_date))
         where = "where flag='%s' and entity='%s' and data_date='%s'" % \
                 (flag, entity, data_date)
 
+        # 记录不存在，则新增
         row_map = self.query_entity(where=where)
 
-        if len(row_map) == 0:        
-            sql = "insert into entity(flag, entity, data_date) values('%s', '%s', '%s');" % \
-                    (flag, entity, data_date)
+        if len(row_map) == 0:
+            if not status:
+                status = ''
+
+            sql = "insert into entity(flag, entity, data_date, status) values('%s', '%s', '%s', '%s');" % \
+                    (flag, entity, data_date, status)
+
             # print sql
             self.cur.execute(sql)
             
             return self.cur.lastrowid
         return 0
+
 
     # 实体表查询
     def query_entity(self, id=0, where=''):
@@ -204,6 +210,10 @@ class DbHelper:
 
         row_map = self.query_entity(where=where)
 
+        # 如果记录不存在，则新增
+        if len(row_map) == 0:
+            self.insert_entity(flag, entity, data_date, status)
+            
         updated_num = 0
         for row in row_map.values():        
             # print sql
@@ -242,6 +252,7 @@ class DbHelper:
 
         return row_map
 
+
     # 作业配置表更新
     def update_work_config(self, id, over_date=None, status=None, pid=0, end_date=None, options=None):
         where = 'where id=%d' % id
@@ -267,6 +278,7 @@ class DbHelper:
         else:
             return 0
 
+
     # 作业配置表删除
     def delete_work_config(self, id=0, where=''):
         if id > 0:
@@ -279,6 +291,62 @@ class DbHelper:
     # 任务表插入
 
     # 任务表查询
+
+
+    # 定时作业配置表查询
+    def query_crontab_config(self, id=0, where=''):
+        if id > 0:
+            where = 'where id=%d' % id
+        sql = "select * from crontab_config %s" % where
+        self.cur.execute(sql)
+        res = self.cur.fetchall()
+
+        field_list = self.get_field_list()
+        row_map = {}
+        for row in res:
+            column_map = dict(zip(field_list, row))
+            options_str = base64.b64decode(column_map['options'])
+            column_map['options'] = eval(options_str)
+            row_map[column_map['id']] = column_map
+
+        return row_map
+
+
+    # 定时作业配置表保存
+    def save_crontab_config(self, id=0, crontab=None, script=None, options=None, status=None, pid=0):
+
+        where = "where crontab='%s' and script='%s'" % (crontab, script)
+        row_map = self.query_crontab_config(id, where)
+
+        if len(row_map) == 0:
+            options_base64 = base64.b64encode(str(options))
+            sql = "insert into crontab_config(crontab, script, options) values('%s', '%s', '%s');" % \
+                    (crontab, script, options_base64)
+            # print sql
+            self.cur.execute(sql)
+            return self.cur.lastrowid
+        else:
+            if id > 0:
+                where = 'where id=%d' % id
+            update_field_array = ["ts=datetime('now', 'localtime')", ]
+            if crontab:
+                update_field_array.append("crontab='%s'" % crontab)
+            if script:
+                update_field_array.append("script='%s'" % script)
+            if options:
+                options_base64 = base64.b64encode(str(options))
+                update_field_array.append("options='%s'" % options_base64)
+            if status:
+                update_field_array.append("status='%s'" % status)
+            if pid > 0:
+                update_field_array.append("pid=%d" % pid)
+
+            if len(update_field_array) > 0:
+                sql = "update crontab_config set %s %s" % (', '.join(update_field_array), where)
+                # print sql
+                self.cur.execute(sql)
+
+                return self.cur.rowcount
 
 
 def main():

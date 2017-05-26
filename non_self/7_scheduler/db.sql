@@ -71,3 +71,16 @@ create table work_config(
    status varchar(16) default(''),     -- 完成情况
    pid INTEGER default 0         -- 处理进程ID
 );
+
+-- 定时作业配置表
+drop table if exists crontab_config;
+
+create table crontab_config(
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+   ts datetime default (datetime('now', 'localtime')),
+   crontab varchar(255) not null,
+   script varchar(255) not null,
+   options varchar(255) not null,
+   status varchar(16) default(''),     -- 完成情况
+   pid INTEGER default 0         -- 处理进程ID
+);
