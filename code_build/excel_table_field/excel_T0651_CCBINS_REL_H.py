@@ -1,0 +1,27 @@
+#field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split, field_filter
+table_cn = '建行机构关系'
+field_array = [
+    ('PRIM_CCBINS_ID', '主建行机构编号', 'Y', ''),
+    ('CCBINSINRHIERSTCTP_CD', '建行机构内部层级结构类型代码', 'Y', ''),
+    ('CCBINS_HIERSTC_DSC', '建行机构层级结构描述', '', ''),
+    ('CCBINS_HIERSTC_NM', '建行机构层级结构名称', 'Y', ''),
+    ('CCBINSHIERSTCSTTP_CD', '建行机构层级结构状态类型代码', '', ''),
+    ('SCDY_CCBINS_ID', '从建行机构编号', 'Y', ''),
+    ('CCBIANDCCBIRELTP_CD', '建行机构和建行机构关系类型代码', '', ''),
+    ('REL_DRC_DSC', '关系方向描述', '', ''),
+    ('CCBIACCBI_REL_LCS_CD', '建行机构和建行机构关系生命周期状态代码', '', ''),
+    ('CCBIACCBI_REL_LCS_DT', '建行机构和建行机构关系生命周期状态日期', '', ''),
+    ('CCBIANDCCBIRLCSR_DSC', '建行机构和建行机构关系生命周期状态原因描述', '', ''),
+    ('CCBIACCBI_REL_LCMD_SN', '建行机构和建行机构关系生命周期变更序号', '', ''),
+    ('INSTMGTGRD_TPCD', '机构管理等级类型代码', '', ''),
+    ('INSTMGTGRD_TP_VAL_CD', '机构管理等级类型取值代码', '', ''),
+    ('INSTMGTGRD_DSC', '机构管理等级描述', 'Y', ''),
+    ('REL_SCN_DSC', '关系场景描述', 'Y', ''),
+    ('LAST_UDT_DT_TM', '最后更新日期时间', 'Y', ''),
+    ('P9_START_DATE', 'P9开始日期', 'Y', ''),
+    ('P9_START_BATCH', 'P9_START_BATCH', '', ''),
+    ('P9_END_DATE', 'P9结束日期', 'Y', ''),
+    ('P9_END_BATCH', 'P9_END_BATCH', '', ''),
+    ('P9_DEL_FLAG', 'P9_DEL_FLAG', '', ''),
+    ('P9_JOB_NAME', 'P9_JOB_NAME', '', ''),
+]

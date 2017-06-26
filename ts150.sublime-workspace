@@ -1,0 +1,1384 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"dbh",
+				"DbHelper"
+			],
+			[
+				"W",
+				"WARNING\tstatement"
+			],
+			[
+				"path",
+				"pathName"
+			],
+			[
+				"data",
+				"data_date"
+			],
+			[
+				"re",
+				"receiver"
+			],
+			[
+				"over",
+				"over_status"
+			],
+			[
+				"set",
+				"setLevel\tfunction"
+			],
+			[
+				"h",
+				"handlers\tstatement"
+			],
+			[
+				"comm",
+				"CommonError"
+			],
+			[
+				"tabl",
+				"table_array"
+			],
+			[
+				"ta",
+				"table_array"
+			],
+			[
+				"task",
+				"task_id"
+			],
+			[
+				"run",
+				"run_python\tfunction"
+			],
+			[
+				"max",
+				"max_date\tstatement"
+			],
+			[
+				"ov",
+				"over_job_list"
+			],
+			[
+				"job",
+				"job_list"
+			],
+			[
+				"par",
+				"partition"
+			],
+			[
+				"execu",
+				"executeShell\tfunction"
+			],
+			[
+				"m",
+				"minute\tinstance"
+			],
+			[
+				"st",
+				"st_size"
+			],
+			[
+				"row",
+				"rowcount\tinstance"
+			],
+			[
+				"b64",
+				"b64encode\tfunction"
+			],
+			[
+				"add",
+				"add_work_config\tfunction"
+			],
+			[
+				"pri",
+				"priority"
+			],
+			[
+				"sc",
+				"scriptName\tstatement"
+			],
+			[
+				"scr",
+				"scriptName"
+			],
+			[
+				"ba",
+				"base_path"
+			],
+			[
+				"tab",
+				"table_en"
+			],
+			[
+				"sor",
+				"sor_field_array"
+			],
+			[
+				"fie",
+				"field_array\tstatement"
+			],
+			[
+				"fiel",
+				"field_array\tstatement"
+			],
+			[
+				"co",
+				"countrySet"
+			],
+			[
+				"coun",
+				"countryName"
+			],
+			[
+				"count",
+				"countrySet\tstatement"
+			],
+			[
+				"un",
+				"universityMap\tstatement"
+			],
+			[
+				"pro",
+				"provinceMap\tstatement"
+			],
+			[
+				"pr",
+				"provinceMap\tstatement"
+			],
+			[
+				"cle",
+				"clear_dir"
+			],
+			[
+				"p2log_",
+				"p2log_first"
+			],
+			[
+				"end",
+				"endDateList\tstatement"
+			],
+			[
+				"org",
+				"orgCodeList\tstatement"
+			],
+			[
+				"tell",
+				"tellerIdList\tstatement"
+			],
+			[
+				"r",
+				"rand"
+			],
+			[
+				"mo",
+				"mobileList\tstatement"
+			],
+			[
+				"rand",
+				"randrange\tstatement"
+			],
+			[
+				"rang",
+				"randrange\tstatement"
+			],
+			[
+				"ex",
+				"explain"
+			],
+			[
+				"try",
+				"try\tTry/Except"
+			],
+			[
+				"命令执行",
+				"命令执行出错"
+			],
+			[
+				"service",
+				"service_name"
+			],
+			[
+				"aut",
+				"auth_type_list"
+			],
+			[
+				"y",
+				"y\tstatement"
+			],
+			[
+				"gb",
+				"gb18030"
+			],
+			[
+				"op",
+				"options\tstatement"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "select c.attname, d.typname\nfrom pg_class a, pg_namespace b, pg_attribute c, pg_type d\nwhere a.relnamespace = b.oid\nand b.nspname = 'base_old'\nand a.relname = 't0281_tbb1crd0_h'\nand a.oid = c.attrelid\nand c.atttypid = d.oid\nand attnum > 0\norder by attnum;\n",
+			"settings":
+			{
+				"buffer_size": 256,
+				"line_ending": "Unix",
+				"name": "select c.attname, d.typname"
+			}
+		},
+		{
+			"contents": "335亿交易，4.1亿卡",
+			"settings":
+			{
+				"buffer_size": 12,
+				"line_ending": "Unix",
+				"name": "335亿交易，4.1亿卡"
+			}
+		},
+		{
+			"contents": "\nselect cust_no, channel_no, device, max(tx_tm), min(tx_tm)\nfrom (\n   select cust_no, channel_no, split(term_info)[0] as device, dt || tm as tx_tm,\n     from login_trad_flow_a) \ngroup by cust_no, channel_no, device",
+			"settings":
+			{
+				"buffer_size": 214,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "Packages/Python/Python.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Anaconda Python Builder",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				],
+				[
+					"Packages/SublimeREPL/sublimerepl_build_system_hack.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "editor",
+		"selected_items":
+		[
+			[
+				"editor",
+				"Table Editor: Enable for current view"
+			],
+			[
+				"table",
+				"Table Editor: Enable for current view"
+			],
+			[
+				"sftp",
+				"SFTP: Browse Server…"
+			],
+			[
+				"sql",
+				"Set Syntax: SQL"
+			],
+			[
+				"table editor",
+				"Table Editor: Enable for current syntax"
+			],
+			[
+				"fold",
+				"Code Folding: Fold Tag Attributes"
+			],
+			[
+				"python",
+				"Set Syntax: Python"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"sysql",
+				"Set Syntax: SQL"
+			],
+			[
+				"mark",
+				"Set Syntax: Markdown"
+			],
+			[
+				"sy",
+				"Set Syntax: Markdown"
+			],
+			[
+				"replpython",
+				"SublimeREPL: Python - IPython"
+			],
+			[
+				"scala",
+				"SublimeREPL: Scala"
+			],
+			[
+				"set sy shell",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"js",
+				"Set Syntax: JSON"
+			],
+			[
+				"md",
+				"Set Syntax: Markdown"
+			],
+			[
+				"browse Ser",
+				"SFTP: Browse Server…"
+			],
+			[
+				"shell",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"json",
+				"Set Syntax: JSON"
+			],
+			[
+				"scal",
+				"Set Syntax: Scala"
+			],
+			[
+				"jas",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"syntax:python",
+				"Set Syntax: Python"
+			],
+			[
+				"syntax:mar",
+				"Set Syntax: Markdown"
+			],
+			[
+				"syntax:pyt",
+				"Set Syntax: Python"
+			],
+			[
+				"snippet",
+				"Snippet: if __name__ == '__main__'"
+			],
+			[
+				"snippet ",
+				"Snippet: Method"
+			],
+			[
+				"snippet fun",
+				"Snippet: Function"
+			],
+			[
+				"main",
+				"Snippet: if __name__ == '__main__'"
+			],
+			[
+				"run cu",
+				"SublimeREPL: Python - RUN current file"
+			],
+			[
+				"replpy",
+				"SublimeREPL: Python - RUN current file"
+			],
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			],
+			[
+				"set syntax sql",
+				"Set Syntax: SQL"
+			],
+			[
+				"Snippet: ifm",
+				"Snippet: if __name__ == '__main__'"
+			],
+			[
+				"anac",
+				"Anaconda: Vagrant Init"
+			],
+			[
+				"list",
+				"Package Control: List Packages"
+			],
+			[
+				"intall",
+				"Package Control: Install Package"
+			],
+			[
+				"anaconda:run",
+				"Anaconda: Run Current File Tests"
+			],
+			[
+				"Package Control: ",
+				"Package Control: List Packages"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: inst",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Preferences: Browse Packages"
+			]
+		],
+		"width": 536.0
+	},
+	"console":
+	{
+		"height": 271.0,
+		"history":
+		[
+			"print 'hello'",
+			"hello",
+			"run",
+			"import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), 'wb').write(urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ','%20')).read())"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/G/1_Tienon/3_安全监控/模型分析/git",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build"
+	],
+	"file_history":
+	[
+		"/G/1_Tienon/3_安全监控/模型分析/git/ts150.sublime-project",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/read_gp_table.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/var.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/http_daemon.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_common/common_fun.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/pyetc.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/db.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_common/log.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/dbService.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/daemon.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/scheduler.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/task.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/dbClient.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/db.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/main.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_scheduler/check.py",
+		"/G/1_Tienon/3_安全监控/SIAM/验证脚本/运维监控/bottle.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/gen_create_flow_table.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/define_table_struct.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/read_excel_table.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/excel_table_field/excel_T0281_TBB1PLT0_H.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/python_common/pypage.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/template/INSERT_SLIDE_{{table_en}}.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/pypage.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/excel_table_field/excel_TODBJ_B_F_TSRK_T_ZFB_0_A.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/excel_table_field/excel_P2LOG_CCBS_RES.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/excel_table_field/excel_T0042_TBPC1010_H.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/template/{{table_en}}.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/template/excel_{{table_en}}.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/template/CREATE_SLIDE_{{table_en}}.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/template/INSERT_FLOW_{{table_en}}.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/excel_table_field/excel_TODDC_SAETXETX_A.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/table_field/excel_T0281_TBB1PLT0_H.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/pypage.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/1.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/code_build/read_data_struct.py",
+		"/G/maintainer/monitor.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/var.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/common_fun.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/log.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/CREATE_SLIDE_{{table_en}}.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_create/CREATE_SLIDE_T0281_TBB1PLT0_H.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/CREATE_FLOW_{{table_en}}.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/EXPORT_GP_SLIDE_{{table_en}}.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/INSERT_SLIDE_{{table_en}}.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_SLIDE_T0281_TBB1PLT0_H.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/gen_create_flow_table.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/2_ready_data/EXPORT_GP_SLIDE_T0281_TBB1PLT0_H.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_create/CREATE_FLOW_T0281_S11T1_BILL_DTL_A.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/gen_insert_table.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/a.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/非本人交易/code/source/spark_get_feature.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/check.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/3_gen_mid_data/gen_create_table.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/read_gp_table.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/db.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/daemon.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/scheduler.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/db.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/main.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive2oracle.data",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/read_gp_table.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/read_data_struct.py",
+		"/G/1_Tienon/9_输出/钓鱼网站/config.txt",
+		"/G/1_Tienon/3_安全监控/QueryFishDomain/src/main/RunApp.java",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/gen_create_table.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_FLOW_T0281_S11T1_BILL_DTL_A.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/INSERT_FLOW_{{table_en}}.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_create/CREATE_TODDC_SAETXETX_A.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_create/CREATE_T0651_CCBINS_INF_H.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/EXPORT_GP_FLOW_{{table_en}}.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_T0651_CCBINS_REL_H.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_TODDC_CRCRDCRD_H.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/EXPORT_GP_{{table_en}}.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_EXT_T0042_TBPC1510_H.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_T0042_TBPC1510_H.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_EXT_TODDC_FCMTLR0_H.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_EXT_T0281_TBB1PLT0_H.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/INSERT_EXT_{{table_en}}.sql",
+		"/D/Documents/My Knowledge/temp/627903057/核心转账与渠道交易调查.md-627903057.md",
+		"/D/Documents/My Knowledge/temp/780416155/核心转账与渠道交易调查.md-780416155.md",
+		"/D/Documents/My Knowledge/temp/780008899/核心转账与渠道交易调查.md-780008899.md",
+		"/D/Documents/My Knowledge/temp/1124486718/wzh的网络账号.md-1124486718.md",
+		"/D/Documents/My Knowledge/temp/779897389/核心转账与渠道交易调查.md-779897451.md",
+		"/G/1_Tienon/3_安全监控/case_trace_svn/python_script/导数脚本生成/read_data_struct.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_EXT_T0042_TBPC1010_H.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/CREATE_{{table_en}}.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/train/log/warning.log",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/train/log/info.log",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/train/log/my.log",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_create/CREATE_TODDC_CRATMDET_A.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/create_all_table.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_EXT_TODDC_SAETXETX_A.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_EXT_TODDC_SAACNTXN_A.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_create/CREATE_TODDC_SAACNTXN_A.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/CREATE_{table_en}.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template_hive_create.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/template/CREATE_{TABLE_EN}.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/base.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/psql2t.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/非本人交易/code/source/gbt_train.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/train/log/error.log",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/train/log/zz3.log",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/log/zz3.log",
+		"/D/Documents/My Knowledge/temp/28959183/GP故障节点恢复操作步骤.md-28959183.md",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/7_scheduler/run_wrapper.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/predict_20170502/train_result.txt",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/predict_20170502/predict_result.txt",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/crontab.py",
+		"/G/maintainer/运维常用脚本.sql",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/check/gp_toddc.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/sendSms.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/sendMail.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/7_scheduler/sendMail.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/hadoop_check_fun.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/gp_check_fun.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/train/log/zz.log",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/logging.conf",
+		"/c/python27/lib/logging/__init__.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/train/1_insert_main_flow_user.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/violate/1_create_table/hive_insert/INSERT_EXT_T0042_TBPC1010_H.sh",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/info.log",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/test.log",
+		"/D/Documents/My Knowledge/temp/-921735307/非本人交易预测模型运行情况说明.md--921735307.md",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/psql2s.sh",
+		"/D/Documents/My Knowledge/temp/348389373/信用卡标记数据.md-348389373.md",
+		"/c/python27/lib/logging/config.py",
+		"/G/1_Tienon/3_安全监控/模型分析/git/non_self/7_scheduler/zz.log"
+	],
+	"find":
+	{
+		"height": 43.0
+	},
+	"find_in_files":
+	{
+		"height": 102.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"sqlite3",
+			"update_entity",
+			"update_work_config",
+			"httpClient",
+			"raise",
+			"get_field_list",
+			"less",
+			"write",
+			"sep",
+			"linesep",
+			"os.sep",
+			"\\r",
+			"sep",
+			"date_field_name",
+			"table_map",
+			"pypage_from_file",
+			"table",
+			"table_map",
+			"read_table_name",
+			"log",
+			"self, ",
+			"log",
+			"psql",
+			"table_name",
+			"get_gp_table_attribute",
+			"log.error",
+			"execute",
+			"log.",
+			"pause",
+			"T0651_CCBINS_REL_H",
+			"filter",
+			"[\n",
+			"%(en)s",
+			"sor_field_list",
+			"TODDC_SAETXETX_A",
+			"ctbase_",
+			"ctbase_field_array",
+			"args.",
+			"%(en)",
+			"import",
+			"conf",
+			"log.",
+			"notice",
+			"log.",
+			"check_entity_via_table",
+			"check.",
+			"valid_local_file",
+			"get_local_file_attribute",
+			"get_hive_table_attribute",
+			"get_hive_record_num",
+			"valid_hive_table",
+			"has_hive_table_partition",
+			"valid_hdfs_file",
+			"get_hdfs_file_attribute",
+			"valid_gp_table",
+			"get_gp_table_attribute",
+			"psql",
+			"log.",
+			"get_hdfs_file_attribute",
+			"'check_hive'",
+			"int_log_level",
+			"getuid",
+			"print",
+			"chmod",
+			"if",
+			"ex_gp",
+			"status",
+			"insert_work_config",
+			"hostname",
+			"save_path",
+			"HADOOP_ENV",
+			"datetime",
+			"mkdir",
+			"valid_hive_table",
+			"executeShell",
+			"handle_rangedv",
+			"FDateTime",
+			"get_hive_table_attribute",
+			"check_entity",
+			"depend_type",
+			"script_depend",
+			"get_script_depend",
+			"check_entity",
+			"insert_entity",
+			"status",
+			"insert_entity",
+			"flag",
+			"check",
+			"pattern_list",
+			"eval(row['options'])",
+			"print",
+			"executeShell_ex",
+			"open",
+			"via_db_check",
+			"check_script_depend",
+			"check_entity",
+			"end_date",
+			"=None",
+			"check_script_depend",
+			"get_script_depend",
+			"get_script_type",
+			"check_entity",
+			"check_script_depend",
+			"table",
+			"check_scrpt_depend",
+			"check_depend",
+			"dateCalc",
+			"error",
+			"pattern",
+			"\t",
+			"get_field_list",
+			"get_script_type",
+			"self",
+			"check_depend_entity_start",
+			"stop",
+			"pidfile",
+			"check_depend_entity_start",
+			"ret",
+			"field_map",
+			"row_map",
+			"line",
+			"  \n",
+			"log",
+			"store_true",
+			"斡尔族",
+			"黔南",
+			"money_pattern",
+			"money_pattern_str"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"row['options']",
+			"    ",
+			"    \n",
+			"\n",
+			"",
+			"dbFileName",
+			":",
+			"log",
+			"   ",
+			"    ",
+			"",
+			"*/",
+			"/*",
+			"",
+			"  ",
+			", ",
+			"    ",
+			"    string,",
+			"\\t\\tstring,",
+			"    string,",
+			"、",
+			"\\t",
+			"、",
+			"\\t",
+			"、",
+			"\\t",
+			"、",
+			"\\t",
+			":         ",
+			"\\t",
+			"",
+			",",
+			"，",
+			"",
+			":",
+			", ",
+			":",
+			")",
+			"(",
+			"    ",
+			"uass",
+			"f1,f2,class,tx_time,log_level,evtTraceId,svcId,transactionCode,blog",
+			"f1,f2,class,tx_time,log_level,evtTraceId,svcId,transactionCode,blog\\n",
+			"    ",
+			"\\\\'",
+			"\\'",
+			"\"",
+			"_CLUS",
+			"",
+			"CT_",
+			"'",
+			",",
+			"atmNo",
+			"'%.02f' % acctBal",
+			"'%.02f' % txAmt",
+			"cstId",
+			"cstIdTable",
+			"    ",
+			"index_describe",
+			", field_to_ctbase, index_name, index_function, index_split)",
+			"^",
+			"",
+			"\t",
+			"\\t",
+			"    ",
+			"8",
+			"7",
+			"6",
+			"\n  insert into test_login_flow_a \n select  query_flow_no, chanl_no, chanl_adap_no, flat_trad_date+10,  \n    back_trad_nm,  cust_no,   chanl_cust_no, cust_nm, cust_typ, cust_grd, sign_sts,      \n    acct_no   , acct_typ, acct_bran,   trad_no, trad_nm,   itcd_no  , flat_trad_time, \n    flat_sys_date, trad_bran, sign_bran, return_code ,  return_msg ,    term_inf,\n    add_inf   , mon_inf, trad_sts, p9_split_branch_cd, p9_data_date, \n    p9_batch_number, p9_del_flag, p9_del_date, p9_del_batch, p9_job_name  \n from tmp_login_flow_a;\n insert into test_login_flow_a \n select  query_flow_no, chanl_no, chanl_adap_no, flat_trad_date+12,  \n    back_trad_nm,  cust_no,   chanl_cust_no, cust_nm, cust_typ, cust_grd, sign_sts,      \n    acct_no   , acct_typ, acct_bran,   trad_no, trad_nm,   itcd_no  , flat_trad_time, \n    flat_sys_date, trad_bran, sign_bran, return_code ,  return_msg ,    term_inf,\n    add_inf   , mon_inf, trad_sts, p9_split_branch_cd, p9_data_date, \n    p9_batch_number, p9_del_flag, p9_del_date, p9_del_batch, p9_job_name  \n from tmp_login_flow_a;\n insert into test_login_flow_a \n select  query_flow_no, chanl_no, chanl_adap_no, flat_trad_date+14,  \n    back_trad_nm,  cust_no,   chanl_cust_no, cust_nm, cust_typ, cust_grd, sign_sts,      \n    acct_no   , acct_typ, acct_bran,   trad_no, trad_nm,   itcd_no  , flat_trad_time, \n    flat_sys_date, trad_bran, sign_bran, return_code ,  return_msg ,    term_inf,\n    add_inf   , mon_inf, trad_sts, p9_split_branch_cd, p9_data_date, \n    p9_batch_number, p9_del_flag, p9_del_date, p9_del_batch, p9_job_name  \n from tmp_login_flow_a;\n insert into test_login_flow_a \n select  query_flow_no, chanl_no, chanl_adap_no, flat_trad_date+16,  \n    back_trad_nm,  cust_no,   chanl_cust_no, cust_nm, cust_typ, cust_grd, sign_sts,      \n    acct_no   , acct_typ, acct_bran,   trad_no, trad_nm,   itcd_no  , flat_trad_time, \n    flat_sys_date, trad_bran, sign_bran, return_code ,  return_msg ,    term_inf,\n    add_inf   , mon_inf, trad_sts, p9_split_branch_cd, p9_data_date, \n    p9_batch_number, p9_del_flag, p9_del_date, p9_del_batch, p9_job_name  \n from tmp_login_flow_a;\n insert into test_login_flow_a \n select  query_flow_no, chanl_no, chanl_adap_no, flat_trad_date+18,  \n    back_trad_nm,  cust_no,   chanl_cust_no, cust_nm, cust_typ, cust_grd, sign_sts,      \n    acct_no   , acct_typ, acct_bran,   trad_no, trad_nm,   itcd_no  , flat_trad_time, \n    flat_sys_date, trad_bran, sign_bran, return_code ,  return_msg ,    term_inf,\n    add_inf   , mon_inf, trad_sts, p9_split_branch_cd, p9_data_date, \n    p9_batch_number, p9_del_flag, p9_del_date, p9_del_batch, p9_job_name  \n from tmp_login_flow_a;\n ",
+			"3",
+			"2",
+			",",
+			"20160328",
+			"20160326",
+			"%Y-%m-%d %H:%M:%S",
+			"基于",
+			"\"",
+			"    ",
+			"******",
+			"    ",
+			"",
+			"hostname",
+			"    ",
+			"read_logfile_to_nparray",
+			"'",
+			"field_array",
+			"    "
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": false
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 256,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								256,
+								256
+							]
+						],
+						"settings":
+						{
+							"auto_name": "select c.attname, d.typname",
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"is_init_dirty_state": true,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								8
+							]
+						],
+						"settings":
+						{
+							"auto_name": "335亿交易，4.1亿卡",
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content"
+							],
+							"incomplete_sync": null,
+							"is_init_dirty_state": true,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 214,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								214,
+								214
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 35.0
+	},
+	"input":
+	{
+		"height": 36.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 244.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 69.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 130.0
+	},
+	"pinned_build_system": "",
+	"project": "ts150.sublime-project",
+	"replace":
+	{
+		"height": 66.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"log",
+				"log.py"
+			],
+			[
+				"flow",
+				"G:\\1_Tienon\\3_安全监控\\模型分析\\git\\violate\\1_create_table\\gen_create_flow_table.py"
+			],
+			[
+				"che",
+				"check.py"
+			],
+			[
+				"dea",
+				"G:\\1_Tienon\\3_安全监控\\模型分析\\git\\non_self\\7_scheduler\\daemon.py"
+			],
+			[
+				"proce",
+				"C:\\Users\\Administrator\\AppData\\Roaming\\Foxmail7\\Temp-4252-20170327154459\\process_complaint.py"
+			],
+			[
+				"p2",
+				"G:\\1_Tienon\\3_安全监控\\模型分析\\违规查询\\p2log_spark\\spark_p2log_format.sh"
+			],
+			[
+				"read",
+				"G:\\1_Tienon\\3_安全监控\\模型分析\\git\\violate\\1_create_table\\read_data_struct.py"
+			],
+			[
+				"to",
+				"G:\\1_Tienon\\3_安全监控\\模型分析\\git\\violate\\2_ready_data\\to_run.sh"
+			],
+			[
+				"export",
+				"G:\\1_Tienon\\3_安全监控\\模型分析\\git\\violate\\2_ready_data\\export_gp_to_hdfs.sh"
+			],
+			[
+				"mysql",
+				"C:\\users\\admini~1\\appdata\\local\\temp\\sublime-sftp-browse-1487833162\\组1备_28\\home\\maintainer\\go_work\\src\\monitor_client\\mysql.go"
+			],
+			[
+				"struct",
+				"G:\\1_Tienon\\3_安全监控\\case_trace_svn\\python_script\\导数脚本生成\\read_data_struct.py"
+			],
+			[
+				"",
+				"D:\\Documents\\My Knowledge\\temp\\898097\\4月版本案件溯源功能工作任务分解.md-898113.md"
+			],
+			[
+				"ba",
+				"G:\\9_维护\\环境配置\\bash_profile.sh"
+			],
+			[
+				"mon",
+				"C:\\users\\admini~1\\appdata\\local\\temp\\sublime-sftp-browse-1452246110\\策略管理测试机108_153.sftp\\home\\ap\\ssmc3\\monitor\\monitor.py"
+			],
+			[
+				"fun",
+				"G:\\UnixCode\\Python\\func.py"
+			],
+			[
+				"agent",
+				"G:\\1_Tienon\\3_安全监控\\SIAM\\验证脚本\\运维监控\\agent.py"
+			],
+			[
+				"uasslog",
+				"G:\\1_Tienon\\3_安全监控\\SIAM\\验证脚本\\认证日志分析\\uasslog.dat"
+			],
+			[
+				"sftp",
+				"C:\\Users\\Administrator\\AppData\\Roaming\\Sublime Text 3\\Packages\\User\\sftp_servers\\组1_主_242.sftp"
+			],
+			[
+				"host",
+				"C:\\Windows\\System32\\drivers\\etc\\hosts"
+			],
+			[
+				"hosts",
+				"C:\\Windows\\System32\\drivers\\etc\\hosts"
+			],
+			[
+				"file",
+				"G:\\file2utf8.py"
+			],
+			[
+				"v",
+				"G:\\vec_test.py"
+			],
+			[
+				"new",
+				"G:\\UnixCode\\Python\\new_book_down.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 193.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+		"max_columns": 2
+	}
+}
