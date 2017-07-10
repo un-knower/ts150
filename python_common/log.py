@@ -143,7 +143,7 @@ class Log:
             logger.setLevel(self.level)
 
             # 创建一个handler，用于写入日志文件
-            logFile = '%s/log/%s.log' % (run_path, logName)
+            logFile = '%s/%s.log' % (log_path, logName)
             fh = logging.FileHandler(logFile)
             chmod(logFile, 0777)
 

@@ -15,13 +15,13 @@ app = "train"
 # 默认运行脚本目录
 #base_path=/home/ap/dip/appjob/shelljob/TS150/violate
 base_path = "/home/ap/dip_ts150/ts150_script/ccb_risk_scoring"
-base_path = ".."
+base_path = "../test"
 
 # 运行目录
-run_path = "%s/train" % base_path
+run_path = "%s" % base_path
 
 # 默认Hive数据库名
-default_hive_db = "train"
+default_hive_db = "test"
 
 # 默认GP数据库名
 default_gp_schema = "app_siam"

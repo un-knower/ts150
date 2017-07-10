@@ -4,7 +4,7 @@
 import os, sys, re
 import sqlite3
 import base64
-import db
+from dbHelper import *
 from var import *
 sys.path.append("../python_common/")
 import log
@@ -12,9 +12,10 @@ from common_fun import *
 from bottle import route, run, route, request, response
 
 
-dbHelper = db.DbHelper()
+dbHelper = DbHelper()
 
 
+@route('/hello', method='POST')
 @route('/hello')
 def hello():
     return "Hello World!"

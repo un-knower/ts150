@@ -13,68 +13,6 @@ from common_fun import *
 
 # 作业调度数据表操作Helper
 class DbHelper:
-    """作业调度数据表操作DbHelper"""
-    def __init__(self):
-        # 数据库文件不存在，则新建库
-        self.dbFileName = r"%s/%s.db" % (run_path, app)
-
-        hasDb = os.path.exists(self.dbFileName)
-        # log.debug("库%s是否存在:%s" % (dbFileName, hasDb))
-
-        self.conn = sqlite3.connect(self.dbFileName)
-        if not hasDb:
-            createDbFileName = r"%s/7_scheduler/db.sql" % (base_path)
-            if os.path.exists(createDbFileName):
-                for sql in getSql(createDbFileName):
-                    self.conn.execute(sql)
-                self.conn.close()
-                self.conn = sqlite3.connect(self.dbFileName)
-            else:
-                sys.stderr.write("数据库不存在，建表文件:[%s]也不存在\n" % createDbFileName)
-                exit(1)
-
-        # 默认返回的数据是Unicode，改为str可适应utf8与gbk
-        self.conn.text_factory = str
-        self.conn.isolation_level = None
-        self.cur = self.conn.cursor()
-
-
-    def __del__(self):
-        if "conn" in dir(self):
-            self.cur.close()
-            self.conn.commit()
-            self.conn.close()
-
-        chmod(self.dbFileName, 0777)
-
-
-    # 取SQL select执行结果字段名列表
-    def get_field_list(self, description=None):
-        field_list = []
-        if not description:
-            description = self.cur.description
-
-        for field in description:
-            field_list.append(field[0])
-
-        return field_list
-
-
-    # 通用查询执行
-    def query_sql(self, sql, field_list=None):
-        log.debug("query_sql:%s" % sql)
-
-        self.cur.execute(sql)
-        res = self.cur.fetchall()
-        field_list = self.get_field_list()
-
-        row_array = []
-        for row in res:
-            # print row
-            column_map = dict(zip(field_list, row))
-            row_array.append(column_map)
-
-        return row_array
 
     # 日志插入
 
@@ -233,6 +171,82 @@ class DbHelper:
 
         return self.cur.rowcount
 
+
+    # 作业配置表查询
+    def query_work_config_2(self, id=0, where=''):
+        if id > 0:
+            where = 'where id=%d' % id
+        sql = "select * from work_config_2 %s" % where
+        self.cur.execute(sql)
+        res = self.cur.fetchall()
+
+        field_list = self.get_field_list()
+        row_map = {}
+        for row in res:
+            column_map = dict(zip(field_list, row))
+            options_str = base64.b64decode(column_map['options'])
+            column_map['options'] = eval(options_str)
+            row_map[column_map['id']] = column_map
+
+        return row_map
+
+
+    # 作业配置表插入
+    def insert_work_config_2(self, scriptName, options, start_date, end_date, hostname, username):
+        options_base64 = base64.b64encode(str(options))
+        sql = "insert into work_config_2(script, options, start_date, end_date, hostname, username) values('%s', '%s', '%s', '%s', '%s', '%s');" % \
+                (scriptName, options_base64, start_date, end_date, hostname, username)
+        # print sql
+        self.cur.execute(sql)
+
+        return self.cur.lastrowid
+
+
+    # 作业配置表更新
+    def update_work_config(self, id, over_date=None, status=None, pid=0,
+                           process_date=None, end_date=None, options=None,
+                           next_action=None, pre_work_id=0):
+        where = 'where id=%d' % id
+        update_field_array = ["ts=datetime('now', 'localtime')", ]
+        if over_date:
+            update_field_array.append("over_date='%s'" % over_date)
+        if status:
+            update_field_array.append("status='%s'" % status)
+        if pid > 0:
+            update_field_array.append("pid=%d" % pid)
+        if end_date:
+            update_field_array.append("end_date='%s'" % end_date)
+        if process_date:
+            update_field_array.append("process_date='%s'" % process_date)
+        if next_action:
+            update_field_array.append("next_action='%s'" % next_action)
+        if pre_work_id > 0:
+            update_field_array.append("pre_work_id=%d" % pre_work_id)
+
+        if options:
+            options_base64 = base64.b64encode(str(options))
+            update_field_array.append("options='%s'" % options_base64)
+
+        if len(update_field_array) > 0:
+            sql = "update work_config_2 set %s %s" % (', '.join(update_field_array), where)
+            # print sql
+            self.cur.execute(sql)
+
+            return self.cur.rowcount
+        else:
+            return 0
+
+
+    # 作业配置表删除
+    def delete_work_config_2(self, id=0, where=''):
+        if id > 0:
+            where = 'where id=%d' % id
+        sql = "delete from work_config_2 %s" % where
+        self.cur.execute(sql)
+
+        return self.cur.rowcount
+
+
     # 任务表插入
 
     # 任务表查询
@@ -259,7 +273,6 @@ class DbHelper:
 
     # 定时作业配置表保存
     def save_crontab_config(self, id=0, crontab=None, script=None, options=None, status=None, pid=0, hostname=None, username=None):
-
         where = "where crontab='%s' and script='%s'" % (crontab, script)
         row_map = self.query_crontab_config(id, where)
 
@@ -300,6 +313,11 @@ class DbHelper:
 
 def main():
     db = DbHelper()
+    print db.insert_work_config_2('scriptName', 'options', '20171212', '20171212', 'hostname', 'username')
+    print db.query_work_config_2(2)
+    print db.update_work_config(2, '20171212', 'processing')
+    print db.query_work_config_2(2)
+
     # print db.update_work_config(1, '20171212', 'processing')
     # print db.query_entity(1)
     # print db.query_entity(where="where data_date='20170101'")
@@ -307,11 +325,11 @@ def main():
     # print db.query_entity(1)
     # print db.query_entity(where="where status<>'exists' order by data_date")
     # print db.query_sql('select * from entity ')
-    res_array = db.query_sql('select flag, entity, min(data_date) as min_data_date from entity group by flag, entity')
-    for row in res_array:
-        print row
-        # print '行:%s' % (row['flag'].encode('utf8'))
-        print '行:%s' % (row['flag'])
+    # res_array = db.query_sql('select flag, entity, min(data_date) as min_data_date from entity group by flag, entity')
+    # for row in res_array:
+    #     print row
+    #     # print '行:%s' % (row['flag'].encode('utf8'))
+    #     print '行:%s' % (row['flag'])
     pass
 
 
