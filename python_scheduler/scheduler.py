@@ -1,9 +1,9 @@
 #!/usr/bin/python
 #coding:utf8
 
-import os
+import sys,os
 from var import *
-from dbClient import *
+import dbScheduler
 import check
 sys.path.append("../python_common/")
 from common_fun import *
@@ -17,7 +17,7 @@ class Scheduler:
         self.options = options
         self.scriptName = scriptName
 
-        self.db = db if db else DbHelper()
+        self.db = db if db else dbScheduler.DbScheduler(remote_mode=False)
 
         self.depend_key_list = ('IN_CUR_HIVE', 'IN_PRE_HIVE', 'IN_CUR_HDFS', 'IN_CUR_GP', 'IN_PRE_GP', 'IN_CUR_LOCAL',
                                 'IN_ALL_HIVE',

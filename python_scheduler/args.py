@@ -5,8 +5,8 @@ import os
 import time
 from optparse import OptionParser
 from multiprocessing import Process
+import dbScheduler
 from var import *
-from dbClient import *
 from scheduler import *
 import crontab
 sys.path.append("../python_common/")
@@ -359,28 +359,20 @@ def list_work_processing(*args, **kwargs):
 
 
 def list_work(where=''):
-    sched = Scheduler()
-    row_map = sched.db.query_work_config(where=where)
-
-    rn_list = row_map.keys()
-    rn_list.sort()
+    db = dbScheduler.DbScheduler(remote_mode=False)
+    row_array = db.query_work_config(where=where)
 
     # 计算最大脚本名称宽度
     max_script_len = 0
-    for rn in rn_list:
-        row = row_map[rn]
-        options = row['options']
-        script = options['script']
-        if len(script) > max_script_len:
-            max_script_len = len(script)
+    for row in row_array:
+        if len(row['script']) > max_script_len:
+            max_script_len = len(row['script'])
 
     print('ID  %-23s%s%s %s %s %s    %s   %s          %s  %s' % (
         '时间戳', '脚本名'.ljust(max_script_len + 4), '起始日期', '终止日期', '完成日期',
         '处理状态', '进程号', '主机', '用户名', '进程存在'))
-    for rn in rn_list:
-        row = row_map[rn]
-        options = row['options']
-        script = options['script'].ljust(max_script_len + 1)
+    for row in row_array:
+        script = row['script'].ljust(max_script_len + 1)
 
         # 非本节点运行的进程，不检查进程是否存在
         if row['hostname'] == hostname:
@@ -401,6 +393,54 @@ def debug_work(*args, **kwargs):
     exit(0)
 
 
+# 校验并调整输入格式
+def valid(options):
+    if options.start_date and not dateValid(options.start_date):
+        print '日期格式有误:[%s]' % (options.start_date)
+        return False
+
+    if options.end_date and not dateValid(options.end_date):
+        print '日期格式有误:[%s]' % (options.end_date)
+        return False
+
+    if not options.end_date:
+        options.end_date = options.start_date
+
+    if options.crontab:
+        #解析crontab时间配置参数 分 时 日 月 周 各个取值范围
+        res, cron_time = crontab.parse_crontab_time(options.crontab)
+        if res != 0:
+            print 'crontab时间配置有误:[%s]' % (options.crontab)
+            return False
+
+    # 指定运行主机与用户
+    if options.username:
+        tmp_array = options.username.split('.')
+        if len(tmp_array) == 2:
+            assign_hostname = tmp_array[0]
+            assign_username = tmp_array[1]
+            options.username = '@'.join([assign_username, assign_hostname])
+
+        tmp_array = options.username.split('@')
+        if len(tmp_array) != 2:
+            print '指定运行主机格式不符:[%s]' % options.username
+            return False
+    else:
+        options.username = '@'.join([username, hostname])
+
+    # script 新增作业
+    if options.script:
+        # 找到脚本文件
+        script = findFile(run_path, options.script)
+        if not script:
+            print '--script 脚本:[%s]在目录:[%s]未找到' % (run_path, options.script)
+            return False
+
+        options.script = script
+
+    return True
+
+
 def main():
     parser = OptionParser(usage='usage: %prog [options]')
     parser.add_option("-c", "--script", dest="script", help=u"脚本名称")
@@ -412,6 +452,7 @@ def main():
     parser.add_option("--la", action="callback", callback=list_work_all, help=u"列出调度任务运行状态")
     parser.add_option("-t", "--task", type="int", default=0, dest="task_id", help=u"指定任务ID，断点重跑")
     parser.add_option("-u", "--username", dest="username", help=u"指定运行任务的主机与用户 hostname.username")
+    parser.add_option("--step", type="int", default=1, dest="step", help=u"指定下一日期的步长")
     parser.add_option("--error_notice", action="store_true", default=False, dest="error_notice", help=u"出错时短信邮件通知")
     parser.add_option("--over_notice", action="store_true", default=False, dest="over_notice", help=u"完成时短信邮件通知")
     parser.add_option("--debug", action="callback", callback=debug_work, help=u"调试模式")
@@ -421,7 +462,20 @@ def main():
     parser.add_option("--resume", action="store_true", default=False, dest="resume_task", help=u"恢复作业执行")
 
     (options, args) = parser.parse_args()
+
+    # 校验输入项
+    if not valid(options):
+        return
+
     sched = Scheduler(options)
+    db = dbScheduler.DbScheduler(remote_mode=False)
+
+    # 指定运行主机与用户
+    if options.username:
+        tmp_array = options.username.split('@')
+        assign_hostname = tmp_array[1]
+        assign_username = tmp_array[0]
+
 
     # 指定任务ID跑批
     if options.task_id:
@@ -483,38 +537,27 @@ def main():
 
     # '--script 新增作业'
     if options.script:
-        # 找到脚本文件
-        scriptName = findFile(run_path, options.script)
-        if not scriptName:
-            print '--script 脚本:[%s]在目录:[%s]未找到' % (run_path, options.script)
-            return
-        sched.scriptName = scriptName
-
-        # print '[%s]' % options.crontab
-        # 非定时作业
-        if not options.crontab:
-            if not options.start_date:
-                print '起始日期不能为空'
-                return
-            if not options.end_date:
-                options.end_date = options.start_date
-
-            # 日期格式校验
-            if not dateValid(options.start_date) or not dateValid(options.end_date):
-                print '日期格式有误:[%s][%s]' % (options.start_date, options.start_date)
-                return
-
-            sched.add_work_config()
-        else:
+        if options.crontab:
             # 定时作业
             #解析crontab时间配置参数 分 时 日 月 周 各个取值范围
             res, cron_time = crontab.parse_crontab_time(options.crontab)
             if res != 0:
                 print 'crontab时间配置有误:[%s]' % (options.crontab)
                 return
-
             # print cron_time
-            self.add_crontab_config()
+            db.add_crontab_config()
+        else:
+            # 非定时作业
+            if not options.start_date:
+                print '起始日期不能为空'
+                return
+
+            # 新增连续作业配置
+            print db.insert_work_config(options.script, options.start_date, options.end_date,
+                                        assign_hostname, assign_username,
+                                        step=options.step, force=options.force,
+                                        over_notice=options.over_notice,
+                                        error_notice=options.error_notice)
 
 
 if __name__ == '__main__':

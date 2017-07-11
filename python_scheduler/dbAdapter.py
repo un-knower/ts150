@@ -12,7 +12,7 @@ import log
 
 # Adapter
 class DbAdapter:
-    """作业调度数据表操作DbAdapter"""
+    """数据库操作，本地与远程适配器"""
     def __init__(self, remote_mode=True):
         self.remote_mode = remote_mode
 
