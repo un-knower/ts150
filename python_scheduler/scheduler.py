@@ -232,7 +232,7 @@ class Scheduler:
     def run_hive_sql(self, row, data_date):
         script = row['script']
 
-        cmd = 'beeline -f %s ' % script
+        cmd = 'beeline -f %s' % script
 
         patt = re.compile(r'less_(\d+)_date')
 

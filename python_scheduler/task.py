@@ -40,7 +40,7 @@ def check_depend_entity(db, id=0):
 
         for row in row_array:
             again_row_map = db.query_entity(where="where flag='%s' and entity='%s' and data_date='%s'" % \
-                                                  (row['flag'], row['entity'], row['min_data_date']))
+                                            (row['flag'], row['entity'], row['min_data_date']))
 
             row_map.update(again_row_map)
 
