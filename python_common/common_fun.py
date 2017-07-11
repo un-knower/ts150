@@ -336,15 +336,15 @@ def main():
     # now = today('%Y-%m-%d %H:%M:%S')
     # print now
     # print time.localtime()
-    print timeCalc('2017-06-26 14:01:01')
-    print timeCalc('2017-06-27 17:01:01')
-    print timeCalc('2017-06-27 17:01:01', 'minute')
-    print timeCalc('2017-06-27 17:01:01', 'hour')
-    print timeCalc('2017-05-26 14:01:01')
-    print timeCalc('2017-05-26', 'week')
-    print timeCalc('2017-05-26', 'month')
-    print timeCalc('2017-05-26 14:01:01', 'day')
-
+    # print timeCalc('2017-06-26 14:01:01')
+    # print timeCalc('2017-06-27 17:01:01')
+    # print timeCalc('2017-06-27 17:01:01', 'minute')
+    # print timeCalc('2017-06-27 17:01:01', 'hour')
+    # print timeCalc('2017-05-26 14:01:01')
+    # print timeCalc('2017-05-26', 'week')
+    # print timeCalc('2017-05-26', 'month')
+    # print timeCalc('2017-05-26 14:01:01', 'day')
+    print get_ip()
 
 
 if __name__ == '__main__':

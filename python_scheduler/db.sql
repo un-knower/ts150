@@ -74,6 +74,28 @@ create table work_config(
    username varchar(64) default('')
 );
 
+
+-- 连续作业配置表
+drop table if exists work_config_2;
+
+create table work_config_2(
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+   ts datetime default (datetime('now', 'localtime')),
+   script varchar(255) not null,
+   options varchar(255) not null,
+   start_date varchar(8) not null,
+   end_date varchar(8) not null,
+   process_date varchar(8) default(''),
+   over_date varchar(8) default(''),
+   status varchar(16) default(''),     -- 完成情况
+   next_action varchar(16) default(''),
+   pid INTEGER default 0,         -- 处理进程ID
+   hostname varchar(64) default(''),
+   username varchar(64) default(''),
+   pre_work_id INTEGER default 0
+);
+
+
 -- 定时作业配置表
 drop table if exists crontab_config;
 
