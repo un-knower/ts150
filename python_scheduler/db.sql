@@ -75,8 +75,8 @@ create table work_config(
    over_date varchar(8) default(''),
    status varchar(16) default(''),     -- 完成情况
    next_action varchar(16) default(''),
-   pid INTEGER default 0,         -- 处理进程ID
-   pre_work_id INTEGER default 0    -- 跟随上一作业
+   pid INTEGER default 0,              -- 处理进程ID
+   pre_work_id INTEGER default 0       -- 跟随上一作业
 );
 
 

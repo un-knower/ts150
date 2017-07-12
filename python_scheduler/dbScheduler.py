@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding:utf8
 
-import sys
+import sys,os
 import base64
 import dbAdapter
 sys.path.append("../python_common/")
@@ -76,6 +76,8 @@ class DbScheduler:
         sql = "select * from work_config %s" % where
 
         row_array = self.db.select(sql)
+        for row in row_array:
+            row['base_script'] = os.path.basename(row['script'])
 
         return row_array
 

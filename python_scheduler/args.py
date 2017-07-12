@@ -351,28 +351,54 @@ def timer():
 
 
 def list_work_all(*args, **kwargs):
-    list_work()
+    list_work(detail=True)
 
 
 def list_work_processing(*args, **kwargs):
     list_work(where="where status<>'over'")
 
 
-def list_work(where=''):
+def list_work(where='', detail=False):
     db = dbScheduler.DbScheduler(remote_mode=False)
     row_array = db.query_work_config(where=where)
+    for row in row_array:
+        # 非本节点运行的进程，不检查进程是否存在
+        if row['hostname'] == hostname:
+            pid_str = 'Has' if row['pid'] and exist_pid(row['pid']) else 'No'
+        else:
+            pid_str = ''
+        row['pid_exist'] = pid_str
+        row['ts'] = row['ts'][11:]
+        row['force'] = 'Force' if row['force'] else ''
+        row['over_notice'] = 'over_notice' if row['over_notice'] else ''
+        row['error_notice'] = 'error_notice' if row['error_notice'] else ''
+
+
+    display_table(row_array,
+                  ['id', 'ts', 'base_script',
+                   'start_date', 'end_date', 'hostname', 'username',
+                   'step', 'force', 'over_notice', 'error_notice',
+                   'process_date', 'over_date', 'status', 'pid', 'pid_exist',
+                   'next_action', 'pre_work_id'])
+    return
 
     # 计算最大脚本名称宽度
     max_script_len = 0
     for row in row_array:
-        if len(row['script']) > max_script_len:
-            max_script_len = len(row['script'])
+        if len(row['base_script']) > max_script_len:
+            max_script_len = len(row['base_script'])
 
-    print('ID  %-23s%s%s %s %s %s    %s   %s          %s  %s' % (
-        '时间戳', '脚本名'.ljust(max_script_len + 4), '起始日期', '终止日期', '完成日期',
-        '处理状态', '进程号', '主机', '用户名', '进程存在'))
+    if detail:
+        print('ID  %-23s%s%s %s %s %s    %s   %s          %s  %s' % (
+            '时间戳', '脚本名'.ljust(max_script_len + 4), '起始日期', '终止日期',
+            '完成日期', '处理状态', '进程号', '主机', '用户名', '进程存在'))
+    else:
+        print('ID  %s   %s%s %s %s %s %s   %s          %s  %s' % (
+            '时间戳', '脚本名'.ljust(max_script_len + 4), '起始日期', '终止日期',
+            '完成日期', '处理状态', '主机', '用户名', '进程号', '存在'))
+
     for row in row_array:
-        script = row['script'].ljust(max_script_len + 1)
+        script = row['base_script'].ljust(max_script_len + 1)
 
         # 非本节点运行的进程，不检查进程是否存在
         if row['hostname'] == hostname:
@@ -380,11 +406,53 @@ def list_work(where=''):
         else:
             pid_str = ''
 
-        print('%-4d%-20s%s%-9s%-9s%-9s%-12s%-7s%-16s%-8s%-6s' % (row['id'], row['ts'], script,
-            row['start_date'], row['end_date'], row['over_date'], row['status'], row['pid'],
-            row['hostname'], row['username'], pid_str))
+        if detail:
+            pass
+        else:
+            ts = row['ts'][11:]
+            print('%-4d%-9s%s%-9s%-9s%-9s%-12s%-7s%-16s%-6s' % (row['id'], ts, script,
+                  row['start_date'], row['end_date'], row['over_date'], row['status'],
+                  row['hostname'], row['username'], row['pid'], pid_str))
         # print row
     exit(0)
+
+
+def display_table(row_array, field_list=None):
+    if not field_list:
+        field_list = row_array[0].keys()
+
+    # 插入标题行
+    change_map = {'base_script':'脚本',
+                  'start_date':'起始日期',
+                  'end_date':'终止日期',
+                  'hostname':'主机',
+                  'username':'用户',
+                  'step':'步长',
+                  'force':'强制',
+                  'over_notice':'完成通知',
+                  'error_notice':'出错通知',
+                  'process_date':'处理日期',
+                  'over_date':'完成日期', 'status':'状态', 'pid_exist':'进程存在',
+                  'next_action':'等待动作', 'pre_work_id':'跟随作业'}
+
+    title_map = dict(zip(field_list, field_list))
+    row_array.insert(0, title_map)
+
+    # 计算最大宽度
+    field_max_len = {}
+    for field in field_list:
+        for row in row_array:
+            row_str = str(row[field])
+            if len(row_str) >= field_max_len.get(field, 0):
+                field_max_len[field] = len(row_str)
+    print field_max_len
+
+    for row in row_array:
+        line = ''
+        for field in field_list:
+            row_str = str(row[field])
+            line += row_str.ljust(field_max_len[field] + 1)
+        print line
 
 
 def debug_work(*args, **kwargs):
@@ -394,7 +462,7 @@ def debug_work(*args, **kwargs):
 
 
 # 校验并调整输入格式
-def valid(options):
+def valid(options, db):
     if options.start_date and not dateValid(options.start_date):
         print '日期格式有误:[%s]' % (options.start_date)
         return False
@@ -403,7 +471,7 @@ def valid(options):
         print '日期格式有误:[%s]' % (options.end_date)
         return False
 
-    if not options.end_date:
+    if options.start_date and not options.end_date:
         options.end_date = options.start_date
 
     if options.crontab:
@@ -438,6 +506,14 @@ def valid(options):
 
         options.script = script
 
+    for task_id in (options.task_id, options.pre_work_id):
+        if task_id:
+            row_array = db.query_work_config(id=task_id)
+
+            if len(row_array) == 0:
+                print '指定任务ID:%d不存在' % task_id
+                return False
+
     return True
 
 
@@ -448,27 +524,29 @@ def main():
     parser.add_option("-s", "--start_date", dest="start_date", help=u"起始日期")
     parser.add_option("-e", "--end_date", dest="end_date", help=u"终止日期，默认与起始日期一致")
     parser.add_option("-f", "--force", action="store_true", default=False, dest="force", help=u"强制重跑")
-    parser.add_option("-l", "--list", action="callback", callback=list_work_processing, help=u"列出调度任务运行状态")
-    parser.add_option("--la", action="callback", callback=list_work_all, help=u"列出调度任务运行状态")
     parser.add_option("-t", "--task", type="int", default=0, dest="task_id", help=u"指定任务ID，断点重跑")
     parser.add_option("-u", "--username", dest="username", help=u"指定运行任务的主机与用户 hostname.username")
+    parser.add_option("--flow_work", type="int", default=0, dest="pre_work_id", help=u"指定跟随任务ID")
     parser.add_option("--step", type="int", default=1, dest="step", help=u"指定下一日期的步长")
     parser.add_option("--error_notice", action="store_true", default=False, dest="error_notice", help=u"出错时短信邮件通知")
     parser.add_option("--over_notice", action="store_true", default=False, dest="over_notice", help=u"完成时短信邮件通知")
-    parser.add_option("--debug", action="callback", callback=debug_work, help=u"调试模式")
     # parser.add_option("--kill", action="callback", callback=stop, help=u"停止调试进程")
     parser.add_option("--deltask", action="store_true", default=False, dest="delete_task", help=u"删除作业配置")
     parser.add_option("--pause", action="store_true", default=False, dest="pause_task", help=u"暂停作业执行")
     parser.add_option("--resume", action="store_true", default=False, dest="resume_task", help=u"恢复作业执行")
+    parser.add_option("--run", action="store_true", default=False, dest="run_task", help=u"本地调试执行作业")
+
+    parser.add_option("-l", "--list", action="callback", callback=list_work_processing, help=u"列出调度任务运行状态")
+    parser.add_option("--la", action="callback", callback=list_work_all, help=u"列出调度任务运行状态")
+    parser.add_option("--debug", action="callback", callback=debug_work, help=u"调试模式")
 
     (options, args) = parser.parse_args()
 
+    db = dbScheduler.DbScheduler(remote_mode=False)
     # 校验输入项
-    if not valid(options):
+    if not valid(options, db):
         return
 
-    sched = Scheduler(options)
-    db = dbScheduler.DbScheduler(remote_mode=False)
 
     # 指定运行主机与用户
     if options.username:
@@ -476,62 +554,56 @@ def main():
         assign_hostname = tmp_array[1]
         assign_username = tmp_array[0]
 
-
     # 指定任务ID跑批
     if options.task_id:
         print '指定任务ID:%d' % options.task_id
-        row_map = sched.db.query_work_config(id=options.task_id)
-
-        if len(row_map) == 0:
-            print '指定任务ID:%d不存在' % options.task_id
-            return
 
         # 删除作业
         if options.delete_task:
-            sched.db.delete_work_config(id=options.task_id)
+            db.delete_work_config(id=options.task_id)
             return
         # 暂停作业
         if options.pause_task:
-            sched.db.update_work_config(id=options.task_id, status='pause')
+            db.update_work_config(id=options.task_id, next_action='pause')
             return
         # 恢复作业
         if options.resume_task:
-            sched.db.update_work_config(id=options.task_id, status='resume')
+            db.update_work_config(id=options.task_id, next_action='resume')
             return
 
-        row = row_map[options.task_id]
-        options_map = row['options']
-        status = ''
+        row_array = db.query_work_config(id=options.task_id)
+        row = row_array[0]
+        next_action = None
         # 重新指定起始日期
         if options.start_date:
-            assert dateValid(options.start_date)
             start_date = options.start_date
         else:
             # 强制从第一天开始跑
             if options.force:
                 start_date = row['start_date']
-                status = 'init'
-                options_map['force'] = True
+                next_action = 'init'
+                row['force'] = True
             else:
                 start_date = row['over_date']
 
         # 重新指定终止日期
         if options.end_date:
-            assert dateValid(options.end_date)
             end_date = options.end_date
         else:
             end_date = row['end_date']
 
         # 更新作业配置表
-        sched.db.update_work_config(options.task_id, over_date=start_date, status=status, pid=0, end_date=end_date, options=options_map)
+        db.update_work_config(options.task_id, over_date=start_date, next_action=next_action, end_date=end_date)
 
-        # 开始子进程跑批
-        job_list = run_work(sched.db, options.task_id)
-        for job in job_list:
-            while True:
-                job.join(1)
-                if not job.is_alive():
-                    break
+        # 调试作业
+        if options.run_task:
+            # 开始子进程跑批
+            job_list = run_work(db, options.task_id)
+            for job in job_list:
+                while True:
+                    job.join(1)
+                    if not job.is_alive():
+                        break
 
         return
 
@@ -546,8 +618,19 @@ def main():
                 return
             # print cron_time
             db.add_crontab_config()
-        else:
-            # 非定时作业
+        else: # 非定时作业
+            # 跟随作业
+            if options.pre_work_id:
+                row_array = db.query_work_config(id=options.pre_work_id)
+                row = row_array[0]
+                options.start_date = row['start_date']
+                options.end_date = row['end_date']
+                if options.step != row['step']:
+                    options.step = row['step']
+                options.force = row['force']
+                options.over_notice = row['over_notice']
+                options.error_notice = row['error_notice']
+
             if not options.start_date:
                 print '起始日期不能为空'
                 return
