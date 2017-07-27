@@ -82,9 +82,9 @@ field_array = [
     ('CR_FILLER464', 'FILLER464', '', ''),
     ('P9_SPLIT_BRANCH_CD', '按机构拆分字段', '', ''),
     ('P9_START_DATE', 'P9开始日期', 'Y', ''),
-    ('P9_START_BATCH', 'P9开始批次号', '', ''),
+    ('P9_START_BATCH', '', '', ''),
     ('P9_END_DATE', 'P9结束日期', 'Y', ''),
-    ('P9_END_BATCH', 'P9结束批次号', '', ''),
-    ('P9_DEL_FLAG', 'P9删除标志', '', ''),
-    ('P9_JOB_NAME', 'P9作业名', '', ''),
+    ('P9_END_BATCH', '', '', ''),
+    ('P9_DEL_FLAG', '', '', ''),
+    ('P9_JOB_NAME', '', '', ''),
 ]

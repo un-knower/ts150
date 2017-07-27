@@ -225,6 +225,8 @@ def get_hdfs_file_attribute(path, logFile='check_hdfs'):
                 processing = True
             if '_COPYING_' in fileName:
                 processing = True
+            if '_temporary' in fileName:
+                processing = True
 
             fileSizeTotal += long(fileSize)
             fileNumTotal += 1
@@ -314,7 +316,7 @@ def valid_hive_table(table, partition_value=None, logFile='check_hive'):
         else:
             raise CommonError(msg="Hive表检查表达式有误:%s" % table)
     else:
-        express = 'file_num>=1 and file_size>=100'
+        express = 'ret = file_num>=1 and file_size>=100'
 
     ret_attribute_array = get_hive_table_attribute(table, check_record_num, partition_value, logFile=logFile)
     partition_num = len(ret_attribute_array)
@@ -325,11 +327,24 @@ def valid_hive_table(table, partition_value=None, logFile='check_hive'):
 
         try:
             # print 'processing:%s, file_num:%d, file_size:%d, record_num:%d, partition_num:%d' % (processing, file_num, file_size, record_num, partition_num)
+            #print express, type(express)
+            #file_size = 90
+            scope = {'file_num':file_num, 'file_size':file_size, 'record_num':record_num, 'partition_num':partition_num}
+            #print scope
+
+            exec(express, scope)
+            return scope['ret']
             # 检查条件脚本执行
-            if not eval(express):
-                log.info('Hive表%s, 分区%s, 表达式检查不通过' % (table, partition_value, express), logFile)
-                return False
+            #if not eval(express, scope):
+            #    log.info('Hive表%s, 分区%s, 表达式检查不通过' % (table, partition_value, express), logFile)
+            #    return False
         except Exception as e:
+            print "================================"
+            print dir()
+            print type(file_num), type(file_size)
+            print file_num, file_size
+            print express
+            print e
             raise CommonError(msg="Hive表检查表达式解释有误:%s,%s" % (express, e))
 
         ret = True
@@ -484,7 +499,7 @@ def get_local_file_attribute(pathName, data_date=None, logFile='check_local'):
     return file_list
 
 
-# 本地文件夹检查,支持表达式：(file_num>1 and file_size>=1024 and total_file_size>10000 and processing==False)
+# 本地文件夹检查,支持表达式：{file_num>1 and file_size>=1024 and total_file_size>10000 and processing==False}
 def valid_local_file(pathName, data_date=None, logFile='check_local'):
     log.info('检查本地文件属性:[%s][%s]' % (pathName, data_date), logFile)
 
@@ -608,6 +623,15 @@ def testHiveCheck():
     else:
         print IN_CUR_HIVE
 
+def test():
+    file_num = 10
+    file_size = 10
+    express = 'file_num>1 and file_size>=1024'
+    print eval(express)
+
 
 if __name__ == '__main__':
-    main()
+    #main()
+    #print valid_hive_table('ts150.ct_todec_login_trad_flow_a', partition_value='20160922', logFile='check_hive')
+    #print valid_hive_table('ts150.ct_todec_login_trad_flow_a', partition_value='20160921', logFile='check_hive')
+    test()

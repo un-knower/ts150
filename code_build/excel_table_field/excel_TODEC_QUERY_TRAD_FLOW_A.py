@@ -33,8 +33,8 @@ field_array = [
     ('TRAD_STS', '成功标志', '', ''),
     ('P9_DATA_DATE', 'P9数据日期', 'Y', ''),
     ('P9_BATCH_NUMBER', 'P9批次号', '', ''),
-    ('P9_DEL_FLAG', 'P9删除标志', '', ''),
+    ('P9_DEL_FLAG', '', '', ''),
     ('P9_DEL_DATE', 'P9删除日期', '', ''),
     ('P9_DEL_BATCH', 'P9删除批次号', '', ''),
-    ('P9_JOB_NAME', 'P9作业名', '', ''),
+    ('P9_JOB_NAME', '', '', ''),
 ]

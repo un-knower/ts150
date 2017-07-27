@@ -32,9 +32,9 @@ field_array = [
     ('SRCSYS_CRT_TMS', '源系统创建时间戳', '', ''),
     ('SRCSYS_UDT_TMS', '源系统更新时间戳', '', ''),
     ('P9_START_DATE', 'P9开始日期', 'Y', ''),
-    ('P9_START_BATCH', 'P9_START_BATCH', '', ''),
+    ('P9_START_BATCH', '', '', ''),
     ('P9_END_DATE', 'P9结束日期', 'Y', ''),
-    ('P9_END_BATCH', 'P9_END_BATCH', '', ''),
-    ('P9_DEL_FLAG', 'P9_DEL_FLAG', '', ''),
-    ('P9_JOB_NAME', 'P9_JOB_NAME', '', ''),
+    ('P9_END_BATCH', '', '', ''),
+    ('P9_DEL_FLAG', '', '', ''),
+    ('P9_JOB_NAME', '', '', ''),
 ]

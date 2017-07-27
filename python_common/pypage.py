@@ -767,6 +767,9 @@ class PypageExec(object):
             result = eval(code, self.env)
             # result = "吴"
             if result:
+                # print(type(result), result)
+                if isinstance(result, unicode):
+                    return str(result.encode('utf-8'))
                 return str(result)
             else:
                 # self.output will most likely be an empty string,

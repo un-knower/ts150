@@ -49,7 +49,8 @@ def build_hive_insert_sql(td, template_file):
                'ctbase_field_list':ctbase_field_list,
                'ctbase_change_field_list':ctbase_change_field_list,
                'filter_field_list':filter_field_list,
-               'partition_field':td.partition_field}
+               'partition_field':td.partition_field,
+               'pk_fields':td.pk_field}
 
     output_file = './hive_insert/%s' % os.path.split(pypage.pypage(template_file, var_map))[1]
 
@@ -145,7 +146,44 @@ def flow_table():
         #CCBS 明细流水
         # 'TODDC_SAACNTXN_A',
         # 'TODDC_SAETXETX_A',
-        'T0281_S11T1_BILL_DTL_A',
+        # 'T0281_S11T1_BILL_DTL_A',
+        # 线下批量交易流水表
+        # 'T0291_BTH_TXN_JNL_A',
+        # 线上批量交易流水表
+        # 'T0291_BTH_ONL_TXN_JNL_A',
+        'TODEC_LOGIN_TRAD_FLOW_A',
+
+        # #登录痕迹
+        'T1000_LOGIN_TRAD_FLOW_A',
+        # #签约痕迹
+        # 'T1000_SIGN_MAIN_FLOW_A',
+        # #帐户签约信息痕迹
+        # 'T1000_SIGN_PACCT_FLOW_A',
+        # #渠道签约信息痕迹
+        # 'T1000_SIGN_PCHANL_FLOW_A',
+        # #快捷支付签约流水
+        # 'T1000_FASTPAY_SIGN_FL0_A',
+        # #快捷支付签约信息表
+        # 'T1000_FASTPAY_SIGN_IN0_A',
+
+        # #交易痕迹
+        # 'T1000_TRAD_FLOW_A',
+        # #交易支付痕迹
+        'T1000_PAY_TRAD_FLOW_A',
+        # #快捷支付交易痕迹
+        'T1000_FASTPAY_TRAD_FL0_A',
+        # #超网交易痕迹
+        # 'T1000_TXN_TRAD_FLOW_A',
+        # #龙支付交易记录表
+        # 'T1000_LONGPAY_TRAD_FL0_A',
+
+        #对私活期存款合约明细
+        # 'T0182_TBSPTXN0_A',
+
+        #ERM 电子银行风险监控子系统
+        #挂起交易明细表
+        # 'TODEM_TBL_SUSPEND_DET0_A',
+
     ]
     sts = SlideTableStruct(table_list)
     # build_hive_create_sql(sts.TODDC_CRCRDCRD_H)
@@ -161,13 +199,20 @@ def flow_table():
 def slide_table():
     table_list = [
         #信用卡
-        'T0281_TBB1PLT0_H',
+        # 'T0281_TBB1PLT0_H',
+        #N-DPSP  对私存款
+        #对私活期存款合约
+        'T0182_TBSPACN0_H',
+        #个人网银常用收款账户
+        # 'TODEB_EBS_ACCRECORD_H',
+        'T0042_TBPC1510_H',
     ]
     sts = SlideTableStruct(table_list)
     # build_hive_create_sql(sts.TODDC_CRCRDCRD_H)
     for table_en, td in sts.exist_table_map.items():
         build_hive_create_sql(td, './template/CREATE_SLIDE_{{table_en}}.sql')
-        build_hive_insert_sql(td, './template/INSERT_SLIDE_{{table_en}}.sql')
+        build_hive_insert_sql(td, './template/INSERT_SLIDE_1_{{table_en}}.sql')
+        build_hive_insert_sql(td, './template/INSERT_SLIDE_2_{{table_en}}.sql')
         build_script(td, './template/EXPORT_GP_SLIDE_{{table_en}}.sh', './2_ready_data')
         build_script(td, './template/UPLOAD_{{table_en}}.sh', './2_ready_data')
         print 'table: %s finish' % table_en
@@ -278,8 +323,8 @@ def main():
     mkdir('./2_ready_data')
 
     # slide_table()
-    # flow_table()
-    middle_table()
+    flow_table()
+    # middle_table()
 
 
 if __name__ == '__main__':

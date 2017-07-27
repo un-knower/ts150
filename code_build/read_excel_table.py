@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#coding:gbk
+#coding:utf-8
 
 import sys, os, re, time
 import xlrd
@@ -10,17 +10,17 @@ import pypage
 
 
 def read_excel():
-    data = xlrd.open_workbook(r'..\violate\0_doc\SIAM_·Ç±¾ÈË½»Ò×_±í½á¹¹_201612.xlsx')
+    data = xlrd.open_workbook(r'..\violate\0_doc\SIAM_éæœ¬äººäº¤æ˜“_è¡¨ç»“æ„_201612.xlsx'.decode('utf-8').encode('gbk'))
     # for sheet in data.sheet_names():
     #     print sheet
     #     print sheet.decode('utf-8')
     # print data.sheet_names()
 
-    # table = data.sheet_by_name('°¸¼şËİÔ´Ô´±í')
+    # table = data.sheet_by_name('æ¡ˆä»¶æº¯æºæºè¡¨')
     table_sheet = data.sheet_by_index(4)
     field_sheet = data.sheet_by_index(5)
 
-    # »ñÈ¡ĞĞÊıºÍÁĞÊı
+    # è·å–è¡Œæ•°å’Œåˆ—æ•°
     nrows = table_sheet.nrows
     ncols = table_sheet.ncols
 
@@ -30,7 +30,7 @@ def read_excel():
 
 def read_table_name(table_sheet):
     table_map = {}
-    # Ñ­»·ĞĞ,µÃµ½Ë÷ÒıµÄÁĞ±í
+    # å¾ªç¯è¡Œ,å¾—åˆ°ç´¢å¼•çš„åˆ—è¡¨
     for rownum in range(1, table_sheet.nrows):
         # print table_sheet.row_values(rownum)
         table_en = table_sheet.cell(rownum,3).value
@@ -48,7 +48,7 @@ def read_table_name(table_sheet):
 
 def read_field_name(field_sheet):
     table_field_map = {}
-    # Ñ­»·ĞĞ,µÃµ½Ë÷ÒıµÄÁĞ±í
+    # å¾ªç¯è¡Œ,å¾—åˆ°ç´¢å¼•çš„åˆ—è¡¨
     for rownum in range(1, field_sheet.nrows):
         table_en = field_sheet.cell(rownum,1).value
         table_cn = field_sheet.cell(rownum,2).value
@@ -73,18 +73,24 @@ def read_field_name(field_sheet):
             table_field_map[table_en] = field_array
 
         if field_en == 'P9_START_DATE':
-            field_cn = u'P9¿ªÊ¼ÈÕÆÚ'
+            field_cn = 'P9å¼€å§‹æ—¥æœŸ'
 
         if field_en == 'P9_END_DATE':
-            field_cn = u'P9½áÊøÈÕÆÚ'
+            field_cn = 'P9ç»“æŸæ—¥æœŸ'
+
+        if field_en in ('P9_START_BATCH', 'P9_END_BATCH', 'P9_DEL_FLAG', 'P9_JOB_NAME'):
+            field_cn = ''
+
+        if not isinstance(field_cn, int):
+            # print field_cn
+            field_cn = field_cn.strip().replace('#', '')  #.encode('utf-8')
+        else:
+            field_cn = ''
 
         if field_cn == 'N/A':
-            field_cn = field_en
+            field_cn = ''
 
-        table_cn = table_cn.encode('utf-8')
-        field_cn = field_cn.replace('#', '').encode('utf-8')
-
-        #ÊıÖµÀàĞÍÊı¾İ£¬³¤¶È´ø,´¦Àí
+        #æ•°å€¼ç±»å‹æ•°æ®ï¼Œé•¿åº¦å¸¦,å¤„ç†
         length_array = field_length.split(',')
         if len(length_array) > 1:
             field_length = length_array[0]
@@ -96,7 +102,7 @@ def read_field_name(field_sheet):
     return table_field_map
 
 
-# ´ÓÎÄ¼ş»òGPÎŞÊı¾İ»ñÈ¡±í½á¹¹
+# ä»æ–‡ä»¶æˆ–GPæ— æ•°æ®è·å–è¡¨ç»“æ„
 def write_table_to_file(table_en, table_cn, field_array):
     template_file = './template/excel_{{table_en}}.py'
     var_map = {'table_en':table_en, 'table_cn':table_cn, 'field_array':field_array}
@@ -105,7 +111,7 @@ def write_table_to_file(table_en, table_cn, field_array):
     mkdir(path)
     output_file = '%s/%s' % (path, os.path.split(pypage.pypage(template_file, var_map))[1])
 
-    # Éú³É±í×Ö¶ÎÃèÊöPython´úÂë
+    # ç”Ÿæˆè¡¨å­—æ®µæè¿°Pythonä»£ç 
     pypage.pypage_from_file(template_file, var_map, output_file)
 
 
@@ -121,7 +127,7 @@ def main():
 
 
     table_list = [
-        #¶ÔË½¿Í»§ĞÅÏ¢
+        #å¯¹ç§å®¢æˆ·ä¿¡æ¯
         'T0042_TBPC1010_H', 'T0042_TBPC9030_H', 'T0042_TBPC1510_H',
         #ECTIP
         'TODEC_TRAD_FLOW_A', 'TODEC_QUERY_TRAD_FLOW_A', 'TODEC_LOGIN_TRAD_FLOW_A',
@@ -129,15 +135,15 @@ def main():
         'TODDC_CRATMATM_SH', 'TODDC_CRATMDET_A',
         #CCBS POS
         'TODDC_CRPOSPOS_H', 'TODDC_CRDETDET_A',
-        #CCBS Ö÷µµ
+        #CCBS ä¸»æ¡£
         'TODDC_CRCRDCRD_H', 'TODDC_SAACNACN_H',
-        #CCBS Ã÷Ï¸Á÷Ë®
+        #CCBS æ˜ç»†æµæ°´
         'TODDC_SAACNTXN_A', 'TODDC_SAETXETX_A',
-        #CCBS ¹ñÔ±
+        #CCBS æŸœå‘˜
         'TODDC_FCMTLR0_H',
-        #»ú¹¹±í¡¢»ú¹¹¹ØÏµ¡¢Ô±¹¤
+        #æœºæ„è¡¨ã€æœºæ„å…³ç³»ã€å‘˜å·¥
         'T0651_CCBINS_INF_H', 'T0651_CCBINS_REL_H', 'T0861_EMPE_H',
-        #ĞÅÓÃ¿¨
+        #ä¿¡ç”¨å¡
         'T0281_TBB1PLT0_H', 'T0281_S11T1_BILL_DTL_A'
     ]
 

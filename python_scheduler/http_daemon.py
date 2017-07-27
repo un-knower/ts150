@@ -3,14 +3,14 @@
 
 #python模拟linux的守护进程
 
-import sys, os, time, atexit, string
+import sys, os, time, atexit
 import signal
 from var import *
 import dbService
 sys.path.append("../python_common/")
 from common_fun import *
 
-pidfile = '%s/log/%s_%s_%s.pid' % (run_path, hostname, username, 'http')
+pidfile = '%s/log/daemon/%s_%s_%s.pid' % (run_path, hostname, username, 'http')
 
 
 class Daemon:
@@ -136,10 +136,11 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGQUIT, sig_handler)
 
-    log_path = '%s/log' % run_path
+    log_path = '%s/log/daemon' % run_path
     mkdir(log_path)
 
-    daemon = Daemon(pidfile, stdout='%s/http.log' % log_path, stderr='%s/http.log' % log_path)
+    daemon = Daemon(pidfile, stdout='%s/%s_%s_http_stdout.log' % (log_path, hostname, username),
+                             stderr='%s/%s_%s_http_stderr.log' % (log_path, hostname, username))
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
             daemon.start()

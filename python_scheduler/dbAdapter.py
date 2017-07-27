@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 #coding:utf8
 
-import os, sys, re
-import base64
+import sys
 import httplib, urllib
 from var import *
 from dbHelper import *
@@ -38,9 +37,11 @@ class DbAdapter:
 
     # 查询
     def select(self, sql):
+        row_array = []
         if self.remote_mode:
             ret = httpClient('select', sql)
-            row_array = eval(ret)
+            if ret and ret <> '':
+                row_array = eval(ret)
         else:
             row_array = self.dbHelper.query_sql(sql)
 
@@ -102,7 +103,9 @@ def httpClient(operate, sql):
 
 def main():
     db = DbAdapter(remote_mode=True)
+    db.select('select * from work_config limit 1')
     print 'Test Success'
+
 
 if __name__ == '__main__':
     main()

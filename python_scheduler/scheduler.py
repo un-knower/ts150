@@ -3,6 +3,7 @@
 
 import sys,os
 from var import *
+from baseFun import *
 import dbScheduler
 import check
 sys.path.append("../python_common/")
@@ -13,30 +14,13 @@ import log
 # 调度类
 class Scheduler:
     """调度类"""
-    def __init__(self, options=None, scriptName=None, db=None):
-        self.options = options
-        self.scriptName = scriptName
+    def __init__(self):
+        self.db = dbScheduler.DbScheduler(remote_mode=remote_mode)
 
-        self.db = db if db else dbScheduler.DbScheduler(remote_mode=False)
-
-        self.depend_key_list = ('IN_CUR_HIVE', 'IN_PRE_HIVE', 'IN_CUR_HDFS', 'IN_CUR_GP', 'IN_PRE_GP', 'IN_CUR_LOCAL',
+        self.depend_key_list = ('IN_CUR_HIVE', 'IN_PRE_HIVE', 'IN_CUR_HDFS',
+                                'IN_CUR_GP', 'IN_PRE_GP', 'IN_CUR_LOCAL',
                                 'IN_ALL_HIVE',
                                 'OUT_CUR_HIVE', 'OUT_CUR_GP', 'OUT_CUR_LOCAL')
-
-
-        if options and options.username:
-            tmp_array = options.username.split('.')
-            if len(tmp_array) == 2:
-                self.hostname = tmp_array[0]
-                self.username = tmp_array[1]
-            else:
-                tmp_array = options.username.split('@')
-                assert len(tmp_array) == 2
-                self.hostname = tmp_array[1]
-                self.username = tmp_array[0]
-        else:
-            self.hostname = hostname
-            self.username = username
 
 
     # 插入脚本依赖项到实体表
@@ -68,17 +52,17 @@ class Scheduler:
 
 
     # 获取脚本依赖项
-    def get_script_depend(self, scriptName=None):
-        if not scriptName:
-            scriptName = self.scriptName
+    def get_script_depend(self, script):
         kv_array = []
-        script_type = get_script_type(scriptName)
+        script_type = get_script_type(script)
         if script_type == '.sh':
-            kv_array = getRemarkKV(scriptName, None)
+            kv_array = getRemarkKV(script, '#')
+            kv_array2 = getRemarkKV(script, None)
+            kv_array.extend(kv_array2)
         elif script_type in ('.py', '.pl'):
-            kv_array = getRemarkKV(scriptName, '#')
+            kv_array = getRemarkKV(script, '#')
         elif script_type in ('.sql', '.gpsql'):
-            kv_array = getRemarkKV(scriptName, '--')
+            kv_array = getRemarkKV(script, '--')
         else:
             pass
 
@@ -109,9 +93,9 @@ class Scheduler:
 
 
     # 判断脚本依赖项是否准备好
-    def check_script_depend(self, scriptName, data_date, io='in', viaTable=False):
+    def check_script_depend(self, script, data_date, io='in', viaTable=False):
         # 判断脚本输入依赖
-        depend_array = self.get_script_depend(scriptName)
+        depend_array = self.get_script_depend(script)
         for key, entity in depend_array:
             # 不符合条件的，不检查
             depend_condition_array = key.split('_')
@@ -141,20 +125,20 @@ class Scheduler:
             # print viaTable
             if viaTable:
                 # 通过entity表检查
-                valid_success = self.check_entity_via_table(depend_type, entity, check_date, logFile=scriptName)
+                valid_success = self.check_entity_via_table(depend_type, entity, check_date, logFile=script)
                 if not valid_success:
-                    valid_success = self.check_entity(depend_type, entity, check_date, logFile=scriptName)
+                    valid_success = self.check_entity(depend_type, entity, check_date, logFile=script)
             else:
                 # 通过实体检查
-                valid_success = self.check_entity(depend_type, entity, check_date, logFile=scriptName)
+                valid_success = self.check_entity(depend_type, entity, check_date, logFile=script)
 
             # 检查实体不存在，返回False
             if not valid_success:
                 log.info('脚本:[%s]对应的实体[%s]:[%s][%s]在日期:[%s]的未完成' % (
-                    scriptName, io, key, entity, check_date), scriptName)
+                    script, io, key, entity, check_date), script)
                 return valid_success
 
-        log.info('脚本:[%s]对应的实体[%s]在日期:[%s]的已完成, 通过' % (scriptName, io, data_date), scriptName)
+        log.info('脚本:[%s]对应的实体[%s]在日期:[%s]的已完成, 通过' % (script, io, data_date), script)
 
         return True
 
@@ -166,10 +150,10 @@ class Scheduler:
 
         # 不检查应用的第一天的 PRE 数据
         if check_date < app_start_date:
-            self.db.update_entity(depend_type, entity, check_date, 'exist', os.getpid())
+            self.db.save_entity(depend_type, entity, check_date, 'exist', os.getpid())
             return True
 
-        self.db.update_entity(depend_type, entity, check_date, 'processing', os.getpid())
+        self.db.save_entity(depend_type, entity, check_date, 'processing', os.getpid())
 
         valid_success = False
         if 'HDFS' == depend_type:
@@ -184,7 +168,7 @@ class Scheduler:
         elif 'LOCAL' == depend_type:
             valid_success = check.valid_local_file(entity, check_date, logFile=logFile)
 
-        self.db.update_entity(depend_type, entity, check_date, 'exist' if valid_success else 'not exist', os.getpid())
+        self.db.save_entity(depend_type, entity, check_date, 'exist' if valid_success else 'not exist', os.getpid())
 
         # 检查实体不存在，返回False
         if not valid_success:
@@ -198,29 +182,47 @@ class Scheduler:
         where = "where flag='%s' and entity='%s' and data_date='%s'" % \
                 (flag, entity, data_date)
 
-        row_map = self.db.query_entity(where=where)
-        if len(row_map) < 1:
-            log.error('entity表找不到应对实体记录：[%s][%s][%s]' % (flag, entity, data_date), logFile)
+        row_array = self.db.query_entity(where=where)
+        if len(row_array) < 1:
+            log.info('entity表找不到应对实体记录：[%s][%s][%s]' % (flag, entity, data_date), logFile)
             return False
 
-        row = row_map.values()[0]
+        row = row_array[0]
 
         return True if 'exist' == row['status'] else False
 
 
-    def run_shell(self, row, data_date):
-        options = row['options']
-        scriptName = options['script']
+    # 运行作业脚本
+    def run(self, row, data_date):
+        # 脚本类型
+        script_type = get_script_type(row['script'])
+        if script_type == '.sh':
+            over_status = self.run_shell(row, data_date)
+        elif script_type == '.py':
+            over_status = self.run_python(row, data_date)
+        elif script_type == '.sql':
+            over_status = self.run_hive_sql(row, data_date)
+        elif script_type == '.gpsql':
+            over_status = self.run_gp_sql(row, data_date)
+        else:
+            raise CommonError(msg='脚本类型有误:[%s]' % row['script'])
 
+        return over_status
+
+
+    def run_shell(self, row, data_date):
+        script = row['base_script']
+
+        chmod(row['script'], 0777)
         # 运行脚本
         cmd = '%s -d %s' % (row['script'], data_date)
-        log.info(cmd, scriptName)
+        log.info(cmd, script)
 
-        (returncode, out_lines, err_lines) = execute_command(cmd, logFile=scriptName)
+        (returncode, out_lines, err_lines) = execute_command(cmd, logFile=script)
 
-        log.info(returncode, scriptName)
+        log.info(returncode, script)
         # for line in out_lines:
-        #     log.info(line, scriptName)
+        #     log.info(line, script)
 
         # 判断脚本输出
         if returncode == 0:
@@ -280,18 +282,6 @@ class Scheduler:
 
     def run_python(self, row, data_date):
         pass
-
-    # 加入新的作业配置与实体依赖
-    def add_work_config(self):
-        print self.db.insert_work_config(self.scriptName, self.options, self.options.start_date,
-                                         self.options.end_date, self.options.priority, self.hostname, self.username)
-        self.insert_depend_entity(self.scriptName, self.options.start_date, self.options.end_date)
-
-
-    # 加入定时作业配置
-    def add_crontab_config(self):
-        sched.db.save_crontab_config(crontab=self.options.crontab, script=self.scriptName,
-                                     options=self.options, hostname=self.hostname, username=self.username)
 
 
 def main():

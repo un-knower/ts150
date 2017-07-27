@@ -2,7 +2,6 @@
 #coding:utf8
 
 import sys,os
-import base64
 import dbAdapter
 sys.path.append("../python_common/")
 import log
@@ -98,7 +97,7 @@ class DbScheduler:
     # 作业配置表更新
     def update_work_config(self, id, end_date=None,
                            force=None, over_notice=None, error_notice=None,
-                           over_date=None, status=None, pid=0,
+                           over_date=None, status=None, pid=None,
                            process_date=None, next_action=None):
         where = 'where id=%d' % id
         update_field_array = ["ts=datetime('now', 'localtime')", ]
@@ -108,7 +107,7 @@ class DbScheduler:
             update_field_array.append("end_date='%s'" % end_date)
         if status:
             update_field_array.append("status='%s'" % status)
-        if pid > 0:
+        if pid != None:
             update_field_array.append("pid=%d" % pid)
         if process_date:
             update_field_array.append("process_date='%s'" % process_date)
@@ -135,29 +134,30 @@ class DbScheduler:
         return self.db.delete(sql)
 
 
-    # 任务表插入
-
-    # 任务表查询
-
-
     # 定时作业配置表查询
     def query_crontab_config(self, id=0, where=''):
         if id > 0:
             where = 'where id=%d' % id
         sql = "select * from crontab_config %s" % where
 
-        return self.db.select(sql)
+        row_array = self.db.select(sql)
+
+        for row in row_array:
+            row['base_script'] = os.path.basename(row['script'])
+
+        return row_array
 
 
     # 定时作业配置表保存
-    def save_crontab_config(self, id=0, crontab=None, script=None, options=None, status=None, pid=0, hostname=None, username=None):
+    def save_crontab_config(self, id=0, crontab=None, script=None, status=None,
+                            pid=None, hostname=None, username=None, next_action=None,
+                            error_notice=None):
         where = "where crontab='%s' and script='%s'" % (crontab, script)
-        row_map = self.query_crontab_config(id, where)
+        row_array = self.query_crontab_config(id, where)
 
-        if len(row_map) == 0:
-            options_base64 = base64.b64encode(str(options))
-            sql = "insert into crontab_config(crontab, script, options, hostname, username) values('%s', '%s', '%s', '%s', '%s');" % \
-                  (crontab, script, options_base64, hostname, username)
+        if len(row_array) == 0:
+            sql = "insert into crontab_config(crontab, script, hostname, username, error_notice) values('%s', '%s', '%s', '%s', %d)" % \
+                  (crontab, script, hostname, username, error_notice)
             # print sql
             return self.db.insert(sql)
         else:
@@ -168,21 +168,31 @@ class DbScheduler:
                 update_field_array.append("crontab='%s'" % crontab)
             if script:
                 update_field_array.append("script='%s'" % script)
-            if options:
-                options_base64 = base64.b64encode(str(options))
-                update_field_array.append("options='%s'" % options_base64)
             if status:
                 update_field_array.append("status='%s'" % status)
-            if pid > 0:
+            if pid != None:
                 update_field_array.append("pid=%d" % pid)
             if hostname:
                 update_field_array.append("hostname='%s'" % hostname)
             if username:
                 update_field_array.append("username='%s'" % username)
+            if next_action:
+                update_field_array.append("next_action='%s'" % next_action)
+            if error_notice:
+                update_field_array.append("error_notice='%s'" % error_notice)
 
             sql = "update crontab_config set %s %s" % (', '.join(update_field_array), where)
 
-            return self.db.execute(sql)
+            return self.db.update(sql)
+
+
+    # 作业配置表删除
+    def delete_crontab_config(self, id=0, where=''):
+        if id > 0:
+            where = 'where id=%d' % id
+        sql = "delete from crontab %s" % where
+
+        return self.db.delete(sql)
 
 
 def main():

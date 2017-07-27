@@ -82,7 +82,7 @@ def timeCalc(ts_str, ret_type='second'):
         return deltaSecond / 3600
 
 
-def getDateList(start_date, end_date):
+def getDateList(start_date, end_date, step=1):
     ''' 返回两个日期间每一天的列表 '''
     if not dateValid(start_date):
         return None
@@ -102,7 +102,7 @@ def getDateList(start_date, end_date):
     data_date = min_date
     while data_date <= max_date:
         ret_list.append(data_date)
-        data_date = dateCalc(data_date, 1)
+        data_date = dateCalc(data_date, step)
 
     return ret_list
 
@@ -314,7 +314,57 @@ def isset(v):
         return True
 
 
+def is_chinese(uchar):
+    """判断一个unicode是否是汉字"""
+    value = ord(uchar)
+
+    # 汉字
+    if value >= 0x4e00 and value <= 0x9fa5:
+        return True
+    else:
+        # 全角空格
+        if value == 0x3000:
+            return True
+
+        # 除了空格其他的全角半角的公式为:半角=全角-0xfee0
+        if value > 0x0020 + 0xfee0 and value < 0x7e + 0xfee0:
+            return True
+
+        return False
+
+
+# 返回中英文混合字符串显示长度
+def char_length(in_str, coding='utf8'):
+    if isinstance(in_str, unicode):
+        string = in_str
+    else:
+        string = in_str.decode(coding)
+
+    length = 0
+    for c in string:
+        if is_chinese(c):
+            length += 2
+        else:
+            length += 1
+
+    return length
+
+
+# 中英文混合字符串按长度补空格
+def char_ljust(in_str, display_length, coding='utf8'):
+    length = char_length(in_str, coding)
+
+    return in_str + ''.ljust(display_length - length)
+
+
 def main():
+    print char_length(u'Hello你好，Fine')
+    print char_length('Hello你好，Fine')
+
+    # print type('Hello你好，Fine')
+    # print type('Hello你好，Fine'.decode('utf-8').encode('gbk'))
+    # print type(u'Hello你好，Fine')
+    print char_length(u'H你好，'.encode('gbk'), 'gbk')
     # returncode, out_lines = execute_command('dir')
     # for line in out_lines:
     #     print line
@@ -344,12 +394,12 @@ def main():
     # print timeCalc('2017-05-26', 'week')
     # print timeCalc('2017-05-26', 'month')
     # print timeCalc('2017-05-26 14:01:01', 'day')
-    print get_ip()
+    # print get_ip()
 
 
 if __name__ == '__main__':
-    main()
+    # main()
     # print '们吴'
     # raise CommonError(msg='命令出错:%s\n%s' % ('hello', '\n'.join(['们', 'hello'])))
-    # for data_date in getDateList('20170131', '20170131'):
-    #     print data_date
+    for data_date in getDateList('20170204', '20170215', 7):
+        print data_date

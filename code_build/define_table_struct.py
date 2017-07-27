@@ -17,13 +17,13 @@ def define_change_field(field_array):
 
         #风险监控字段需要拆分成三个字段
         if field_en == 'MON_INF':
-            change_field_array.append(('TERM_QRY', u'登录设备查询', 'VARCHAR(48)', '48', 'N', 'N', 'Y', 'IDX_TERM_QRY', 'reverse(TERM_QRY,2)', '0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z', 'y'))
-            change_field_array.append(('TERM_BIOS', u'PC机BIOS序列号', 'VARCHAR(9)', '9', 'N', 'N', 'Y', '', '', '', 'y'))
-            change_field_array.append(('TERM_IMEI', u'手机标识', 'VARCHAR(48)', '48', 'N', 'N', 'Y', '', '', '', 'y'))
-            change_field_array.append(('TERM_MAC', u'网卡Mac地址', 'VARCHAR(40)', '40', 'N', 'N', 'Y', '', '', '', 'y'))
+            change_field_array.append(('TERM_QRY', '登录设备查询', 'VARCHAR(48)', '48', 'N', 'N', 'Y', 'IDX_TERM_QRY', 'reverse(TERM_QRY,2)', '0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z', 'y'))
+            change_field_array.append(('TERM_BIOS', 'PC机BIOS序列号', 'VARCHAR(9)', '9', 'N', 'N', 'Y', '', '', '', 'y'))
+            change_field_array.append(('TERM_IMEI', '手机标识', 'VARCHAR(48)', '48', 'N', 'N', 'Y', '', '', '', 'y'))
+            change_field_array.append(('TERM_MAC', '网卡Mac地址', 'VARCHAR(40)', '40', 'N', 'N', 'Y', '', '', '', 'y'))
         elif field_en == 'TERM_INF':
-            change_field_array.append(('MOBILE', u'手机号', 'VARCHAR(16)', '16', 'N', 'N', 'Y', 'IDX_MOBILE', 'reverse(MOBILE,2)', '0,1,2,3,4,5,6,7,8,9', 'y'))
-            change_field_array.append(('IP', u'IP地址', 'VARCHAR(32)', '32', 'N', 'N', 'Y', 'IDX_IP', 'reverse(IP,2)', '0,1,2,3,4,5,6,7,8,9', 'y'))
+            change_field_array.append(('MOBILE', '手机号', 'VARCHAR(16)', '16', 'N', 'N', 'Y', 'IDX_MOBILE', 'reverse(MOBILE,2)', '0,1,2,3,4,5,6,7,8,9', 'y'))
+            change_field_array.append(('IP', 'IP地址', 'VARCHAR(32)', '32', 'N', 'N', 'Y', 'IDX_IP', 'reverse(IP,2)', '0,1,2,3,4,5,6,7,8,9', 'y'))
         else:
             if field_en not in ('P9_START_BATCH', 'P9_END_BATCH', 'P9_DEL_FLAG', 'P9_JOB_NAME', 'P9_BATCH_NUMBER', 'P9_DEL_DATE', 'P9_DEL_BATCH', 'P9_SPLIT_BRANCH_CD'):
                 change_field_array.append(field)
@@ -36,6 +36,7 @@ def define_sor_field(change_field_array):
     sor_field_array = []
     partition_field = ""
 
+    pk_field_list = []
     for field in change_field_array:
         (field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split, field_filter) = field
 
@@ -43,36 +44,34 @@ def define_sor_field(change_field_array):
         if field_is_dk == "Y":
             partition_field = field_en
 
+        if field_en in ('P9_DATA_DATE', 'P9_END_DATE'):
+            partition_field = field_en
+
         if field_is_pk == "Y":
-            pk_field = field_en
+            pk_field_list.append(field_en)
 
         # else:
         sor_field_array.append(field)
 
-    return (sor_field_array, partition_field, pk_field)
+    return (sor_field_array, partition_field, ', '.join(pk_field_list))
 
 
 #定义目标贴源表对应的列
 def define_ctbase_field(change_field_array):
     ctbase_field_array = []
-    partition_field = ""
 
     for field in change_field_array:
         (field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split, field_filter) = field
 
-        if field_to_ctbase == 'Y':
+        if field_to_ctbase != '':
             ctbase_field_array.append(field)
 
-            if field_is_dk == "Y":
-                partition_field = field_en
-
-    return (ctbase_field_array, partition_field)
+    return ctbase_field_array
 
 
 #定义目标贴源表对应的列
 def define_filter_field(change_field_array):
     field_array = []
-    partition_field = ""
 
     for field in change_field_array:
         (field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split, field_filter) = field
@@ -80,10 +79,7 @@ def define_filter_field(change_field_array):
         if field_filter != '':
             field_array.append(field)
 
-        if field_is_dk == "Y":
-            partition_field = field_en
-
-    return (field_array, partition_field)
+    return field_array
 
 
 class TableDefine():
@@ -93,11 +89,9 @@ class TableDefine():
         self.table_cn = table_cn
         self.field_array = field_array
         self.change_field_array = define_change_field(self.field_array)
-        self.sor_field_array, partition_field, self.pk_field = define_sor_field(self.change_field_array)
-        self.ctbase_field_array, partition_field = define_ctbase_field(self.change_field_array)
-        # self.partition_field = partition_field
-        self.filter_field_array, partition_field = define_filter_field(self.change_field_array)
-        self.partition_field = partition_field
+        self.sor_field_array, self.partition_field, self.pk_field = define_sor_field(self.change_field_array)
+        self.ctbase_field_array = define_ctbase_field(self.change_field_array)
+        self.filter_field_array = define_filter_field(self.change_field_array)
 
 
 class SlideTableStruct():

@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 #coding:utf8
 
-import os, sys, re
-import sqlite3
-import base64
+import sys
 from dbHelper import *
 from var import *
+from bottle import route, run, request
 sys.path.append("../python_common/")
 import log
 from common_fun import *
-from bottle import route, run, route, request, response
 
 
 dbHelper = DbHelper()

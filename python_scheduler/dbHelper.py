@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 #coding:utf8
 
-import os, sys, re
+import os, sys
 import sqlite3
-import base64
 from var import *
-from dbFun import *
+from baseFun import *
 sys.path.append("../python_common/")
 import log
 from common_fun import *
@@ -79,6 +78,7 @@ class DbHelper:
 
 def main():
     db = DbHelper()
+    db.query_sql('select * from work_config limit 1')
 
 
 if __name__ == '__main__':

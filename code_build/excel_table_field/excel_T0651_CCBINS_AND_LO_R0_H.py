@@ -32,9 +32,9 @@ field_array = [
     ('MLBX_NO', '信箱号', '', ''),
     ('LAST_UDT_DT_TM', '最后更新日期时间', '', ''),
     ('P9_START_DATE', 'P9开始日期', '', ''),
-    ('P9_START_BATCH', 'P9_START_BATCH', '', ''),
+    ('P9_START_BATCH', '', '', ''),
     ('P9_END_DATE', 'P9结束日期', '', ''),
-    ('P9_END_BATCH', 'P9_END_BATCH', '', ''),
-    ('P9_DEL_FLAG', 'P9_DEL_FLAG', '', ''),
-    ('P9_JOB_NAME', 'P9_JOB_NAME', '', ''),
+    ('P9_END_BATCH', '', '', ''),
+    ('P9_DEL_FLAG', '', '', ''),
+    ('P9_JOB_NAME', '', '', ''),
 ]

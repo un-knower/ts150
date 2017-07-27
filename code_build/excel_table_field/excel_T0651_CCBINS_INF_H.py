@@ -120,9 +120,9 @@ field_array = [
     ('SFDPBX_BO_IND', '', '', ''),
     ('IDVEXSTL_BO_IND', '', '', ''),
     ('P9_START_DATE', 'P9开始日期', 'Y', ''),
-    ('P9_START_BATCH', 'P9_START_BATCH', '', ''),
+    ('P9_START_BATCH', '', '', ''),
     ('P9_END_DATE', 'P9结束日期', 'Y', ''),
-    ('P9_END_BATCH', 'P9_END_BATCH', '', ''),
-    ('P9_DEL_FLAG', 'P9_DEL_FLAG', '', ''),
-    ('P9_JOB_NAME', 'P9_JOB_NAME', '', ''),
+    ('P9_END_BATCH', '', '', ''),
+    ('P9_DEL_FLAG', '', '', ''),
+    ('P9_JOB_NAME', '', '', ''),
 ]

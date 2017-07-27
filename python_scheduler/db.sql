@@ -88,9 +88,27 @@ create table crontab_config(
    ts datetime default (datetime('now', 'localtime')),
    crontab varchar(255) not null,
    script varchar(255) not null,
-   options varchar(255) not null,
    status varchar(16) default(''),     -- 完成情况
+   next_action varchar(16) default(''),
    pid INTEGER default 0,         -- 处理进程ID
    hostname varchar(64) default(''),
-   username varchar(64) default('')
+   username varchar(64) default(''),
+   error_notice INTEGER default 0     -- 出错通知
+);
+
+-- 守护进程情况
+drop table if exists daemon_running;
+
+create table daemon_running(
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+   ts datetime default (datetime('now', 'localtime')),
+   hostname varchar(64),
+   username varchar(64),
+   pid INTEGER default 0,         -- 处理进程ID
+   daemon varchar(64) not null,
+   process_name varchar(255),
+   ppid INTEGER default 0,        -- Daemon进程ID
+   start_time datetime,  -- 启动时间
+   status varchar(16) default(''), -- 状态
+   renew_time datetime             -- 刷新时间
 );

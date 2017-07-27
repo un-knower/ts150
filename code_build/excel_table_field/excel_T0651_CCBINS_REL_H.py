@@ -19,9 +19,9 @@ field_array = [
     ('REL_SCN_DSC', '关系场景描述', 'Y', ''),
     ('LAST_UDT_DT_TM', '最后更新日期时间', 'Y', ''),
     ('P9_START_DATE', 'P9开始日期', 'Y', ''),
-    ('P9_START_BATCH', 'P9_START_BATCH', '', ''),
+    ('P9_START_BATCH', '', '', ''),
     ('P9_END_DATE', 'P9结束日期', 'Y', ''),
-    ('P9_END_BATCH', 'P9_END_BATCH', '', ''),
-    ('P9_DEL_FLAG', 'P9_DEL_FLAG', '', ''),
-    ('P9_JOB_NAME', 'P9_JOB_NAME', '', ''),
+    ('P9_END_BATCH', '', '', ''),
+    ('P9_DEL_FLAG', '', '', ''),
+    ('P9_JOB_NAME', '', '', ''),
 ]
