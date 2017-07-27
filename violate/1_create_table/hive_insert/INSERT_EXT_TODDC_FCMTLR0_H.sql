@@ -1,11 +1,11 @@
 use sor;
 
-# Hive贴源数据处理
-# 柜员文件: TODDC_FCMTLR0_H
+-- Hive贴源数据处理
+-- 柜员文件: TODDC_FCMTLR0_H
 
 -- 指定新数据日期分区位置
 ALTER TABLE EXT_TODDC_FCMTLR0_H DROP IF EXISTS PARTITION(LOAD_DATE='${log_date}');
-ALTER TABLE EXT_TODDC_FCMTLR0_H ADD PARTITION (LOAD_DATE='${log_date}') LOCATION 'hdfs://hacluster/bigdata/input/case_trace/TODDC_FCMTLR0_H/${log_date}/';
+ALTER TABLE EXT_TODDC_FCMTLR0_H ADD PARTITION (LOAD_DATE='${log_date}') LOCATION 'hdfs://hacluster/bigdata/input/TS150/case_trace/TODDC_FCMTLR0_H/${log_date}/';
 
 -- 备份贴源数据到ORC内部表
 INSERT OVERWRITE TABLE INN_TODDC_FCMTLR0_H PARTITION(LOAD_DATE='${log_date}')

@@ -1,0 +1,28 @@
+#field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split, field_filter
+table_cn = '重要非帐务性流水'
+field_array = [
+    ('CM_ARL_LOG_NO', '重要非帐务流水序号', 'Y', ''),
+    ('CMARL_DB_TIMESTAMP', '时间戳', 'Y', ''),
+    ('CM_TX_ID', '交易码', 'Y', ''),
+    ('TERMINAL_ID', '终端号', 'Y', ''),
+    ('CM_LCL_OR_RSN', '备注1', 'Y', ''),
+    ('CM_HST_OR_RSN', '备注2', 'Y', ''),
+    ('CM_SPV_A', '授权A级柜员号', 'Y', ''),
+    ('CM_SPV_B', '授权B级柜员号', 'Y', ''),
+    ('CM_TELLER_ID', '操作柜员号', 'Y', ''),
+    ('CM_VERIFY_TELLER', '复核柜员号', 'Y', ''),
+    ('CM_ANACT_SQ_IM_NO_FLAG', '重要非账务性流水标志', 'Y', ''),
+    ('CM_TX_DT', '交易日期', 'Y', ''),
+    ('CM_TX_TM_R', '交易时间', 'Y', ''),
+    ('CM_FRT_OPR_NO', '前端操作码', 'Y', ''),
+    ('CM_ACCT_NO', '帐号', 'Y', ''),
+    ('CM_APLY_DATA_DSCRP_ARL', '交易自定义字段', 'Y', ''),
+    ('FILLER', 'FILLER', 'Y', ''),
+    ('P9_SPLIT_BRANCH_CD', '按机构拆分字段', '', ''),
+    ('P9_DATA_DATE', 'P9数据日期', 'Y', ''),
+    ('P9_BATCH_NUMBER', 'P9批次号', '', ''),
+    ('P9_DEL_FLAG', '', '', ''),
+    ('P9_DEL_DATE', 'P9删除日期', '', ''),
+    ('P9_DEL_BATCH', 'P9删除批次号', '', ''),
+    ('P9_JOB_NAME', '', '', ''),
+]

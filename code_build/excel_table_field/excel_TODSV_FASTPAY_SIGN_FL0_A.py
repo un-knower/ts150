@@ -1,0 +1,26 @@
+#field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split, field_filter
+table_cn = '快捷支付签约流水'
+field_array = [
+    ('PLAT_FLOW_NO', '电子渠道平台流水号', '', ''),
+    ('MRCH_ID', '商户编号', '', ''),
+    ('ACCNO', '账号', '', ''),
+    ('ACC_STCD', '账户状态代码', '', ''),
+    ('SIGN_INSID', '签约机构编号', '', ''),
+    ('CRDT_TPCD', '证件类型代码', '', ''),
+    ('CRDT_NO', '证件号码', '', ''),
+    ('CST_NM', '客户名称', '', ''),
+    ('MBLPH_NO', '手机号码', '', ''),
+    ('ACC_TPCD', '账户类型代码', '', ''),
+    ('TXN_DT', '交易日期', '', ''),
+    ('TXN_TM', '交易时间', '', ''),
+    ('RTRN_CODE', '返回码', '', ''),
+    ('RET_INF', '返回信息', '', ''),
+    ('TRN_ST_CD', '交易状态', '', ''),
+    ('RSRV_1', '备用一', '', ''),
+    ('P9_DATA_DATE', 'P9数据日期', '', ''),
+    ('P9_BATCH_NUMBER', 'P9批次号', '', ''),
+    ('P9_DEL_FLAG', '', '', ''),
+    ('P9_DEL_DATE', 'P9删除日期', '', ''),
+    ('P9_DEL_BATCH', 'P9删除批次号', '', ''),
+    ('P9_JOB_NAME', '', '', ''),
+]

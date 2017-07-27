@@ -4,6 +4,8 @@
 import sys, os, re, time
 from read_data_struct import *
 
+script_path = "/home/ap/dip/appjob/shelljob/TS150/violate"
+
 
 #生成从外部临时表插入贴源表的SQL脚本文件
 def build_hive_entity_insert_sql(td):
@@ -16,12 +18,12 @@ def build_hive_entity_insert_sql(td):
 
     sql = u'''use sor;
 
-# Hive贴源数据处理
-# %(cn)s: %(en)s
+-- Hive贴源数据处理
+-- %(cn)s: %(en)s
 
 -- 指定新数据日期分区位置
 ALTER TABLE EXT_%(en)s DROP IF EXISTS PARTITION(LOAD_DATE='${log_date}');
-ALTER TABLE EXT_%(en)s ADD PARTITION (LOAD_DATE='${log_date}') LOCATION 'hdfs://hacluster/bigdata/input/case_trace/%(en)s/${log_date}/';
+ALTER TABLE EXT_%(en)s ADD PARTITION (LOAD_DATE='${log_date}') LOCATION 'hdfs://hacluster/bigdata/input/TS150/case_trace/%(en)s/${log_date}/';
 
 -- 备份贴源数据到ORC内部表
 INSERT OVERWRITE TABLE INN_%(en)s PARTITION(LOAD_DATE='${log_date}')
@@ -42,7 +44,7 @@ SELECT
 ######################################################
 
 #引用基础Shell函数库
-source /home/ap/dip_ts150/ts150_script/base.sh
+source %(path)s/base.sh
 
 #登录Hadoop
 hadoop_login
@@ -59,9 +61,16 @@ OUT_CUR_HIVE=INN_%(en)s
 
 run()
 {
-   beeline -f ./hive_insert/INSERT_EXT_%(en)s.sql --hivevar log_date=${log_date}
+   beeline -f $script_path/1_create_table/hive_insert/INSERT_EXT_%(en)s.sql --hivevar log_date=${log_date}
+   # ret=$?
+
+   # 插入成功则删除HDFS源文件
+   # if [ $ret -eq 0 ]; then
+   #    hadoop fs -rm -r -f -skipTrash /bigdata/input/TS150/case_trace/%(en)s
+   # fi
+   return $?
 }
-''' % {'en':td.table_en, 'cn':td.table_cn, 'sql':sql}
+''' % {'en':td.table_en, 'cn':td.table_cn, 'sql':sql, 'path':script_path}
 
     f = open(r'./hive_insert/INSERT_EXT_%s.sh' % td.table_en, 'w')
     f.write(shell.encode('utf-8'))
@@ -79,45 +88,46 @@ def build_hive_entity_history_insert_sql(td):
     # 生成 实体拉链表字段
     main_fields = []
     pk_fields = []
-    i = 1
-    sub_fields = []
+    i = 0
     for field in td.ctbase_field_array:
         (field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split) = field
         if field_en not in ('P9_START_DATE', 'P9_END_DATE'):
-            if i % 9 == 0:
+            # 每行4个字段
+            if i % 4 == 0:
                 sub_fields = []
                 main_fields.append(sub_fields)
             sub_fields.append(field_en)
+            i += 1
         if field_is_pk == 'Y':
             pk_fields.append(field_en)
 
     table_columns = ",\n".join(["       -- %s\n       a.%s" % (f[1], f[0]) for f in td.ctbase_field_array])
-    # table_flat_columns = ",".join(["%s" % f[0] for f in td.ctbase_field_array 
-    #                                if f[0] not in ('P9_START_DATE', 'P9_END_DATE')])
-    table_flat_columns = ', '.join([[sf for sf in sf_list] for sf_list in main_fields])
+    # 字段间加换行符
+    table_flat_columns = ',\n               '.join([', '.join(sf_list) for sf_list in main_fields])
     pk_flat_columns = ", ".join(pk_fields)
 
     sql = u'''use sor;
 -- %(cn)s %(en)s 拉链处理
 
 -- 复制贴源数据
-INSERT OVERWRITE TABLE INN_%(en)s_MID PARTITION(%(partition)s='SRC')
+INSERT OVERWRITE TABLE CT_%(en)s_MID PARTITION(%(partition)s='${log_date}_INC')
 SELECT 
 %(cols)s
-  FROM EXT_%(en)s a
+  FROM INN_%(en)s a
  WHERE LOAD_DATE='${log_date}';
 
 -- 去重
-INSERT OVERWRITE TABLE CT_%(en)s_MID PARTITION(%(partition)s='CUR_NO_DUP')
+INSERT OVERWRITE TABLE CT_%(en)s_MID PARTITION(%(partition)s='${log_date}_ALL')
 SELECT 
 %(cols)s
-  FROM (SELECT %(flat_cols)s, P9_START_DATE, P9_END_DATE,
+  FROM (SELECT %(flat_cols)s, 
+               P9_START_DATE, P9_END_DATE,
                row_number() over (
                     partition by %(flat_cols)s
                     order by P9_START_DATE
                    ) rownum
          FROM CT_%(en)s_MID 
-        WHERE %(partition)s in ('SRC', 'PRE_NO_DUP') 
+        WHERE %(partition)s in ('${log_date}_INC', '${log_date_less_1}_ALL') 
         ) a
  WHERE a.rownum = 1;
 
@@ -127,19 +137,11 @@ set hive.exec.dynamic.partition.mode=strick;
 
 -- 重建拉链
 INSERT OVERWRITE TABLE CT_%(en)s PARTITION(P9_END_DATE)
-SELECT %(flat_cols)s, P9_START_DATE, 
+SELECT %(flat_cols)s, 
+       P9_START_DATE, 
        lead(P9_START_DATE, 1, '29991231') over (partition by %(pk)s order by P9_START_DATE) as P9_END_DATE
   FROM CT_%(en)s_MID
- WHERE %(partition)s='CUR_NO_DUP';
-
------------- 以下操作可以导致数据丢失 ---------------
--- 备份当前非重复数据 到 PRE_NO_DUP 分区
-ALTER TABLE CT_%(en)s_MID DROP IF EXISTS PARTITION(%(partition)s='PRE_NO_DUP');
-
-ALTER TABLE CT_%(en)s_MID PARTITION(%(partition)s='CUR_NO_DUP') 
-   RENAME TO PARTITION(%(partition)s='PRE_NO_DUP');
-
-ALTER TABLE CT_%(en)s_MID ADD IF NOT EXISTS PARTITION(%(partition)s='CUR_NO_DUP');
+ WHERE %(partition)s='${log_date}_ALL';
 ''' % {'en':td.table_en, 'cn':td.table_cn, 'cols':table_columns, 'flat_cols':table_flat_columns,
        'partition':partition_field, 'pk':pk_flat_columns}
 
@@ -154,13 +156,16 @@ ALTER TABLE CT_%(en)s_MID ADD IF NOT EXISTS PARTITION(%(partition)s='CUR_NO_DUP'
 ######################################################
 
 #引用基础Shell函数库
-source /home/ap/dip_ts150/ts150_script/base.sh
+source /home/ap/dip/appjob/shelljob/TS150/violate/base.sh
 
 #登录Hadoop
 hadoop_login
 
 #解释命令行参数
 logdate_arg $*
+
+# 前一天日期
+log_date_less_1=`date -d "$log_date 1 days ago" +"%%Y%%m%%d"`
 
 # 依赖数据源--当天数据
 IN_CUR_HIVE=INN_%(en)s
@@ -174,9 +179,10 @@ OUT_CUR_HIVE=CT_%(en)s
 
 run()
 {
-   beeline -f ./hive_insert/INSERT_%(en)s.sql --hivevar log_date=${log_date}
+   beeline -f $script_path/1_create_table/hive_insert/INSERT_%(en)s.sql --hivevar log_date=${log_date} --hivevar log_date_less_1=${log_date_less_1}
+   return $?
 }
-''' % {'en':td.table_en, 'cn':td.table_cn, 'sql':sql}
+''' % {'en':td.table_en, 'cn':td.table_cn, 'sql':sql, 'path':script_path}
 
     f = open(r'./hive_insert/INSERT_%s.sh' % td.table_en, 'w')
     f.write(shell.encode('utf-8'))

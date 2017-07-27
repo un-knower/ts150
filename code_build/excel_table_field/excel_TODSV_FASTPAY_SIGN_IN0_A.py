@@ -1,0 +1,27 @@
+#field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split, field_filter
+table_cn = '快捷支付签约信息表'
+field_array = [
+    ('MRCH_ID', '商户编号', '', ''),
+    ('ACCNO', '账号', '', ''),
+    ('SIGN_INSID', '签约机构编号', '', ''),
+    ('CRDT_TPCD', '证件类型代码', '', ''),
+    ('CRDT_NO', '证件号码', '', ''),
+    ('CST_NM', '客户名称', '', ''),
+    ('MBLPH_NO', '手机号码', '', ''),
+    ('ACC_TPCD', '账户类型代码', '', ''),
+    ('SIGN_DT', '签约日期', '', ''),
+    ('RSRV_1', '备用一', '', ''),
+    ('TFR_PER_QOT', '转账单笔限额', '', ''),
+    ('DYAMLQTA_VAL', '日累计限额值', '', ''),
+    ('MO_ACM_QOT_VAL', '月累计限额值', '', ''),
+    ('BMP_INF', '位图信息', '', ''),
+    ('VLD_ERR_CNT', '验证错误次数', '', ''),
+    ('LAND_ERR_DT', '登录错误日期', '', ''),
+    ('TXN_TM', '交易时间', '', ''),
+    ('P9_DATA_DATE', 'P9数据日期', '', ''),
+    ('P9_BATCH_NUMBER', 'P9批次号', '', ''),
+    ('P9_DEL_FLAG', '', '', ''),
+    ('P9_DEL_DATE', 'P9删除日期', '', ''),
+    ('P9_DEL_BATCH', 'P9删除批次号', '', ''),
+    ('P9_JOB_NAME', '', '', ''),
+]

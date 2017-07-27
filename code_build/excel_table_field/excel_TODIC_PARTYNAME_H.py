@@ -1,0 +1,27 @@
+#field_en, field_cn, field_type, field_length, field_is_pk, field_is_dk, field_to_ctbase, index_describe, index_function, index_split, field_filter
+table_cn = '个人客户信息'
+field_array = [
+    ('EXTERNALBUSINESSRE', '客户编号', '', ''),
+    ('SOURCECREATEDTIMES', '', '', ''),
+    ('SOURCEUPDATEDTIMES', '', '', ''),
+    ('PARTYTYPE', '参与人类型', '', ''),
+    ('PARTYNAMETYPE', '参与人名称类型', '', ''),
+    ('CR_SORT_NAME', '姓名', '', ''),
+    ('CR_NAME_1', '姓名行1', '', ''),
+    ('CR_NAME_2', '姓名行2', '', ''),
+    ('CR_NAME_3', '', '', ''),
+    ('FULLNAME', '银行全称', '', ''),
+    ('PREFERREDTITLE', '客户称呼', '', ''),
+    ('ROLEPLAYERID', '', '', ''),
+    ('ROLEPLAYERITYPE', '', '', ''),
+    ('ROLEPLAYERPTYID', '', '', ''),
+    ('ROLEPLAYPTYTYPE', '', '', ''),
+    ('CREATESYSTEMID', '', '', ''),
+    ('UPDATESYSTEMID', '', '', ''),
+    ('P9_START_DATE', 'P9开始日期', '', ''),
+    ('P9_START_BATCH', '', '', ''),
+    ('P9_END_DATE', 'P9结束日期', '', ''),
+    ('P9_END_BATCH', '', '', ''),
+    ('P9_DEL_FLAG', '', '', ''),
+    ('P9_JOB_NAME', '', '', ''),
+]

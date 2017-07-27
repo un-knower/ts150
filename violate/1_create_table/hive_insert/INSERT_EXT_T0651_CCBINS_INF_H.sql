@@ -1,11 +1,11 @@
 use sor;
 
-# Hive贴源数据处理
-# 建行机构信息: T0651_CCBINS_INF_H
+-- Hive贴源数据处理
+-- 建行机构信息: T0651_CCBINS_INF_H
 
 -- 指定新数据日期分区位置
 ALTER TABLE EXT_T0651_CCBINS_INF_H DROP IF EXISTS PARTITION(LOAD_DATE='${log_date}');
-ALTER TABLE EXT_T0651_CCBINS_INF_H ADD PARTITION (LOAD_DATE='${log_date}') LOCATION 'hdfs://hacluster/bigdata/input/case_trace/T0651_CCBINS_INF_H/${log_date}/';
+ALTER TABLE EXT_T0651_CCBINS_INF_H ADD PARTITION (LOAD_DATE='${log_date}') LOCATION 'hdfs://hacluster/bigdata/input/TS150/case_trace/T0651_CCBINS_INF_H/${log_date}/';
 
 -- 备份贴源数据到ORC内部表
 INSERT OVERWRITE TABLE INN_T0651_CCBINS_INF_H PARTITION(LOAD_DATE='${log_date}')
@@ -50,10 +50,22 @@ SELECT
    OTHR_NTW_ADR,
    -- 人民银行金融机构编码
    PBC_FNC_INST_ECD,
+   -- 建行机构成立日期
+   CCBINS_ESTB_DT,
+   -- 机构变更日期
+   INST_MDF_DT,
+   -- 机构撤销日期
+   INST_UDO_DT,
    -- 机构撤销后归属建行机构编号
    INSTUDOAFBLGCCBINS_ID,
    -- 机构状态代码
    INST_STCD,
+   -- 机构开始营业时间
+   INST_STRT_OPRG_TM,
+   -- 经营期限起始日期
+   OPRT_TRM_STDT,
+   -- 经营期限结束日期
+   OPRT_TRM_EDDT,
    -- 机构核算层级代码
    INST_LDGR_HIER_CD,
    -- 工作日历编号
@@ -162,6 +174,8 @@ SELECT
    OPICS_NO,
    -- POMS号
    POMS_NO,
+   -- 开业日期
+   BOPR_DT,
    -- 建行机构描述
    CCBINS_DSC,
    -- 所在区域主要功能属性描述
@@ -202,24 +216,6 @@ SELECT
    CCBINS_MIX_BSN_DSC,
    -- #最后更新日期时间
    LAST_UDT_DT_TM,
-   -- P9开始日期
-   regexp_replace(P9_START_DATE, '-', ''),
-   -- P9结束日期
-   regexp_replace(P9_END_DATE, '-', ''),
-   -- 建行机构成立日期
-   regexp_replace(CCBINS_ESTB_DT, '-', ''),
-   -- 机构变更日期
-   regexp_replace(INST_MDF_DT, '-', ''),
-   -- 机构撤销日期
-   regexp_replace(INST_UDO_DT, '-', ''),
-   -- 机构开始营业时间
-   INST_STRT_OPRG_TM,
-   -- 经营期限起始日期
-   regexp_replace(OPRT_TRM_STDT, '-', ''),
-   -- 经营期限结束日期
-   regexp_replace(OPRT_TRM_EDDT, '-', ''),
-   -- 开业日期
-   regexp_replace(BOPR_DT, '-', ''),
    -- 承担费用标志
    CHRGTO_COSIND,
    -- 部门主责任类型代码
@@ -237,6 +233,22 @@ SELECT
    -- HKICL分行编号
    HKICL_BR_ID,
    -- HKICL银行编号
-   HKICL_BNK_ID
+   HKICL_BNK_ID,
+   -- 
+   HSPRVDFNDGTHR_BSN_IND,
+   -- 
+   HSMNTFNDSGTHR_BSN_IND,
+   -- 
+   HSPRVDFNDPRJLNBSN_IND,
+   -- 
+   PTYQLYGNTGDGTHRBSNIND,
+   -- 
+   SFDPBX_BO_IND,
+   -- 
+   IDVEXSTL_BO_IND,
+   -- P9开始日期
+   P9_START_DATE,
+   -- P9结束日期
+   P9_END_DATE
   FROM EXT_T0651_CCBINS_INF_H
  WHERE LOAD_DATE='${log_date}';

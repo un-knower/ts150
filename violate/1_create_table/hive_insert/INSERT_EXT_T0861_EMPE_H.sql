@@ -1,11 +1,11 @@
 use sor;
 
-# Hive贴源数据处理
-# 员工: T0861_EMPE_H
+-- Hive贴源数据处理
+-- 员工: T0861_EMPE_H
 
 -- 指定新数据日期分区位置
 ALTER TABLE EXT_T0861_EMPE_H DROP IF EXISTS PARTITION(LOAD_DATE='${log_date}');
-ALTER TABLE EXT_T0861_EMPE_H ADD PARTITION (LOAD_DATE='${log_date}') LOCATION 'hdfs://hacluster/bigdata/input/case_trace/T0861_EMPE_H/${log_date}/';
+ALTER TABLE EXT_T0861_EMPE_H ADD PARTITION (LOAD_DATE='${log_date}') LOCATION 'hdfs://hacluster/bigdata/input/TS150/case_trace/T0861_EMPE_H/${log_date}/';
 
 -- 备份贴源数据到ORC内部表
 INSERT OVERWRITE TABLE INN_T0861_EMPE_H PARTITION(LOAD_DATE='${log_date}')

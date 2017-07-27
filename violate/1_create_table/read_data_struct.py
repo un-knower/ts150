@@ -49,7 +49,7 @@ def read_field_name(field_sheet):
         field_en = field_sheet.cell(rownum,3).value
         field_cn = field_sheet.cell(rownum,4).value
         field_type = field_sheet.cell(rownum,5).value
-        field_length = field_sheet.cell(rownum,6).value
+        field_length = str(field_sheet.cell(rownum,6).value)
         field_is_pk = field_sheet.cell(rownum,7).value
         field_is_dk = field_sheet.cell(rownum,8).value
         field_to_ctbase = field_sheet.cell(rownum,10).value
