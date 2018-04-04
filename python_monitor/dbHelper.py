@@ -124,6 +124,12 @@ def main():
     db.insert("insert into tbl_bussiness_date(bussiness_type, data_date) values('nisalog', '20180403')")
     row_array = db.query_sql('select * from tbl_bussiness_date')
     display_table(row_array)
+    
+    row_array = db.query_sql('select * from tbl_monitor_action')
+    display_table(row_array)
+    
+    row_array = db.query_sql('select * from tbl_monitor_file')
+    display_table(row_array)
 
 if __name__ == '__main__':
     main()
